@@ -14,6 +14,11 @@ def load_metr_la_data():
     # X = np.load("data/node_values.npy").transpose((1, 2, 0))
     # X = X.astype(np.float32)
     
+    if (not os.path.isfile("data/adj_mat_alpha.npy")
+            or not os.path.isfile("data/node_values_alpha.npy")):
+        with zipfile.ZipFile("data/SCATS.zip", 'r') as zip_ref:
+            zip_ref.extractall("data/")
+    
     A = np.load("data/adj_mat_alpha.npy")
     A = A.astype(np.float32)
     X = np.load("data/node_values_alpha.npy").transpose((1, 2, 0))
