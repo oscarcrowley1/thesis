@@ -5,23 +5,23 @@ import torch
 
 
 def load_metr_la_data():
-    # if (not os.path.isfile("data/adj_mat.npy")
-    #         or not os.path.isfile("data/node_values.npy")):
-    #     with zipfile.ZipFile("data/METR-LA.zip", 'r') as zip_ref:
-    #         zip_ref.extractall("data/")
+    # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat.npy")
+    #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values.npy")):
+    #     with zipfile.ZipFile("STGCN-PyTorch-master/data/METR-LA.zip", 'r') as zip_ref:
+    #         zip_ref.extractall("STGCN-PyTorch-master/data/")
 
-    # A = np.load("data/adj_mat.npy")
-    # X = np.load("data/node_values.npy").transpose((1, 2, 0))
+    # A = np.load("STGCN-PyTorch-master/data/adj_mat.npy")
+    # X = np.load("STGCN-PyTorch-master/data/node_values.npy").transpose((1, 2, 0))
     # X = X.astype(np.float32)
     
-    if (not os.path.isfile("data/adj_mat_alpha.npy")
-            or not os.path.isfile("data/node_values_alpha.npy")):
-        with zipfile.ZipFile("data/SCATS.zip", 'r') as zip_ref:
-            zip_ref.extractall("data/")
+    if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
+            or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
+        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS.zip", 'r') as zip_ref:
+            zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-    A = np.load("data/adj_mat_alpha.npy")
+    A = np.load("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
     A = A.astype(np.float32)
-    X = np.load("data/node_values_alpha.npy").transpose((1, 2, 0))
+    X = np.load("STGCN-PyTorch-master/data/node_values_alpha.npy").transpose((1, 2, 0))
     X = X.astype(np.float32)
 
     # Normalization using Z-score method
