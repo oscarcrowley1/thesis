@@ -65,6 +65,8 @@ if __name__ == '__main__':
 
     A, X, means, stds = load_metr_la_data()
 
+    print(A)
+
     # split_line1 = int(X.shape[2] * 0.1)#0.6
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
@@ -88,6 +90,8 @@ if __name__ == '__main__':
                                                num_timesteps_output=num_timesteps_output)
 
     A_wave = get_normalized_adj(A)
+
+    print(A_wave)
     A_wave = torch.from_numpy(A_wave)
 
     A_wave = A_wave.to(device=args.device)
