@@ -121,12 +121,10 @@ class STGCN(nn.Module):
         num_features=in_channels).
         :param A_hat: Normalized adjacency matrix.
         """
-        print("ENTERED FORWARD")
         out1 = self.block1(X, A_hat)
         out2 = self.block2(out1, A_hat)
         out3 = self.last_temporal(out2)
         out4 = self.fully(out3.reshape((out3.shape[0], out3.shape[1], -1)))
-        print("EXITED FORWARD")
 
         return out4
 
