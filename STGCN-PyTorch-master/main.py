@@ -42,7 +42,7 @@ def train_epoch(training_input, training_target, batch_size):
 
     epoch_training_losses = []
     for i in range(0, training_input.shape[0], batch_size):
-        print("Loop in Train: {}".format(i), end='\r')
+        print("Batch: {}".format(i), end='\r')
         net.train()
         optimizer.zero_grad()
 
