@@ -6,9 +6,12 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 
+from torch.utils.tensorboard import SummaryWriter
+
 from stgcn import STGCN
 from utils import generate_dataset, load_metr_la_data, get_normalized_adj
 
+#writer = SummaryWriter()
 
 use_gpu = False
 num_timesteps_input = 12
@@ -115,6 +118,8 @@ if __name__ == '__main__':
         print("Returned Losses")
         training_losses.append(loss)
         
+        #writer.add_scalar("Loss/Train", loss, epoch)
+        
         # Run validation
         with torch.no_grad():
             net.eval()
@@ -151,3 +156,6 @@ if __name__ == '__main__':
             os.makedirs(checkpoint_path)
         with open("checkpoints/losses.pk", "wb") as fd:
             pk.dump((training_losses, validation_losses, validation_maes), fd)
+            
+    #writer.flush()
+    #writer.close()
