@@ -8,6 +8,52 @@ import matplotlib.pyplot as plt
 import regex as re
 import datetime as datetime
 
+def time_to_index(time_value):
+    h, m, s = time_value.split(":", 3)
+    h = int(h)
+    m = int(m)
+    return int((h*60) + m)
+
+
+def sensor_to_index(junc_num, sensor_letter):
+    if(junc_num=="183"):
+        if(sensor_letter=="AC"):
+            return int(0)
+        elif(sensor_letter=="B"):
+            return int(1)
+        else:
+            print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
+            return int(0)   
+    elif(junc_num=="196"):
+        if(sensor_letter=="A"):
+            return int(2)
+        elif(sensor_letter=="ABE"):
+            return int(3)
+        elif(sensor_letter=="D"):
+            return int(4)
+        else:
+            print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
+            return int(0)
+    elif(junc_num=="288"):
+        if(sensor_letter=="A"):
+            return int(5)
+        elif(sensor_letter=="B"):
+            return int(6)
+        else:
+            print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
+            return int(0)
+    elif(junc_num=="354"):
+        if(sensor_letter=="A"):
+            return int(7)
+        elif(sensor_letter=="B"):
+            return int(8)
+        else:
+            print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
+            return int(0)
+    else:
+        print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
+        return int(0)
+
 read_filename = "interpret_csv/ALPHA/all_junc_alpha_01Jun18.txt"
 write_filename = "interpret_csv/ALPHA/new_all_junc.csv"
 
@@ -33,20 +79,78 @@ df_titles = ["Day", "INT", "OTHER", "SA/LK", "PH", "PT", "DS_A", "VO_A", "VK_A",
 
 df = pd.read_csv(write_filename, names=df_titles, skiprows=1)
 
+our_nodes = ["183", "196", "288", "354"]
 
 print(df.head())
 current_time = "00:00"
+
 df_size = df.size
 current_time_list = []
+density_list = []
+flow_list = []
 
 for index, row in df.iterrows():
     other_column = str(row["OTHER"])
+    salk_column = (row["SA/LK"])
+    int_column = str(row["INT"])
+    phase_time = row["PT"]
+
+    t_small = 1
+
+    ds_list = [row["DS_A"], row["DS_B"], row["DS_C"], row["DS_D"]]
+    vo_list = [row["VO_A"], row["VO_B"], row["VO_C"], row["VO_D"]]
+    vk_list = [row["VK_A"], row["VK_B"], row["VK_C"], row["VK_D"]]
+
     if ":" in other_column:
-        current_time = other_column
-        
+        current_time = other_column        
     current_time_list.append(current_time)
+
+    check_is_node = salk_column.isnumeric()
+    check_node_list = (int_column in our_nodes) and check_is_node
+
+    #check_is_duplicate = (if)
+    if check_node_list:
+        num_lanes = ((ds_list[0]).isnumeric()) + ((ds_list[1]).isnumeric()) + ((ds_list[2]).isnumeric()) + ((ds_list[3]).isnumeric())
+    else:
+        num_lanes = None
+
+    check_is_duplicate = check_node_list and (int_column == "183" and (num_lanes == 1 or num_lanes == 2))
+
+    if(check_node_list and not check_is_duplicate):
+        total_ds = 0
+        total_vo = 0
+        total_vk = 0
+
+        for lane in range(num_lanes):
+            total_ds = total_ds + int(ds_list[lane])
+            total_vo = total_vo + int(vo_list[lane])
+            total_vk = total_vk + int(vk_list[lane])
+        
+        
+        avg_ds = total_ds/num_lanes
+
+        if(phase_time != 0):
+            flow = total_vo*60/phase_time
+            t_bign = phase_time*(1-avg_ds) - (t_small * total_vo)
+            density = (1-t_bign)/phase_time
+        else:
+            flow = 0
+            t_bign = 0
+            density = 0
+        
+        flow_list.append(flow)
+        density_list.append(density)
+
+    else:
+        flow_list.append(None)
+        density_list.append(None)
+
+
+
     
 df["Current Time"] = current_time_list
+df["Flow"] = flow_list
+df["Density"] = density_list
     
 
 print(df.head(25))
