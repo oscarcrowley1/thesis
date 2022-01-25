@@ -10,8 +10,10 @@ from datetime import datetime
 import os
 import zipfile
 
-def time_to_index(time_value):
+def time_to_index(time_value, first_date, date_obj):
     h, m = time_value.split(":", 2)
+    # date_diff = date_obj - first_date
+    # d = date_diff.days # DOESNT NEED THIS AS ARRAYS ARE MADE ONE AT A TIME
     h = int(h)
     m = int(m)
     return int((h*60) + m)
@@ -131,6 +133,11 @@ def fill_array(array):
 txt_directory = "interpret_csv/txt_files"
 csv_directory = "interpret_csv/csv_files"
 
+concat_flow_array = None
+concat_density_array = None
+
+first_date = None
+
 for txt_filename in os.listdir(txt_directory):
 
     # read_filename = "interpret_csv/ALPHA/all_junc_alpha_01Jun18.txt"
@@ -191,6 +198,9 @@ for txt_filename in os.listdir(txt_directory):
     current_datetime = datetime.strptime(current_day, "%d-%B-%Y")
     print(current_datetime)
 
+    if first_date is None:
+        first_date = current_datetime
+
     for index, row in df.iterrows():
         other_column = str(row["OTHER"])
         salk_column = str(row["SA/LK"])
@@ -246,7 +256,7 @@ for txt_filename in os.listdir(txt_directory):
             flow_list.append(flow)
             density_list.append(density)
 
-            time_index = time_to_index(current_time)
+            time_index = time_to_index(current_time, first_date, current_datetime)
             sensor_index = sensor_to_index(int_column, sensor_column)
 
             flow_array[time_index, sensor_index] = flow
@@ -269,11 +279,23 @@ for txt_filename in os.listdir(txt_directory):
     flow_array = fill_array(flow_array)
     density_array = fill_array(density_array)
         
+    if concat_flow_array is None:
+        concat_flow_array = flow_array
+    else:
+        concat_flow_array = np.concatenate([concat_flow_array, flow_array], axis=0)
+        print(concat_flow_array.shape)
+        print(flow_array.shape)
+        print("STACK")
+
+    if concat_density_array is None:
+        concat_density_array = density_array
+    else:
+        concat_density_array = np.concatenate([concat_density_array, density_array], axis=0)
 
     print(df.head(25))
     print(df.tail(25))
 
-    output_array = np.stack([flow_array, density_array], axis=2)
+output_array = np.stack([concat_flow_array, concat_density_array], axis=2)
 
 print(output_array.shape) # 1440*9*2
 
