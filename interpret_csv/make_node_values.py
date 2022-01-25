@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 #from torch import float32, float64
 
-df = pd.read_csv("ALPHA/all_junc_alpha_01Jun18.csv", header=1)
+df = pd.read_csv("interpret_csv/ALPHA/all_junc_alpha_01Jun18.csv", header=1)
 
 print(df)
 
@@ -85,9 +85,6 @@ def fill_array(array):
     # print(f"Non: {non_nan_count}\tNan: {nan_count}\tSum: {nan_count+non_nan_count}")
 
     return array
-
-
-
 
 
 
