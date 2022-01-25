@@ -130,7 +130,7 @@ def fill_array(array):
 
     return array
 
-txt_directory = "interpret_csv/txt_files"
+txt_directory = "interpret_csv/ALPHA_1week"
 csv_directory = "interpret_csv/csv_files"
 
 concat_flow_array = None
@@ -138,7 +138,7 @@ concat_density_array = None
 
 first_date = None
 
-for txt_filename in os.listdir(txt_directory):
+for txt_filename in sorted(os.listdir(txt_directory)):
 
     # read_filename = "interpret_csv/ALPHA/all_junc_alpha_01Jun18.txt"
     # write_filename = "interpret_csv/ALPHA/new_all_junc.csv"

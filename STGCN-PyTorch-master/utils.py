@@ -19,9 +19,9 @@ def load_metr_la_data():
         with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS.zip", 'r') as zip_ref:
             zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-    A = np.load("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
+    A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_alpha.npy")
     A = A.astype(np.float32)
-    X = np.load("STGCN-PyTorch-master/data/node_values_alpha.npy").transpose((1, 2, 0))
+    X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
     X = X.astype(np.float32)
 
     # Normalization using Z-score method
