@@ -4,7 +4,7 @@ import numpy as np
 import torch
 
 
-def load_metr_la_data():
+def load_scats_data():
     # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat.npy")
     #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values.npy")):
     #     with zipfile.ZipFile("STGCN-PyTorch-master/data/METR-LA.zip", 'r') as zip_ref:
@@ -24,11 +24,18 @@ def load_metr_la_data():
     X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
     X = X.astype(np.float32)
 
+    # print(X.shape)
+    # X = X[:, 0, :] # Flow only for predictions
+    # X = np.expand_dims(X, axis=1)
+    # print(X.shape)
+
     # Normalization using Z-score method
     means = np.mean(X, axis=(0, 2))
     X = X - means.reshape(1, -1, 1)
     stds = np.std(X, axis=(0, 2))
     X = X / stds.reshape(1, -1, 1)
+
+
 
     return A, X, means, stds
 

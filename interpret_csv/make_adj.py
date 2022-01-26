@@ -16,7 +16,7 @@ def gauss_kernel(array, array_copy):
 
 v_gauss_kernel = np.vectorize(gauss_kernel)
 
-adj_file = open("ALPHA/adj_alpha.csv")
+adj_file = open("interpret_csv/ALPHA/adj_alpha.csv")
 #df = pd.read_csv("ALPHA/adj_alpha.csv", header=None)
 adj_array_prek = np.loadtxt(adj_file, delimiter=",")
 

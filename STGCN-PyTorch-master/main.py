@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 from stgcn import STGCN
-from utils import generate_dataset, load_metr_la_data, get_normalized_adj
+from utils import generate_dataset, load_scats_data, get_normalized_adj
 
 #writer = SummaryWriter()
 
@@ -66,7 +66,7 @@ def train_epoch(training_input, training_target, batch_size):
 if __name__ == '__main__':
     torch.manual_seed(7)
 
-    A, X, means, stds = load_metr_la_data()
+    A, X, means, stds = load_scats_data()
 
     print(A)
 
