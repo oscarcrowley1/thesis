@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-epsilon = 9
+epsilon = 0.6
 delta_squared = 10
 
 def gauss_kernel(array, array_copy):
