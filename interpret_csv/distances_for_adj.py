@@ -30,17 +30,17 @@ client = openrouteservice.Client(key='5b3ce3597851110001cf62484b7969c841cd4ddab8
 #set location coordinates in longitude,latitude order
 #coords = ((-6.240513, 53.361145),(-6.292406, 53.355797))
 
-np.set_printoptions(suppress=True)
+np.set_printoptions(suppress=True) # stops scientific notation
 
-coord_array = np.array([[53.347369, -6.255022],#183i
-                        [53.347474, -6.254784],#183ii
-                        [53.346772, -6.259125],#196i
-                        [53.347122, -6.258851],#196ii
-                        [53.347054, -6.258609],#196iii
-                        [53.344705, -6.252184],#288i
-                        [53.344835, -6.252252],#288ii
-                        [53.349220, -6.251510],#354i
-                        [53.349175, -6.251907]#354ii
+coord_array = np.array([[53.347369, -6.255022], #183i
+                        [53.347474, -6.254784], #183ii
+                        [53.346772, -6.259125], #196i
+                        [53.347122, -6.258851], #196ii
+                        [53.347054, -6.258609], #196iii
+                        [53.344705, -6.252184], #288i
+                        [53.344835, -6.252252], #288ii
+                        [53.349220, -6.251510], #354i
+                        [53.349175, -6.251907]  #354ii
                         ])
 
 #coord_array = np.ndarray(coord_array)
