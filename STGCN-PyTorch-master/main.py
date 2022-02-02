@@ -13,9 +13,13 @@ from utils import generate_dataset, load_scats_data, get_normalized_adj
 
 #writer = SummaryWriter()
 
+
 use_gpu = True #CHANGE FOR MY COMPUTER???
-num_timesteps_input = 12
-num_timesteps_output = 3
+# num_timesteps_input = 12
+# num_timesteps_output = 3
+
+num_timesteps_input = 60
+num_timesteps_output = 15
 
 epochs = 1000
 batch_size = 50
@@ -65,15 +69,20 @@ def train_epoch(training_input, training_target, batch_size):
 
 
 if __name__ == '__main__':
-    torch.manual_seed(7)
+    print("Begin Setup")
+    rand_seed = 7
+    print(f"Random Seed:\t{rand_seed}")
+    torch.manual_seed(rand_seed)
 
     A, X, means, stds = load_scats_data()
 
-    print(A)
+    #print(A)
 
     # split_line1 = int(X.shape[2] * 0.1)#0.6
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
+
+    print("Split Data")
     
     split_line1 = int(X.shape[2] * 0.6)#0.6
     split_line2 = int(X.shape[2] * 0.8)#0.8
@@ -93,12 +102,16 @@ if __name__ == '__main__':
                                                num_timesteps_input=num_timesteps_input,
                                                num_timesteps_output=num_timesteps_output)
 
+    print("Normalise Adjacency Matrix")
+
     A_wave = get_normalized_adj(A)
 
-    print(A_wave)
+    #print(A_wave)
     A_wave = torch.from_numpy(A_wave)
 
     A_wave = A_wave.to(device=args.device)
+
+    print("Initialise STGCN")
 
     net = STGCN(A_wave.shape[0],
                 training_input.shape[3],
@@ -111,6 +124,9 @@ if __name__ == '__main__':
     training_losses = []
     validation_losses = []
     validation_maes = []
+
+    print("Begin Training")
+
     for epoch in range(epochs):
         epoch_start = process_time()
         print("Epoch Number: {}".format(epoch))

@@ -1,17 +1,18 @@
 import numpy as np
 import pandas as pd
-import folium
+#import folium
 import webbrowser
 import os
 import math
+import matplotlib.pyplot as plt
 
-from h3 import h3
-import folium
-from folium import Map
-from folium import plugins
+#from h3 import h3
+# import folium
+# from folium import Map
+# from folium import plugins
 
 import openrouteservice 
-from openrouteservice import convert
+#from openrouteservice import convert
 import json
 
 epsilon = 0.6
@@ -86,7 +87,16 @@ for from_point in range(num_points):
             
 print(adj_array)
 
+plt.imshow(adj_array)
+plt.colorbar()
+plt.show()
+
 kernelised_adj = v_gauss_kernel(adj_array, adj_array)
 
-print(adj_array)
-        
+print(kernelised_adj)
+
+plt.imshow(kernelised_adj)
+plt.colorbar()
+plt.show()
+
+

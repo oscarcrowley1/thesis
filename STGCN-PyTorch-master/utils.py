@@ -35,7 +35,12 @@ def load_scats_data():
     stds = np.std(X, axis=(0, 2))
     X = X / stds.reshape(1, -1, 1)
 
-
+    print(f"Setup Info")
+    print(f"Adjacency Shape:\t{A.shape}")
+    print(f"Data Shape:\t{X.shape}")
+    print(f"Num Stops:\t{X.shape[0]}")
+    print(f"Num Channels:\t{X.shape[1]}")
+    print(f"Num Days:\t{X.shape[2] / 1440}")
 
     return A, X, means, stds
 
