@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
-
+from time import process_time
 #from torch.utils.tensorboard import SummaryWriter
 
 from stgcn import STGCN
@@ -13,7 +13,7 @@ from utils import generate_dataset, load_scats_data, get_normalized_adj
 
 #writer = SummaryWriter()
 
-use_gpu = False
+use_gpu = True #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 12
 num_timesteps_output = 3
 
@@ -25,7 +25,8 @@ parser.add_argument('--enable-cuda', action='store_true',
                     help='Enable CUDA')
 args = parser.parse_args()
 args.device = None
-if args.enable_cuda and torch.cuda.is_available():
+#if args.enable_cuda and torch.cuda.is_available():
+if use_gpu and torch.cuda.is_available():
     args.device = torch.device('cuda')
 else:
     args.device = torch.device('cpu')
@@ -111,6 +112,7 @@ if __name__ == '__main__':
     validation_losses = []
     validation_maes = []
     for epoch in range(epochs):
+        epoch_start = process_time()
         print("Epoch Number: {}".format(epoch))
         print("Epoch Number: {}".format(epoch))
         loss = train_epoch(training_input, training_target,
@@ -143,7 +145,7 @@ if __name__ == '__main__':
         print("Training loss: {}".format(training_losses[-1]))
         print("Validation loss: {}".format(validation_losses[-1]))
         print("Validation MAE: {}".format(validation_maes[-1]))
-        print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
+        #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
         if epoch%25==0:
             plt.plot(training_losses, label="training loss")
             plt.plot(validation_losses, label="validation loss")
@@ -156,6 +158,9 @@ if __name__ == '__main__':
             os.makedirs(checkpoint_path)
         with open("checkpoints/losses.pk", "wb") as fd:
             pk.dump((training_losses, validation_losses, validation_maes), fd)
+
+        epoch_stop = process_time()
+        print(f"Epoch Time:\t{epoch_stop-epoch_start}")
             
     #writer.flush()
     #writer.close()
