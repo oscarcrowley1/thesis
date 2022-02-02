@@ -136,9 +136,12 @@ csv_directory = "interpret_csv/csv_files"
 concat_flow_array = None
 concat_density_array = None
 
+files_string = "\nFILES USED:\n"
+
 first_date = None
 
 for txt_filename in sorted(os.listdir(txt_directory)):
+    files_string = files_string + txt_filename + "\n"
 
     # read_filename = "interpret_csv/ALPHA/all_junc_alpha_01Jun18.txt"
     # write_filename = "interpret_csv/ALPHA/new_all_junc.csv"
@@ -305,7 +308,16 @@ output_array.astype(np.float64)
 
 np.save("interpret_csv/node_values_alpha", output_array)
 
-if os.path.isfile("interpret_csv/adj_mat_alpha.npy"):
+f = open("interpret_csv/nv_info.txt", "w")
+info_string = "Num Juncs:\t" + str(output_array.shape[0]) + "\nNum Channels:\t" + str(output_array.shape[1]) + "\nNum Days:\t" + str(output_array.shape[2]/1440)
+f.write(info_string)
+f.write(files_string)
+f.close()
+
+if os.path.isfile("interpret_csv/adj_mat_alpha.npy") and os.path.isfile("interpret_csv/adj_info.txt"):
     with zipfile.ZipFile("interpret_csv/SCATS.zip", "w") as zip_object:
         zip_object.write("interpret_csv/node_values_alpha.npy")
         zip_object.write("interpret_csv/adj_mat_alpha.npy")
+        zip_object.write("interpret_csv/adj_info.txt")
+        zip_object.write("interpret_csv/nv_info.txt")
+    print("Zipped")
