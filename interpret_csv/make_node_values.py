@@ -226,4 +226,5 @@ print(output_array.shape) # 1440*9*2
 output_array.astype(np.float64)
 # output_array.astype(float32)
 
-np.save("node_values_alpha", output_array)
+#np.save("node_values_alpha", output_array)
+#commented out to prevent accidental overwrite

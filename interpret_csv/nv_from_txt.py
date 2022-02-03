@@ -130,7 +130,8 @@ def fill_array(array):
 
     return array
 
-txt_directory = "interpret_csv/ALPHA_1week"
+#txt_directory = "interpret_csv/ALPHA_1week"
+txt_directory = "interpret_csv/ALPHA_3week"
 csv_directory = "interpret_csv/csv_files"
 
 concat_flow_array = None
@@ -309,7 +310,7 @@ output_array.astype(np.float64)
 np.save("interpret_csv/node_values_alpha", output_array)
 
 f = open("interpret_csv/nv_info.txt", "w")
-info_string = "Num Juncs:\t" + str(output_array.shape[0]) + "\nNum Channels:\t" + str(output_array.shape[1]) + "\nNum Days:\t" + str(output_array.shape[2]/1440)
+info_string = "Num Juncs:\t" + str(output_array.shape[1]) + "\nNum Channels:\t" + str(output_array.shape[2]) + "\nNum Days:\t" + str(output_array.shape[0]/1440)
 f.write(info_string)
 f.write(files_string)
 f.close()

@@ -33,9 +33,11 @@ adj_array.astype(np.float32)
 
 print(adj_array)
 
-np.save("adj_mat_alpha", adj_array)
+#np.save("adj_mat_alpha", adj_array)
 
-values = np.unique(adj_array.ravel())
+#NOT SAVING AS THIS IS THE OLD VERSION
+
+#values = np.unique(adj_array.ravel())
 
 im = plt.imshow(adj_array)
 # colors = [ im.cmap(im.norm(value)) for value in values]

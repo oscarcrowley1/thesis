@@ -1,3 +1,5 @@
+Epsilon:	0.6
+Delta Squared:	10
 Uses these distances
 [[53.347369 -6.255022]
  [53.347474 -6.254784]
