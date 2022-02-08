@@ -162,7 +162,7 @@ if __name__ == '__main__':
         print("Validation loss: {}".format(validation_losses[-1]))
         print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
-        if epoch%25==0:
+        if epoch%10==0:
             plt.plot(training_losses, label="training loss")
             plt.plot(validation_losses, label="validation loss")
             plt.legend()
