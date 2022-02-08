@@ -15,14 +15,14 @@ from utils import generate_dataset, load_scats_data, get_normalized_adj
 
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
-# num_timesteps_input = 12
-# num_timesteps_output = 3
+num_timesteps_input = 12
+num_timesteps_output = 3
 
-num_timesteps_input = 60
-num_timesteps_output = 15
+# num_timesteps_input = 15
+# num_timesteps_output = 15
 
 epochs = 1000
-batch_size = 50
+batch_size = 20#50
 
 parser = argparse.ArgumentParser(description='STGCN')
 parser.add_argument('--enable-cuda', action='store_true',
@@ -64,6 +64,7 @@ def train_epoch(training_input, training_target, batch_size):
         loss.backward()
         optimizer.step()
         epoch_training_losses.append(loss.detach().cpu().numpy())
+    print("Batch: {}".format(i))
     print("Finished Loops")
     return sum(epoch_training_losses)/len(epoch_training_losses)
 
@@ -84,12 +85,12 @@ if __name__ == '__main__':
 
     print("Split Data")
     
-    split_line1 = int(X.shape[2] * 0.6)#0.6
-    split_line2 = int(X.shape[2] * 0.8)#0.8
+    split_line1 = int(X.shape[2] * 0.5)#0.6
+    split_line2 = int(X.shape[2] * 0.75)#0.8
 
     train_original_data = X[:, :, :split_line1]
     val_original_data = X[:, :, split_line1:split_line2]
-    #test_original_data = X[:, :, split_line2:split_line3]
+    # test_original_data = X[:, :, split_line2:split_line3]
     test_original_data = X[:, :, split_line2:]
 
     training_input, training_target = generate_dataset(train_original_data,
