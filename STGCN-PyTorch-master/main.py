@@ -1,3 +1,4 @@
+from cProfile import label
 import os
 import argparse
 import pickle as pk
@@ -9,14 +10,16 @@ from time import process_time
 #from torch.utils.tensorboard import SummaryWriter
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
 
 #writer = SummaryWriter()
 
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
-num_timesteps_input = 12
-num_timesteps_output = 3
+num_timesteps_input = 30
+num_timesteps_output = 15
+
+plot_rate = 20
 
 # num_timesteps_input = 15
 # num_timesteps_output = 15
@@ -69,21 +72,36 @@ def train_epoch(training_input, training_target, batch_size):
     return sum(epoch_training_losses)/len(epoch_training_losses)
 
 
+
+
 if __name__ == '__main__':
-    print("Begin Setup")
+    f = open("STGCN-PyTorch-master/run_info.txt", "w")
+# info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
+
+# f.close()
+    print_save(f, "Begin Setup")
     rand_seed = 7
-    print(f"Random Seed:\t{rand_seed}")
+    print_save(f, f"Random Seed:\t{rand_seed}")
     torch.manual_seed(rand_seed)
 
-    A, X, means, stds = load_scats_data()
+    print_save(f, f"Input Timesteps:\t{num_timesteps_input}")
+    print_save(f, f"Output Timesteps:\t{num_timesteps_output}")
+    print_save(f, f"Use GPU:\t{use_gpu}")
+    print_save(f, f"Plot Rate:\t{plot_rate}")
+    print_save(f, f"Epochs:\t{epochs}")
+    print_save(f, f"Batch Size:\t{batch_size}")
 
-    #print(A)
+    A, X, means, stds, info_string = load_scats_data()
+
+    print_save(f, info_string)
+
+    #print_save(f, A)
 
     # split_line1 = int(X.shape[2] * 0.1)#0.6
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
 
-    print("Split Data")
+    print_save(f, "Split Data")
     
     split_line1 = int(X.shape[2] * 0.5)#0.6
     split_line2 = int(X.shape[2] * 0.75)#0.8
@@ -103,16 +121,16 @@ if __name__ == '__main__':
                                                num_timesteps_input=num_timesteps_input,
                                                num_timesteps_output=num_timesteps_output)
 
-    print("Normalise Adjacency Matrix")
+    print_save(f, "Normalise Adjacency Matrix")
 
     A_wave = get_normalized_adj(A)
 
-    #print(A_wave)
+    #print_save(f, A_wave)
     A_wave = torch.from_numpy(A_wave)
 
     A_wave = A_wave.to(device=args.device)
 
-    print("Initialise STGCN")
+    print_save(f, "Initialise STGCN")
 
     net = STGCN(A_wave.shape[0],
                 training_input.shape[3],
@@ -126,7 +144,11 @@ if __name__ == '__main__':
     validation_losses = []
     validation_maes = []
 
-    print("Begin Training")
+    #output_array = []
+
+    print_save(f, "Begin Training")
+
+    f.close()
 
     for epoch in range(epochs):
         epoch_start = process_time()
@@ -152,7 +174,15 @@ if __name__ == '__main__':
 
             out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
             target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
-            mae = np.mean(np.absolute(out_unnormalized - target_unnormalized))
+
+
+            if epoch%plot_rate==0:
+                plt.plot(out_unnormalized[:, 0, 2], label="Out")
+                plt.plot(target_unnormalized[:, 0, 2], label="Target")
+                plt.legend()
+                plt.show()
+
+            mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
             validation_maes.append(mae)
 
             out = None
@@ -163,7 +193,7 @@ if __name__ == '__main__':
         print("Validation loss: {}".format(validation_losses[-1]))
         print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
-        if epoch%10==0:
+        if epoch%plot_rate==0:
             plt.plot(training_losses, label="training loss")
             plt.plot(validation_losses, label="validation loss")
             plt.legend()

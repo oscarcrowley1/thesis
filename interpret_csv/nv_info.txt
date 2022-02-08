@@ -1,6 +1,6 @@
-Num Juncs:	30240
-Num Channels:	9
-Num Days:	0.001388888888888889
+Num Juncs:	9
+Num Channels:	2
+Num Days:	7.0
 FILES USED:
 SM_20180601.txt
 SM_20180602.txt

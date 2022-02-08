@@ -1,0 +1,1 @@
+Begin SetupRandom Seed:	7Split DataNormalise Adjacency MatrixInitialise STGCNBegin Training

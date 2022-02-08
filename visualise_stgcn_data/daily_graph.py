@@ -18,10 +18,11 @@ one_station_channel = X[0, 0, :]
 
 print(one_station_channel)
 
+day_length = 480
 
-for i in range(int(len(one_station_channel) / 1440)):
-    print(one_station_channel[i*1440:(i+1)*1440])
-    one_day = one_station_channel[i*1440:(i+1)*1440]
+for i in range(int(len(one_station_channel) / 480)):
+    print(one_station_channel[i*480:(i+1)*480])
+    one_day = one_station_channel[i*480:(i+1)*480]
     plt.plot(one_day)
     plt.show()
     

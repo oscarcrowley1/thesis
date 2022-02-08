@@ -3,6 +3,9 @@ import zipfile
 import numpy as np
 import torch
 
+def print_save(file, string_to_use):
+    print(string_to_use)
+    file.write(string_to_use + "\n")
 
 def load_scats_data():
     # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat.npy")
@@ -24,10 +27,10 @@ def load_scats_data():
     X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
     X = X.astype(np.float32)
 
-    # print(X.shape)
+    # info_string += X.shape)
     # X = X[:, 0, :] # Flow only for predictions
     # X = np.expand_dims(X, axis=1)
-    # print(X.shape)
+    # info_string += X.shape)
 
     # Normalization using Z-score method
     means = np.mean(X, axis=(0, 2))
@@ -35,14 +38,14 @@ def load_scats_data():
     stds = np.std(X, axis=(0, 2))
     X = X / stds.reshape(1, -1, 1)
 
-    print(f"Setup Info")
-    print(f"Adjacency Shape:\t{A.shape}")
-    print(f"Data Shape:\t{X.shape}")
-    print(f"Num Stops:\t{X.shape[0]}")
-    print(f"Num Channels:\t{X.shape[1]}")
-    print(f"Num Days:\t{X.shape[2] / 1440}")
+    info_string = "Input Info\n--------------\n"
+    info_string += f"Adjacency Shape:\t{A.shape}\n"
+    info_string += f"Data Shape:\t{X.shape}\n"
+    info_string += f"Num Stops:\t{X.shape[0]}\n"
+    info_string += f"Num Channels:\t{X.shape[1]}\n"
+    info_string += f"Num Days:\t{X.shape[2] / 480}\n"
 
-    return A, X, means, stds
+    return A, X, means, stds, info_string
 
 
 def get_normalized_adj(A):

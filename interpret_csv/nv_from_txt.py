@@ -16,7 +16,8 @@ def time_to_index(time_value, first_date, date_obj):
     # d = date_diff.days # DOESNT NEED THIS AS ARRAYS ARE MADE ONE AT A TIME
     h = int(h)
     m = int(m)
-    return int((h*60) + m)
+#    return int((h*60) + m)
+    return int((h*20) + math.floor(m/3))
 
 
 def sensor_to_index(junc_num, sensor_letter):
@@ -188,7 +189,8 @@ for txt_filename in sorted(os.listdir(txt_directory)):
     used_count = 0
     unused_count = 0
 
-    time_dim = 1440
+    #time_dim = 1440
+    time_dim = 480
     sensor_dim = 9
     channel_dim = 2
 
@@ -263,9 +265,12 @@ for txt_filename in sorted(os.listdir(txt_directory)):
             time_index = time_to_index(current_time, first_date, current_datetime)
             sensor_index = sensor_to_index(int_column, sensor_column)
 
-            flow_array[time_index, sensor_index] = flow
-            density_array[time_index, sensor_index] = density
-
+            if math.isnan(flow_array[time_index, sensor_index]):
+                flow_array[time_index, sensor_index] = flow
+                density_array[time_index, sensor_index] = density
+            else:
+                flow_array[time_index, sensor_index] = (flow + flow_array[time_index, sensor_index])/2 #will only work as long as 2 values max 
+                density_array[time_index, sensor_index] = (density + density_array[time_index, sensor_index])/2
 
         else:
             flow_list.append(None)
