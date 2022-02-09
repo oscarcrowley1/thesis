@@ -8,6 +8,8 @@ import torch
 import torch.nn as nn
 from time import process_time
 #from torch.utils.tensorboard import SummaryWriter
+from prettytable import PrettyTable
+
 
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
@@ -70,6 +72,19 @@ def train_epoch(training_input, training_target, batch_size):
     print("Batch: {}".format(i))
     print("Finished Loops")
     return sum(epoch_training_losses)/len(epoch_training_losses)
+
+
+def count_parameters(model):
+    table = PrettyTable(["Modules", "Parameters"])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad: continue
+        param = parameter.numel()
+        table.add_row([name, param])
+        total_params+=param
+    print(table)
+    print(f"Total Trainable Params: {total_params}")
+    return total_params
 
 
 
@@ -136,6 +151,8 @@ if __name__ == '__main__':
                 training_input.shape[3],
                 num_timesteps_input,
                 num_timesteps_output).to(device=args.device)
+    
+    count_parameters(net)
 
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
     loss_criterion = nn.MSELoss()
@@ -149,6 +166,8 @@ if __name__ == '__main__':
     print_save(f, "Begin Training")
 
     f.close()
+    
+    training_start = process_time()
 
     for epoch in range(epochs):
         epoch_start = process_time()
@@ -211,3 +230,6 @@ if __name__ == '__main__':
             
     #writer.flush()
     #writer.close()
+
+    training_stop = process_time()
+    print(f"Training Time:\t{training_stop-training_start}")
