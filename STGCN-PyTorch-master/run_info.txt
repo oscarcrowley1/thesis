@@ -8,13 +8,14 @@ Epochs:	1000
 Batch Size:	20
 Input Info
 --------------
-Adjacency Shape:	(207, 207)
-Data Shape:	(207, 2, 34272)
-Num Stops:	207
+Adjacency Shape:	(9, 9)
+Data Shape:	(9, 2, 10080)
+Num Stops:	9
 Num Channels:	2
-Num Days:	71.4
+Num Days:	21.0
 
 Split Data
 Normalise Adjacency Matrix
 Initialise STGCN
+115571
 Begin Training

@@ -27,7 +27,7 @@ plot_rate = 20
 # num_timesteps_output = 15
 
 epochs = 1000
-batch_size = 20#50
+batch_size = 50
 
 parser = argparse.ArgumentParser(description='STGCN')
 parser.add_argument('--enable-cuda', action='store_true',
@@ -118,8 +118,8 @@ if __name__ == '__main__':
 
     print_save(f, "Split Data")
     
-    split_line1 = int(X.shape[2] * 0.5)#0.6
-    split_line2 = int(X.shape[2] * 0.75)#0.8
+    split_line1 = int(X.shape[2] * 0.6)#0.6
+    split_line2 = int(X.shape[2] * 0.7)#0.8
 
     train_original_data = X[:, :, :split_line1]
     val_original_data = X[:, :, split_line1:split_line2]
@@ -152,7 +152,7 @@ if __name__ == '__main__':
                 num_timesteps_input,
                 num_timesteps_output).to(device=args.device)
     
-    count_parameters(net)
+    print_save(f, str(count_parameters(net)))
 
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
     loss_criterion = nn.MSELoss()
