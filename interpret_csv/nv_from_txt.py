@@ -132,7 +132,7 @@ def fill_array(array):
     return array
 
 #txt_directory = "interpret_csv/ALPHA_1week"
-txt_directory = "interpret_csv/ALPHA_3week"
+txt_directory = "interpret_csv/ALPHA_82"
 csv_directory = "interpret_csv/csv_files"
 
 concat_flow_array = None

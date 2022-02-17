@@ -5,14 +5,14 @@ Output Timesteps:	15
 Use GPU:	True
 Plot Rate:	20
 Epochs:	1000
-Batch Size:	20
+Batch Size:	50
 Input Info
 --------------
 Adjacency Shape:	(9, 9)
-Data Shape:	(9, 2, 10080)
+Data Shape:	(9, 2, 39360)
 Num Stops:	9
 Num Channels:	2
-Num Days:	21.0
+Num Days:	82.0
 
 Split Data
 Normalise Adjacency Matrix

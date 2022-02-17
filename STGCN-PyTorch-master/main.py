@@ -119,7 +119,7 @@ if __name__ == '__main__':
     print_save(f, "Split Data")
     
     split_line1 = int(X.shape[2] * 0.6)#0.6
-    split_line2 = int(X.shape[2] * 0.7)#0.8
+    split_line2 = int(X.shape[2] * 0.9)#0.8
 
     train_original_data = X[:, :, :split_line1]
     val_original_data = X[:, :, split_line1:split_line2]
