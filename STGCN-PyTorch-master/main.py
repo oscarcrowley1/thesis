@@ -7,14 +7,15 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from time import process_time
-#from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 from prettytable import PrettyTable
+import sys
 
 
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
 
-#writer = SummaryWriter()
+writer = SummaryWriter()
 
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
@@ -26,8 +27,8 @@ plot_rate = 20
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 1000
-batch_size = 50
+epochs = 100
+batch_size = 32
 
 parser = argparse.ArgumentParser(description='STGCN')
 parser.add_argument('--enable-cuda', action='store_true',
@@ -39,6 +40,10 @@ if use_gpu and torch.cuda.is_available():
     args.device = torch.device('cuda')
 else:
     args.device = torch.device('cpu')
+
+
+
+print(f"Device: {args.device}")
 
 
 def train_epoch(training_input, training_target, batch_size):
@@ -118,23 +123,61 @@ if __name__ == '__main__':
 
     print_save(f, "Split Data")
     
-    split_line1 = int(X.shape[2] * 0.6)#0.6
-    split_line2 = int(X.shape[2] * 0.9)#0.8
-
-    train_original_data = X[:, :, :split_line1]
-    val_original_data = X[:, :, split_line1:split_line2]
-    # test_original_data = X[:, :, split_line2:split_line3]
-    test_original_data = X[:, :, split_line2:]
-
-    training_input, training_target = generate_dataset(train_original_data,
+    total_input, total_target = generate_dataset(X,
                                                        num_timesteps_input=num_timesteps_input,
                                                        num_timesteps_output=num_timesteps_output)
-    val_input, val_target = generate_dataset(val_original_data,
-                                             num_timesteps_input=num_timesteps_input,
-                                             num_timesteps_output=num_timesteps_output)
-    test_input, test_target = generate_dataset(test_original_data,
-                                               num_timesteps_input=num_timesteps_input,
-                                               num_timesteps_output=num_timesteps_output)
+
+    print_save(f, "Shuffle Data")
+
+    rand_indx = torch.randperm(total_input.shape[0])
+
+    # split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    # split_line2 = int(total_input.shape[0] * 0.9)#0.8
+
+    split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    split_line2 = int(total_input.shape[0] * 0.9)#0.8
+
+    training_indx = rand_indx[:split_line1]
+    val_indx = rand_indx[split_line1:split_line2]
+    test_indx = rand_indx[split_line2:]
+
+    # training_input = total_input[:split_line1, :, :, :]
+    # training_target = total_target[:split_line1, :, :]
+
+    # val_input = total_input[split_line1:split_line2, :, :, :]
+    # val_target = total_target[split_line1:split_line2, :, :]
+
+    # test_input = total_input[split_line2:, :, :, :]
+    # test_target = total_target[split_line2:, :, :]
+
+    training_input = total_input[training_indx, :, :, :]
+    training_target = total_target[training_indx, :, :]
+
+    val_input = total_input[val_indx, :, :, :]
+    val_target = total_target[val_indx, :, :]
+
+    test_input = total_input[test_indx, :, :, :]
+    test_target = total_target[test_indx, :, :]
+
+    # split_line1 = int(X.shape[2] * 0.6)#0.6
+    # split_line2 = int(X.shape[2] * 0.9)#0.8
+
+    # train_original_data = X[:, :, :split_line1]
+    # val_original_data = X[:, :, split_line1:split_line2]
+    # # test_original_data = X[:, :, split_line2:split_line3]
+    # test_original_data = X[:, :, split_line2:]
+
+    # training_input, training_target = generate_dataset(train_original_data,
+    #                                                    num_timesteps_input=num_timesteps_input,
+    #                                                    num_timesteps_output=num_timesteps_output)
+    # val_input, val_target = generate_dataset(val_original_data,
+    #                                          num_timesteps_input=num_timesteps_input,
+    #                                          num_timesteps_output=num_timesteps_output)
+    # test_input, test_target = generate_dataset(test_original_data,
+    #                                            num_timesteps_input=num_timesteps_input,
+    #                                            num_timesteps_output=num_timesteps_output)
+
+    # print(f"SHapes: {training_input.shape}, {training_input_test.shape}")
 
     print_save(f, "Normalise Adjacency Matrix")
 
@@ -152,6 +195,12 @@ if __name__ == '__main__':
                 num_timesteps_input,
                 num_timesteps_output).to(device=args.device)
     
+    # writer.add_graph(net, (A_wave, val_input))
+    
+    # writer.flush()
+    # writer.close()
+    # sys.exit()
+    
     print_save(f, str(count_parameters(net)))
 
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
@@ -168,6 +217,7 @@ if __name__ == '__main__':
     f.close()
     
     training_start = process_time()
+    x_epoch_start = process_time()
 
     for epoch in range(epochs):
         epoch_start = process_time()
@@ -178,7 +228,7 @@ if __name__ == '__main__':
         print("Returned Losses")
         training_losses.append(loss)
         
-        #writer.add_scalar("Loss/Train", loss, epoch)
+        writer.add_scalar("Training Loss", loss, epoch)
         
         # Run validation
         with torch.no_grad():
@@ -195,7 +245,7 @@ if __name__ == '__main__':
             target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
 
 
-            if epoch%plot_rate==0:
+            if (epoch+1)%plot_rate==0:
                 plt.plot(out_unnormalized[:, 0, 2], label="Out")
                 plt.plot(target_unnormalized[:, 0, 2], label="Target")
                 plt.legend()
@@ -207,12 +257,18 @@ if __name__ == '__main__':
             out = None
             val_input = val_input.to(device="cpu")
             val_target = val_target.to(device="cpu")
+            
+        writer.add_scalar("Validation Loss", val_loss, epoch)
+        writer.add_scalar("Validation MAE", mae, epoch)
 
         print("Training loss: {}".format(training_losses[-1]))
         print("Validation loss: {}".format(validation_losses[-1]))
         print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
-        if epoch%plot_rate==0:
+        if (epoch+1)%plot_rate==0:
+            x_epoch_end = process_time()
+            print(f"Time for {plot_rate} epochs:\t{x_epoch_end-x_epoch_start}")
+            x_epoch_start = x_epoch_end
             plt.plot(training_losses, label="training loss")
             plt.plot(validation_losses, label="validation loss")
             plt.legend()
@@ -228,8 +284,8 @@ if __name__ == '__main__':
         epoch_stop = process_time()
         print(f"Epoch Time:\t{epoch_stop-epoch_start}")
             
-    #writer.flush()
-    #writer.close()
+    writer.flush()
+    writer.close()
 
     training_stop = process_time()
     print(f"Training Time:\t{training_stop-training_start}")
