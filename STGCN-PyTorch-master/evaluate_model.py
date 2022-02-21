@@ -2,6 +2,7 @@ from cProfile import label
 import os
 import argparse
 import pickle as pk
+from re import S
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -60,8 +61,12 @@ if __name__ == '__main__':
         ex_test_target_UN = ex_test_target*stds[0]+means[0]
         out_UN = out*stds[0]+means[0]
         
-        plt.plot(ex_test_target_UN[:, 0, 14], label="Target")
-        plt.plot(out_UN[:, 0, 14], label="Predictions")
+        stop_num = 0
+        time_step = 5
+        
+        #plt.plot(ex_test_target_UN[:, stop_num, time_step], label="Target")
+        #plt.plot(out_UN[:, stop_num, time_step], label="Predictions")
+        plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
         plt.legend()
         plt.show()
     

@@ -1,4 +1,5 @@
 from cProfile import label
+from datetime import datetime
 import os
 import argparse
 import pickle as pk
@@ -10,6 +11,7 @@ from time import process_time
 from torch.utils.tensorboard import SummaryWriter
 from prettytable import PrettyTable
 import sys
+import shutil
 
 
 from stgcn import STGCN
@@ -20,9 +22,10 @@ writer = SummaryWriter()
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 30
-num_timesteps_output = 15
+num_timesteps_output = 5
 
 plot_rate = 20
+save_rate = 25
 
 # num_timesteps_input = 15
 # num_timesteps_output = 15
@@ -276,6 +279,12 @@ if __name__ == '__main__':
         #     plt.legend()
         #     plt.show()
         #     print("PLOTTED")
+        if (epoch+1) % save_rate == 0:
+            now = datetime.now()
+            time_string = now.strftime("%m%d_%H%M")
+
+            torch.save(net.state_dict(), ("saved_models/model_" + time_string))
+            shutil.copy("STGCN-PyTorch-master/run_info.txt", "run_info_" + time_string)
 
         checkpoint_path = "checkpoints/"
         if not os.path.exists(checkpoint_path):

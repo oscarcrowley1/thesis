@@ -251,7 +251,7 @@ for txt_filename in sorted(os.listdir(txt_directory)):
             phase_time = int(phase_time)
 
             if(phase_time != 0):
-                flow = total_vo*60/phase_time
+                flow = total_vo*60*60/phase_time
                 t_bign = phase_time*(1-avg_ds) - (t_small * total_vo)
                 density = (1-t_bign)/phase_time
             else:
