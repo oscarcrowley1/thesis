@@ -27,7 +27,7 @@ plot_rate = 20
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 100
+epochs = 1000
 batch_size = 32
 
 parser = argparse.ArgumentParser(description='STGCN')
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
 # f.close()
     print_save(f, "Begin Setup")
-    rand_seed = 7
+    rand_seed = 8#was7
     print_save(f, f"Random Seed:\t{rand_seed}")
     torch.manual_seed(rand_seed)
 
@@ -245,11 +245,11 @@ if __name__ == '__main__':
             target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
 
 
-            if (epoch+1)%plot_rate==0:
-                plt.plot(out_unnormalized[:, 0, 2], label="Out")
-                plt.plot(target_unnormalized[:, 0, 2], label="Target")
-                plt.legend()
-                plt.show()
+            # if (epoch+1)%plot_rate==0:
+            #     plt.plot(out_unnormalized[:, 0, 2], label="Out")
+            #     plt.plot(target_unnormalized[:, 0, 2], label="Target")
+            #     plt.legend()
+            #     plt.show()
 
             mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
             validation_maes.append(mae)
@@ -265,15 +265,15 @@ if __name__ == '__main__':
         print("Validation loss: {}".format(validation_losses[-1]))
         print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
-        if (epoch+1)%plot_rate==0:
-            x_epoch_end = process_time()
-            print(f"Time for {plot_rate} epochs:\t{x_epoch_end-x_epoch_start}")
-            x_epoch_start = x_epoch_end
-            plt.plot(training_losses, label="training loss")
-            plt.plot(validation_losses, label="validation loss")
-            plt.legend()
-            plt.show()
-            print("PLOTTED")
+        # if (epoch+1)%plot_rate==0:
+        #     x_epoch_end = process_time()
+        #     print(f"Time for {plot_rate} epochs:\t{x_epoch_end-x_epoch_start}")
+        #     x_epoch_start = x_epoch_end
+        #     plt.plot(training_losses, label="training loss")
+        #     plt.plot(validation_losses, label="validation loss")
+        #     plt.legend()
+        #     plt.show()
+        #     print("PLOTTED")
 
         checkpoint_path = "checkpoints/"
         if not os.path.exists(checkpoint_path):
@@ -282,10 +282,14 @@ if __name__ == '__main__':
             pk.dump((training_losses, validation_losses, validation_maes), fd)
 
         epoch_stop = process_time()
-        print(f"Epoch Time:\t{epoch_stop-epoch_start}")
+        epoch_length = epoch_stop-epoch_start
+        print(f"Epoch Time:\t{epoch_length}")
+        writer.add_scalar("Epoch Length", epoch_length, epoch)
             
     writer.flush()
     writer.close()
+    
+    torch.save(net.state_dict(), "saved_models/my_model")
 
     training_stop = process_time()
     print(f"Training Time:\t{training_stop-training_start}")

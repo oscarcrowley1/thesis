@@ -1,10 +1,10 @@
 Begin Setup
-Random Seed:	7
+Random Seed:	8
 Input Timesteps:	30
 Output Timesteps:	15
 Use GPU:	True
 Plot Rate:	20
-Epochs:	100
+Epochs:	1000
 Batch Size:	32
 Input Info
 --------------
