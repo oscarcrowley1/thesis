@@ -84,6 +84,13 @@ class STGCNBlock(nn.Module):
         # t2 = F.relu(torch.einsum("ijkl,lp->ijkp", [lfs, self.Theta1]))
         t2 = F.relu(torch.matmul(lfs, self.Theta1))
         t3 = self.temporal2(t2)
+
+        # print(f"X:\t{X.shape}")
+        # print(f"t:\t{t.shape}")
+        # print(f"lfs:\t{lfs.shape}")
+        # print(f"t2:\t{t2.shape}")
+        # print(f"t3:\t{t3.shape}")
+
         return self.batch_norm(t3)
         # return t3
 
@@ -111,8 +118,8 @@ class STGCN(nn.Module):
                                  spatial_channels=16, num_nodes=num_nodes)
         self.block2 = STGCNBlock(in_channels=64, out_channels=64,
                                  spatial_channels=16, num_nodes=num_nodes)
-        self.last_temporal = TimeBlock(in_channels=64, out_channels=64)
-        self.fully = nn.Linear((num_timesteps_input - 2 * 5) * 64,
+        #self.last_temporal = TimeBlock(in_channels=64, out_channels=64)
+        self.fully = nn.Linear((num_timesteps_input - 2 * 4) * 64, # 2*X, X indicates how many temporals as each cuts down the num timesteps by 2
                                num_timesteps_output)
 
     def forward(self, A_hat, X):
@@ -122,9 +129,15 @@ class STGCN(nn.Module):
         :param A_hat: Normalized adjacency matrix.
         """
         out1 = self.block1(X, A_hat)
-        out2 = self.block2(out1, A_hat)
-        out3 = self.last_temporal(out2)
+        out3 = self.block2(out1, A_hat)
+        #out3 = self.last_temporal(out2)
         out4 = self.fully(out3.reshape((out3.shape[0], out3.shape[1], -1)))
+
+        # print(f"X SHAPE:\t{X.shape}")
+        # print(f"OUT1 SHAPE:\t{out1.shape}")
+        # #print(f"OUT2 SHAPE:\t{out2.shape}")
+        # print(f"OUT3 SHAPE:\t{out3.shape}")
+        # print(f"OUT4 SHAPE:\t{out4.shape}")
 
         return out4
 

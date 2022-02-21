@@ -27,7 +27,7 @@ plot_rate = 20
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 1000
+epochs = 500
 batch_size = 32
 
 parser = argparse.ArgumentParser(description='STGCN')
@@ -82,9 +82,11 @@ def train_epoch(training_input, training_target, batch_size):
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
+    print_save(f, "\nPARAMETERS:")
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad: continue
         param = parameter.numel()
+        print_save(f, f"{name}:\t{parameter}")
         table.add_row([name, param])
         total_params+=param
     print(table)
