@@ -33,8 +33,8 @@ if __name__ == '__main__':
                                                        num_timesteps_input=num_timesteps_input,
                                                        num_timesteps_output=num_timesteps_output)
 
-    ex_test_input = total_input[:, :, ex_split_line1:]
-    ex_test_target = total_target[:, :, ex_split_line1:]
+    ex_test_input = total_input[ex_split_line1:, :, :]
+    ex_test_target = total_target[ex_split_line1:, :, :]
 
     A_wave = get_normalized_adj(A)
     A_wave = torch.from_numpy(A_wave)#removed to device
@@ -43,5 +43,25 @@ if __name__ == '__main__':
                 ex_test_input.shape[3],
                 num_timesteps_input,
                 num_timesteps_output)#.to(device=args.device)
-
-    ex_net.load_state_dict(torch.load("saved_models/my_model"))
+    
+    if torch.cuda.is_available():
+        ex_net.load_state_dict(torch.load("saved_models/my_model"))#for use on my computer
+    else:
+        ex_net.load_state_dict(torch.load("saved_models/my_model", map_location=torch.device('cpu')))#for use on my computer
+    
+    with torch.no_grad():
+        ex_net.eval()
+    
+        out = ex_net(A_wave, ex_test_input)
+        print(ex_test_input.shape)
+        print(ex_test_target.shape)
+        print(out.shape)
+        
+        ex_test_target_UN = ex_test_target*stds[0]+means[0]
+        out_UN = out*stds[0]+means[0]
+        
+        plt.plot(ex_test_target_UN[:, 0, 14], label="Target")
+        plt.plot(out_UN[:, 0, 14], label="Predictions")
+        plt.legend()
+        plt.show()
+    
