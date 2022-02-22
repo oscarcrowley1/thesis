@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
 
     num_timesteps_input = 30
-    num_timesteps_output = 15
+    num_timesteps_output = 5
 
     #print_save(f, A)
 
@@ -45,10 +45,10 @@ if __name__ == '__main__':
                 num_timesteps_input,
                 num_timesteps_output)#.to(device=args.device)
     
-    if torch.cuda.is_available():
-        ex_net.load_state_dict(torch.load("saved_models/my_model"))#for use on my computer
+    if False:#if torch.cuda.is_available():
+        ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))#for use on my computer
     else:
-        ex_net.load_state_dict(torch.load("saved_models/my_model", map_location=torch.device('cpu')))#for use on my computer
+        ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
         ex_net.eval()
@@ -62,11 +62,11 @@ if __name__ == '__main__':
         out_UN = out*stds[0]+means[0]
         
         stop_num = 0
-        time_step = 5
+        time_step = 4
         
-        #plt.plot(ex_test_target_UN[:, stop_num, time_step], label="Target")
-        #plt.plot(out_UN[:, stop_num, time_step], label="Predictions")
-        plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
+        plt.plot(ex_test_target_UN[:, stop_num, time_step], label="Target")
+        plt.plot(out_UN[:, stop_num, time_step], label="Predictions")
+        # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
         plt.legend()
         plt.show()
     
