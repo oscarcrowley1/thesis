@@ -1,4 +1,5 @@
 from cProfile import label
+from datetime import datetime
 import os
 import argparse
 import pickle as pk
@@ -10,6 +11,7 @@ from time import process_time
 from torch.utils.tensorboard import SummaryWriter
 from prettytable import PrettyTable
 import sys
+import shutil
 
 
 from stgcn import STGCN
@@ -20,9 +22,10 @@ writer = SummaryWriter()
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 30
-num_timesteps_output = 15
+num_timesteps_output = 5
 
 plot_rate = 20
+save_rate = 100
 
 # num_timesteps_input = 15
 # num_timesteps_output = 15
@@ -210,7 +213,9 @@ if __name__ == '__main__':
 
     training_losses = []
     validation_losses = []
+
     validation_maes = []
+    validation_mses = []
 
     #output_array = []
 
@@ -254,6 +259,10 @@ if __name__ == '__main__':
             #     plt.show()
 
             mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
+            rmse = np.sqrt(np.mean((out_unnormalized - target_unnormalized)**2))
+
+            mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
+
             validation_maes.append(mae)
 
             out = None
@@ -262,6 +271,8 @@ if __name__ == '__main__':
             
         writer.add_scalar("Validation Loss", val_loss, epoch)
         writer.add_scalar("Validation MAE", mae, epoch)
+        writer.add_scalar("Validation MAE 15th min", rmse, epoch)
+        writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
 
         print("Training loss: {}".format(training_losses[-1]))
         print("Validation loss: {}".format(validation_losses[-1]))
@@ -276,6 +287,12 @@ if __name__ == '__main__':
         #     plt.legend()
         #     plt.show()
         #     print("PLOTTED")
+        if (epoch+1) % save_rate == 0:
+            now = datetime.now()
+            time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch)
+
+            torch.save(net.state_dict(), ("saved_models/model_" + time_string))
+            shutil.copy("STGCN-PyTorch-master/run_info.txt", "run_info_" + time_string)
 
         checkpoint_path = "checkpoints/"
         if not os.path.exists(checkpoint_path):

@@ -128,8 +128,13 @@ class STGCN(nn.Module):
         num_features=in_channels).
         :param A_hat: Normalized adjacency matrix.
         """
+        # print("BEFORE")
+        # print(X.shape)
         out1 = self.block1(X, A_hat)
+        # print(out1.shape)
         out3 = self.block2(out1, A_hat)
+        # print(out3.shape)
+        # print("AFTER")
         #out3 = self.last_temporal(out2)
         out4 = self.fully(out3.reshape((out3.shape[0], out3.shape[1], -1)))
 
