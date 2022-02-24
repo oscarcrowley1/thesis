@@ -16,6 +16,20 @@ import sys
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
 
+def count_parameters(model):
+    table = PrettyTable(["Modules", "Parameters"])
+    total_params = 0
+    print("\nPARAMETERS:")
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad: continue
+        param = parameter.numel()
+        print_save(f, f"{name}:\t{parameter}")
+        table.add_row([name, param])
+        total_params+=param
+    print(table)
+    print(f"Total Trainable Params: {total_params}")
+    return total_params
+
 if __name__ == '__main__':
     A, X, means, stds, info_string = load_scats_data()
 
@@ -46,7 +60,7 @@ if __name__ == '__main__':
                 num_timesteps_output)#.to(device=args.device)
     
     if False:#if torch.cuda.is_available():
-        ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))#for use on my computer
+        ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
     
@@ -54,9 +68,9 @@ if __name__ == '__main__':
         ex_net.eval()
     
         out = ex_net(A_wave, ex_test_input)
-        print(ex_test_input.shape)
-        print(ex_test_target.shape)
-        print(out.shape)
+        # print(ex_test_input.shape)
+        # print(ex_test_target.shape)
+        # print(out.shape)
         
         ex_test_target_UN = ex_test_target*stds[0]+means[0]
         out_UN = out*stds[0]+means[0]
