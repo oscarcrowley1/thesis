@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
 
     num_timesteps_input = 30
-    num_timesteps_output = 5
+    num_timesteps_output = 15
 
     #print_save(f, A)
 
@@ -62,7 +62,8 @@ if __name__ == '__main__':
     if False:#if torch.cuda.is_available():
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
-        ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
+        # ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
+        ex_net.load_state_dict(torch.load("saved_models/my_model", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
         ex_net.eval()
@@ -80,6 +81,9 @@ if __name__ == '__main__':
         
         plt.plot(ex_test_target_UN[:, stop_num, time_step], label="Target")
         plt.plot(out_UN[:, stop_num, time_step], label="Predictions")
+        plt.xlabel("Time (3 min intervals)")
+        plt.ylabel("Flow (cars/min")
+        plt.title("Flow prediction for 15 minutes ahead")
         # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
         plt.legend()
         plt.show()
