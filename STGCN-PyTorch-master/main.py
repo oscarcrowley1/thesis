@@ -30,7 +30,7 @@ save_rate = 100
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 500
+epochs = 1000
 batch_size = 32
 
 parser = argparse.ArgumentParser(description='STGCN')
