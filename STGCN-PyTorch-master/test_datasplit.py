@@ -13,7 +13,7 @@ from prettytable import PrettyTable
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
 
 #writer = SummaryWriter()
 
@@ -95,25 +95,12 @@ def count_parameters(model):
 
 
 if __name__ == '__main__':
-    f = open("STGCN-PyTorch-master/run_info.txt", "w")
-# info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
-
-# f.close()
-    print_save(f, "Begin Setup")
-    rand_seed = 7
-    print_save(f, f"Random Seed:\t{rand_seed}")
-    torch.manual_seed(rand_seed)
-
-    print_save(f, f"Input Timesteps:\t{num_timesteps_input}")
-    print_save(f, f"Output Timesteps:\t{num_timesteps_output}")
-    print_save(f, f"Use GPU:\t{use_gpu}")
-    print_save(f, f"Plot Rate:\t{plot_rate}")
-    print_save(f, f"Epochs:\t{epochs}")
-    print_save(f, f"Batch Size:\t{batch_size}")
+    
 
     A, X, means, stds, info_string = load_scats_data()
 
-    print_save(f, info_string)
+
+
 
     #print_save(f, A)
 
@@ -121,11 +108,19 @@ if __name__ == '__main__':
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
 
-    print_save(f, "Split Data")
+
     
     total_input, total_target = generate_dataset(X,
                                                        num_timesteps_input=num_timesteps_input,
                                                        num_timesteps_output=num_timesteps_output)
+
+    new_total_input, new_total_target = new_generate_dataset(X,
+                                                       num_timesteps_input=num_timesteps_input,
+                                                       num_timesteps_output=num_timesteps_output)
+
+
+    print(f"Input comparison:\tOG:{total_input.shape}\tNEW:{new_total_input.shape}")
+    print(f"Target comparison:\tOG:{total_target.shape}\tNEW:{new_total_target.shape}")
 
     split_line1 = int(total_input.shape[0] * 0.6)#0.6
     split_line2 = int(total_input.shape[0] * 0.9)#0.8

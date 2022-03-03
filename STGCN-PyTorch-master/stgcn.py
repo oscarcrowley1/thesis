@@ -22,6 +22,7 @@ class TimeBlock(nn.Module):
         self.conv1 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
         self.conv2 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
         self.conv3 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
+        self.dropoutT = nn.Dropout(p=0.3)
 
     def forward(self, X):
         """
@@ -34,6 +35,7 @@ class TimeBlock(nn.Module):
         X = X.permute(0, 3, 1, 2)
         temp = self.conv1(X) + torch.sigmoid(self.conv2(X))
         out = F.relu(temp + self.conv3(X))
+        out = self.dropoutT(out)
         # Convert back from NCHW to NHWC
         out = out.permute(0, 2, 3, 1)
         return out
@@ -65,6 +67,7 @@ class STGCNBlock(nn.Module):
         self.temporal2 = TimeBlock(in_channels=spatial_channels,
                                    out_channels=out_channels)
         self.batch_norm = nn.BatchNorm2d(num_nodes)
+        self.dropoutST = nn.Dropout(p=0.3)
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -83,6 +86,7 @@ class STGCNBlock(nn.Module):
         lfs = torch.einsum("ij,jklm->kilm", [A_hat, t.permute(1, 0, 2, 3)])
         # t2 = F.relu(torch.einsum("ijkl,lp->ijkp", [lfs, self.Theta1]))
         t2 = F.relu(torch.matmul(lfs, self.Theta1))
+        t2 = self.dropoutST(t2)
         t3 = self.temporal2(t2)
 
         # print(f"X:\t{X.shape}")

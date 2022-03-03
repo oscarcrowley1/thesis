@@ -15,14 +15,14 @@ import shutil
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
 
 writer = SummaryWriter()
 
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
-num_timesteps_input = 30
-num_timesteps_output = 5
+num_timesteps_input = 26
+num_timesteps_output = 1
 
 plot_rate = 20
 save_rate = 100
@@ -89,11 +89,11 @@ def count_parameters(model):
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad: continue
         param = parameter.numel()
-        print_save(f, f"{name}:\t{parameter}")
+        #print_save(f, f"{name}:\t{parameter}")
         table.add_row([name, param])
         total_params+=param
     print(table)
-    print(f"Total Trainable Params: {total_params}")
+    print_save(f, f"Total Trainable Params: {total_params}")
     return total_params
 
 
@@ -128,9 +128,7 @@ if __name__ == '__main__':
 
     print_save(f, "Split Data")
     
-    total_input, total_target = generate_dataset(X,
-                                                       num_timesteps_input=num_timesteps_input,
-                                                       num_timesteps_output=num_timesteps_output)
+    total_input, total_target, num_timesteps_input = new_generate_dataset(X)
 
     print_save(f, "Shuffle Data")
 
@@ -139,7 +137,7 @@ if __name__ == '__main__':
     # split_line1 = int(total_input.shape[0] * 0.6)#0.6
     # split_line2 = int(total_input.shape[0] * 0.9)#0.8
 
-    split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    split_line1 = int(total_input.shape[0] * 0.5)#0.6
     split_line2 = int(total_input.shape[0] * 0.9)#0.8
 
     training_indx = rand_indx[:split_line1]
@@ -261,7 +259,7 @@ if __name__ == '__main__':
             mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
             rmse = np.sqrt(np.mean((out_unnormalized - target_unnormalized)**2))
 
-            mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
+            #mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
 
             validation_maes.append(mae)
 
@@ -271,7 +269,7 @@ if __name__ == '__main__':
             
         writer.add_scalar("Validation Loss", val_loss, epoch)
         writer.add_scalar("Validation MAE", mae, epoch)
-        writer.add_scalar("Validation MAE 15th min", rmse, epoch)
+        #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
         writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
 
         print("Training loss: {}".format(training_losses[-1]))
