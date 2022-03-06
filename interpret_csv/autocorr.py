@@ -16,9 +16,9 @@ from pytorch_forecasting.utils import autocorrelation
 #         with zipfile.ZipFile("SCATS.zip", 'r') as zip_ref:
 #             zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-A = np.load("adj_mat_alpha.npy")
+A = np.load("interpret_csv/adj_mat_alpha.npy")
 A = A.astype(np.float32)
-X = np.load("node_values_alpha.npy").transpose((1, 2, 0))
+X = np.load("interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
 X = X.astype(np.float32)
 X = torch.Tensor(X)
 output = autocorrelation(X, dim=2)

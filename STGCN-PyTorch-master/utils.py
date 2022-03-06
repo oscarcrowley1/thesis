@@ -2,6 +2,8 @@ import os
 import zipfile
 import numpy as np
 import torch
+import sklearn.metrics as metrics
+
 
 def print_save(file, string_to_use):
     print(string_to_use)
@@ -144,3 +146,13 @@ def new_generate_dataset(X):
     return torch.from_numpy(np.array(features)), \
            torch.from_numpy(np.array(target)), \
            num_features
+
+def get_results(y_true, y_pred): #produces metrics
+    explained_variance=metrics.explained_variance_score(y_true, y_pred)
+    mean_absolute_error=metrics.mean_absolute_error(y_true, y_pred) 
+    mse=metrics.mean_squared_error(y_true, y_pred)
+    print('explained_variance: ', round(explained_variance,4))    
+    print('MAE: ', round(mean_absolute_error,4))
+    print('MSE: ', round((mse),4))
+    print('RMSE: ', round(np.sqrt(mse),4))
+    return mse
