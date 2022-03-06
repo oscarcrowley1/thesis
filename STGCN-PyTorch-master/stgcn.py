@@ -122,8 +122,11 @@ class STGCN(nn.Module):
                                  spatial_channels=16, num_nodes=num_nodes)
         self.block2 = STGCNBlock(in_channels=64, out_channels=64,
                                  spatial_channels=16, num_nodes=num_nodes)
+        self.block3 = STGCNBlock(in_channels=64, out_channels=64,
+                                 spatial_channels=16, num_nodes=num_nodes)
         #self.last_temporal = TimeBlock(in_channels=64, out_channels=64)
-        self.fully = nn.Linear((num_timesteps_input - 2 * 4) * 64, # 2*X, X indicates how many temporals as each cuts down the num timesteps by 2
+        num_temporals = 6
+        self.fully = nn.Linear((num_timesteps_input - 2 * num_temporals) * 64, # 2*X, X indicates how many temporals as each cuts down the num timesteps by 2
                                num_timesteps_output)
 
     def forward(self, A_hat, X):
@@ -136,7 +139,8 @@ class STGCN(nn.Module):
         # print(X.shape)
         out1 = self.block1(X, A_hat)
         # print(out1.shape)
-        out3 = self.block2(out1, A_hat)
+        out2 = self.block2(out1, A_hat)
+        out3 = self.block2(out2, A_hat)
         # print(out3.shape)
         # print("AFTER")
         #out3 = self.last_temporal(out2)

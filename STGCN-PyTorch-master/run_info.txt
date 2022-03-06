@@ -20,6 +20,6 @@ Normalise Adjacency Matrix
 Initialise STGCN
 
 PARAMETERS:
-Total Trainable Params: 60389
-60389
+Total Trainable Params: 107639
+107639
 Begin Training
