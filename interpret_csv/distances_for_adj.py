@@ -18,7 +18,7 @@ import openrouteservice
 import json
 
 epsilon = 0.6
-delta_squared = 1 # oringinally 10
+delta_squared = 10 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
     if(array > epsilon):
@@ -107,20 +107,23 @@ plt.title("Post-Kernelisation Adjacency Matrix")
 plt.colorbar()
 plt.show()
 
-#commmented when not saving
-# np.save("interpret_csv/adj_mat_alpha", kernelised_adj)
+## TRYING TRASPOSE
+kernelised_adj = np.transpose(kernelised_adj)
 
-# f = open("interpret_csv/adj_info.txt", "w")
-# info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
-# f.write(info_string)
-# f.close()
+##commmented when not saving
+np.save("interpret_csv/adj_mat_alpha", kernelised_adj)
+
+f = open("interpret_csv/adj_info.txt", "w")
+info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
+f.write(info_string)
+f.close()
 
 
-# if os.path.isfile("interpret_csv/node_values_alpha.npy") and os.path.isfile("interpret_csv/nv_info.txt"):
-#     with zipfile.ZipFile("interpret_csv/SCATS.zip", "w") as zip_object:
-#         zip_object.write("interpret_csv/node_values_alpha.npy")
-#         zip_object.write("interpret_csv/adj_mat_alpha.npy")
-#         zip_object.write("interpret_csv/adj_info.txt")
-#         zip_object.write("interpret_csv/nv_info.txt")
-#     print("Zipped")
+if os.path.isfile("interpret_csv/node_values_alpha.npy") and os.path.isfile("interpret_csv/nv_info.txt"):
+    with zipfile.ZipFile("interpret_csv/SCATS.zip", "w") as zip_object:
+        zip_object.write("interpret_csv/node_values_alpha.npy")
+        zip_object.write("interpret_csv/adj_mat_alpha.npy")
+        zip_object.write("interpret_csv/adj_info.txt")
+        zip_object.write("interpret_csv/nv_info.txt")
+    print("Zipped")
 
