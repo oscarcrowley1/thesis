@@ -14,7 +14,7 @@ import sys
 import shutil
 
 
-from stgcn import STGCN
+from stgcn import STGCN, negLogLik_loss
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
 
 writer = SummaryWriter()
@@ -25,7 +25,7 @@ num_timesteps_input = 26
 num_timesteps_output = 1
 
 plot_rate = 20
-save_rate = 100
+save_rate = 20
 
 # num_timesteps_input = 15
 # num_timesteps_output = 15
@@ -73,7 +73,9 @@ def train_epoch(training_input, training_target, batch_size):
         y_batch = y_batch.to(device=args.device)
 
         out = net(A_wave, X_batch)
-        loss = loss_criterion(out, y_batch)
+        #print(f"OUTTYPE:\t{out.type}")
+        #loss = loss_criterion(out, y_batch)
+        loss = negLogLik_loss(out, y_batch)
         loss.backward()
         optimizer.step()
         epoch_training_losses.append(loss.detach().cpu().numpy())
@@ -95,7 +97,6 @@ def count_parameters(model):
     print(table)
     print_save(f, f"Total Trainable Params: {total_params}")
     return total_params
-
 
 
 
@@ -207,7 +208,8 @@ if __name__ == '__main__':
     print_save(f, str(count_parameters(net)))
 
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
-    loss_criterion = nn.MSELoss()
+    #loss_criterion = nn.MSELoss()
+    #loss_criterion = negLogLik_loss()
 
     training_losses = []
     validation_losses = []
@@ -242,39 +244,40 @@ if __name__ == '__main__':
             val_target = val_target.to(device=args.device)
 
             out = net(A_wave, val_input)
-            val_loss = loss_criterion(out, val_target).to(device="cpu")
+            #val_loss = loss_criterion(out, val_target).to(device="cpu")
+            val_loss = negLogLik_loss(out, val_target).to(device="cpu")
             #validation_losses.append(np.asscalar(val_loss.detach().numpy()))
             validation_losses.append((val_loss.detach().numpy()).item())
 
-            out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
-            target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
+            # out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
+            # target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
 
 
-            # if (epoch+1)%plot_rate==0:
-            #     plt.plot(out_unnormalized[:, 0, 2], label="Out")
-            #     plt.plot(target_unnormalized[:, 0, 2], label="Target")
-            #     plt.legend()
-            #     plt.show()
+            # # if (epoch+1)%plot_rate==0:
+            # #     plt.plot(out_unnormalized[:, 0, 2], label="Out")
+            # #     plt.plot(target_unnormalized[:, 0, 2], label="Target")
+            # #     plt.legend()
+            # #     plt.show()
 
-            mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
-            rmse = np.sqrt(np.mean((out_unnormalized - target_unnormalized)**2))
+            # mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
+            # rmse = np.sqrt(np.mean((out_unnormalized - target_unnormalized)**2))
 
             #mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
 
-            validation_maes.append(mae)
+            # validation_maes.append(mae)
 
             out = None
             val_input = val_input.to(device="cpu")
             val_target = val_target.to(device="cpu")
             
         writer.add_scalar("Validation Loss", val_loss, epoch)
-        writer.add_scalar("Validation MAE", mae, epoch)
-        #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
-        writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
+        # writer.add_scalar("Validation MAE", mae, epoch)
+        # #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
+        # writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
 
         print("Training loss: {}".format(training_losses[-1]))
         print("Validation loss: {}".format(validation_losses[-1]))
-        print("Validation MAE: {}".format(validation_maes[-1]))
+        #print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
         # if (epoch+1)%plot_rate==0:
         #     x_epoch_end = process_time()

@@ -98,6 +98,17 @@ class STGCNBlock(nn.Module):
         return self.batch_norm(t3)
         # return t3
 
+def negLogLik_loss(dist, target):
+    #target_np = target.detach().cpu().numpy()
+    #dist_np = dist.detach().cpu().numpy()
+    #print(f"OUTTYPE{dist.type}")
+    #print(f"OUTTYPE{target.type}")
+    mean = dist[..., 0][..., None]
+    std = torch.clamp(dist[..., 1][..., None], min=0.01)
+    
+    norm_dist = torch.distributions.Normal(mean, std)
+        
+    return -norm_dist.log_prob(target).sum()
 
 class STGCN(nn.Module):
     """
@@ -127,7 +138,7 @@ class STGCN(nn.Module):
         #self.last_temporal = TimeBlock(in_channels=64, out_channels=64)
         num_temporals = 4
         self.fully = nn.Linear((num_timesteps_input - 2 * num_temporals) * 64, # 2*X, X indicates how many temporals as each cuts down the num timesteps by 2
-                               num_timesteps_output)
+                               2)
 
     def forward(self, A_hat, X):
         """
@@ -145,6 +156,8 @@ class STGCN(nn.Module):
         # print("AFTER")
         #out3 = self.last_temporal(out2)
         out4 = self.fully(out3.reshape((out3.shape[0], out3.shape[1], -1)))
+        
+        
 
         # print(f"X SHAPE:\t{X.shape}")
         # print(f"OUT1 SHAPE:\t{out1.shape}")
@@ -153,5 +166,6 @@ class STGCN(nn.Module):
         # print(f"OUT4 SHAPE:\t{out4.shape}")
 
         return out4
+        #return out4
 
 
