@@ -101,7 +101,7 @@ def count_parameters(model):
 
 
 if __name__ == '__main__':
-    f = open("STGCN-PyTorch-master/run_info.txt", "w")
+    f = open("STGCN-PyTorch-master/runs/run_info.txt", "w")
 # info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
 
 # f.close()

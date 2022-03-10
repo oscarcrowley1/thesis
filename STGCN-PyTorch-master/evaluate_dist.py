@@ -74,7 +74,7 @@ if __name__ == '__main__':
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
         # ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
-        ex_net.load_state_dict(torch.load("saved_models/model_0303_1700_e299", map_location=torch.device('cpu')))#for use on my computer
+        ex_net.load_state_dict(torch.load("saved_models/model_0309_2356_e59", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
         ex_net.eval()
@@ -84,14 +84,20 @@ if __name__ == '__main__':
         # print(ex_test_target.shape)
         # print(out.shape)
         
-        ex_test_target_UN = ex_test_target*stds[0]+means[0]
-        out_UN = out*stds[0]+means[0]
-        
         stop_num = 0
         time_step = 0
         
+        ex_test_target_UN = ex_test_target*stds[0]+means[0]
+        out_UN_mean = out[:, stop_num, 0]*stds[0]+means[0]
+        out_UN_std = out[:, stop_num, 1]*stds[0]
+        
+        print(out.shape)
+        
         plt.plot(ex_test_target_UN[:, stop_num, 0], label="Target")
-        plt.plot(out_UN[:, stop_num, 0], label="Predictions")
+        plt.plot(out_UN_mean, label="Predictions")
+        plt.fill_between(range(len(out_UN_mean)), out_UN_mean - out_UN_std, out_UN_mean + out_UN_std, label="Predictions+", alpha=0.5)
+        plt.plot(out_UN_mean - out_UN_std, label="Predictions+")
+        plt.plot(out_UN_mean + out_UN_std, label="Predictions+")
         plt.xlabel("Time (3 min intervals)")
         plt.ylabel("Flow (cars/min")
         plt.title("Flow prediction for 15 minutes ahead")
