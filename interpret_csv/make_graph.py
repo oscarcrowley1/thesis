@@ -42,7 +42,8 @@ node_pos = {
 
 
 
-graph_drawing = nx.draw_networkx(graph, pos=node_pos, with_labels=True, arrows=True, edge_color=info, edge_cmap=plt.get_cmap("viridis"))
+#graph_drawing = nx.draw_networkx(graph, pos=node_pos, with_labels=True, arrows=True, edge_color=info, edge_cmap=plt.get_cmap("viridis"))
+graph_drawing = nx.draw_networkx(graph, arrows=True, arrowstyle='-|>')
 
 # heatmap = plt.pcolor(info,cmap=plt.get_cmap("viridis"))
 
