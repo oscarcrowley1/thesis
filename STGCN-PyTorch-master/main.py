@@ -61,7 +61,9 @@ def train_epoch(training_input, training_target, batch_size):
     """
     permutation = torch.randperm(training_input.shape[0])
 
-    epoch_training_losses = []
+    epoch_training_log_losses = []
+    epoch_training_classic_losses = []
+
     for i in range(0, training_input.shape[0], batch_size):
         print("Batch: {}".format(i), end='\r')
         net.train()
@@ -75,13 +77,17 @@ def train_epoch(training_input, training_target, batch_size):
         out = net(A_wave, X_batch)
         #print(f"OUTTYPE:\t{out.type}")
         #loss = loss_criterion(out, y_batch)
-        loss = negLogLik_loss(out, y_batch)
-        loss.backward()
+        log_loss = negLogLik_loss(out, y_batch)
+        # print(out[..., 0].shape)
+        # print(y_batch.shape)
+        classic_loss = loss_criterion(out[:, :, 0][..., None], y_batch)
+        log_loss.backward()
         optimizer.step()
-        epoch_training_losses.append(loss.detach().cpu().numpy())
+        epoch_training_log_losses.append(log_loss.detach().cpu().numpy())
+        epoch_training_classic_losses.append(classic_loss.detach().cpu().numpy())
     print("Batch: {}".format(i))
     print("Finished Loops")
-    return sum(epoch_training_losses)/len(epoch_training_losses)
+    return sum(epoch_training_log_losses)/len(epoch_training_log_losses), sum(epoch_training_classic_losses)/len(epoch_training_classic_losses)
 
 
 def count_parameters(model):
@@ -101,7 +107,7 @@ def count_parameters(model):
 
 
 if __name__ == '__main__':
-    f = open("STGCN-PyTorch-master/runs/run_info.txt", "w")
+    f = open("runs/run_info.txt", "w")
 # info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
 
 # f.close()
@@ -208,11 +214,14 @@ if __name__ == '__main__':
     print_save(f, str(count_parameters(net)))
 
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
-    #loss_criterion = nn.MSELoss()
+    loss_criterion = nn.MSELoss()
     #loss_criterion = negLogLik_loss()
 
-    training_losses = []
-    validation_losses = []
+    training_log_losses = []
+    validation_log_losses = []
+
+    training_classic_losses = []
+    validation_classic_losses = []
 
     validation_maes = []
     validation_mses = []
@@ -230,12 +239,15 @@ if __name__ == '__main__':
         epoch_start = process_time()
         print("Epoch Number: {}".format(epoch))
         print("Epoch Number: {}".format(epoch))
-        loss = train_epoch(training_input, training_target,
+        log_loss, classic_loss = train_epoch(training_input, training_target,
                            batch_size=batch_size)
         print("Returned Losses")
-        training_losses.append(loss)
+
+        training_log_losses.append(log_loss)
+        training_classic_losses.append(classic_loss)
         
-        writer.add_scalar("Training Loss", loss, epoch)
+        writer.add_scalar("Training Log Loss", log_loss, epoch)
+        writer.add_scalar("Training Classic Loss", classic_loss, epoch)
         
         # Run validation
         with torch.no_grad():
@@ -245,9 +257,11 @@ if __name__ == '__main__':
 
             out = net(A_wave, val_input)
             #val_loss = loss_criterion(out, val_target).to(device="cpu")
-            val_loss = negLogLik_loss(out, val_target).to(device="cpu")
+            val_log_loss = negLogLik_loss(out, val_target).to(device="cpu")
+            val_classic_loss = loss_criterion(out[:, :, 0][..., None], val_target).to(device="cpu")
             #validation_losses.append(np.asscalar(val_loss.detach().numpy()))
-            validation_losses.append((val_loss.detach().numpy()).item())
+            validation_log_losses.append((val_log_loss.detach().numpy()).item())
+            validation_classic_losses.append((val_classic_loss.detach().numpy()).item())
 
             # out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
             # target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
@@ -264,19 +278,20 @@ if __name__ == '__main__':
 
             #mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
 
-            # validation_maes.append(mae)
+            # validation_maes.append(mae) 3854, 281373
 
             out = None
             val_input = val_input.to(device="cpu")
             val_target = val_target.to(device="cpu")
             
-        writer.add_scalar("Validation Loss", val_loss, epoch)
+        writer.add_scalar("Validation Log Loss", val_log_loss, epoch)
+        writer.add_scalar("Validation Classic Loss", val_classic_loss, epoch)
         # writer.add_scalar("Validation MAE", mae, epoch)
         # #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
         # writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
 
-        print("Training loss: {}".format(training_losses[-1]))
-        print("Validation loss: {}".format(validation_losses[-1]))
+        print("Training loss: {}".format(training_log_losses[-1]))
+        print("Validation loss: {}".format(validation_log_losses[-1]))
         #print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
         # if (epoch+1)%plot_rate==0:
@@ -299,7 +314,7 @@ if __name__ == '__main__':
         if not os.path.exists(checkpoint_path):
             os.makedirs(checkpoint_path)
         with open("checkpoints/losses.pk", "wb") as fd:
-            pk.dump((training_losses, validation_losses, validation_maes), fd)
+            pk.dump((training_log_losses, validation_log_losses, validation_maes), fd)
 
         epoch_stop = process_time()
         epoch_length = epoch_stop-epoch_start

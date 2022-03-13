@@ -21,7 +21,7 @@ def load_scats_data():
     
     if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
             or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
-        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS.zip", 'r') as zip_ref:
+        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_0603.zip", 'r') as zip_ref:
             zip_ref.extractall("STGCN-PyTorch-master/data/")
     
     A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_alpha.npy")
