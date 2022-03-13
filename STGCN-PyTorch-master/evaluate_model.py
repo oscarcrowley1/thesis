@@ -3,6 +3,8 @@ import os
 import argparse
 import pickle as pk
 from re import S
+from tracemalloc import stop
+from webbrowser import get
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -14,7 +16,7 @@ import sys
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset, get_results
 
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
@@ -32,6 +34,7 @@ def count_parameters(model):
 
 if __name__ == '__main__':
     A, X, means, stds, info_string = load_scats_data()
+    #print(means.shape)
 
 
     num_timesteps_input = 25
@@ -60,7 +63,7 @@ if __name__ == '__main__':
     if False:#if torch.cuda.is_available():
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
-        # ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
+        # ex_net.load_state_dict(torch.load("saved_models/model_0302_1645_e999", map_location=torch.device('cpu')))#for use on my computer
         ex_net.load_state_dict(torch.load("saved_models/model_0303_1700_e299", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
@@ -71,16 +74,22 @@ if __name__ == '__main__':
         # print(ex_test_target.shape)
         # print(out.shape)
         
-        ex_test_target_UN = ex_test_target*stds[0]+means[0]
-        out_UN = out*stds[0]+means[0]
         
-        stop_num = 0
+        stop_num = 7 # 5high 1low
         time_step = 0
         
-        plt.plot(ex_test_target_UN[:, stop_num, 0], label="Target")
-        plt.plot(out_UN[:, stop_num, 0], label="Predictions")
-        plt.xlabel("Time (3 min intervals)")
-        plt.ylabel("Flow (cars/min")
+        
+        ex_test_target_UN = ex_test_target*stds[0]+means[00]
+        out_UN = out*stds[0]+means[0]
+        
+        plot_time = np.array(range(ex_test_target_UN[:, stop_num, 0].shape[0]))/20
+        print(plot_time)
+        
+        plt.plot(plot_time, ex_test_target_UN[:, stop_num, 0], label="Target")
+        plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
+        mse, mae, rmse, ev = get_results(ex_test_target_UN[:, :, 0], out_UN[:, :, 0])
+        plt.xlabel("Time (hours)")
+        plt.ylabel("Flow (cars/interval)")
         plt.title("Flow prediction for 15 minutes ahead")
         # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
         plt.legend()
