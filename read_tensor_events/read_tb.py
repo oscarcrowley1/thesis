@@ -1,6 +1,7 @@
 from cProfile import label
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def convert_tb_data(root_dir, sort_by=None):
@@ -76,11 +77,11 @@ if __name__ == "__main__":
     vl_array = validation_losses['value']
     
     
-    plt.plot(tl_array, label="Training Loss")
-    plt.plot(vl_array, label="Validation Loss")
+    plt.plot(np.array(range(len(tl_array))), tl_array, label="Training Loss")
+    plt.plot(np.array(range(len(tl_array))), vl_array, label="Validation Loss")
                 
 
     plt.xlabel("Iterations")
-    plt.ylabel("Loss")
+    plt.ylabel("Loss on Normalised Values")
     plt.legend()
     plt.show()

@@ -28,31 +28,34 @@ print(output.shape)
 one_station_channel = output[:, 0, :]
 print(one_station_channel.shape)
 for station_num in range(one_station_channel.shape[0]):
-    plt.plot(one_station_channel[station_num, :], label=f"Station {station_num}")
+    plt.plot(np.array(range(one_station_channel.shape[1]))/20, one_station_channel[station_num, :], label=f"Station {station_num}")
 
-plt.axvline(x=5)
-plt.axvline(x=480)
-plt.axvline(x=480*7)
+plt.axvline(x=5/20, alpha=0.5, ls='--')
+plt.axvline(x=480/20, alpha=0.5, ls='--')
+plt.axvline(x=480*7/20, alpha=0.5, ls='--')
+plt.axhline(y=0, alpha=0.1, c='k')
 
-plt.legend()
+plt.xlabel("Time Difference (hours)")
+plt.ylabel("Autocorrelation")
+plt.legend(loc='upper right')
 plt.show()
 
 #output2 = autocorrelation(X[:, :, 10000:], dim=2)
 #one_station_channel = output2[:, 0, :]
 #print(one_station_channel.shape)
-output = output.cpu().detach().numpy()
+# output = output.cpu().detach().numpy()
 
-for station_num in range(one_station_channel.shape[0]):
-    oned_data = one_station_channel[station_num, :]
-    indices = torch.Tensor(argrelextrema(oned_data, np.greater))
-    plt.plot(oned_data[indices], indices, label=f"Station {station_num}")
+# for station_num in range(one_station_channel.shape[0]):
+#     oned_data = one_station_channel[station_num, :]
+#     indices = torch.Tensor(argrelextrema(oned_data, np.greater))
+#     plt.plot(oned_data[indices], indices, label=f"Station {station_num}")
 
-plt.axvline(x=5)
-plt.axvline(x=480)
-plt.axvline(x=480*7)
+# plt.axvline(x=5)
+# plt.axvline(x=480)
+# plt.axvline(x=480*7)
 
-plt.legend()
-plt.show()
+# plt.legend()
+# plt.show()
 # print(one
 # 
 # _station_channel)
