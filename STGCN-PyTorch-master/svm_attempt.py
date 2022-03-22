@@ -216,6 +216,9 @@ if __name__ == '__main__':
     validation_mses = []
     
     mses = []
+    maes = []
+    rmses = []
+    evs = []
 
     #output_array = []
 
@@ -245,13 +248,61 @@ if __name__ == '__main__':
         
         model.fit(stationX_training_input, stationX_training_target)
         
+        print(f"PARAMS:\t{len(model.get_params())}")
+        print(f"COEFS:\t{len(model.coef_)}")
+        
         stationX_val_pred = model.predict(stationX_val_input)
         
+        stationX_val_pred = stationX_val_pred*stds[0]+means[0]
+        stationX_val_target = stationX_val_target*stds[0]+means[0]
         
-        mses.append(get_results(stationX_val_target, stationX_val_pred))
+        print(f"Station:\t{station_num}")
+        mse, mae, rmse, ev = get_results(stationX_val_target, stationX_val_pred)
         
-    mses = np.array(mses)
-    print(np.mean(mses))
+        mses.append(mse)
+        maes.append(mae)
+        rmses.append(rmse)
+        evs.append(ev)
+        
+    print("All stations finished")
+    
+    print(f"SHAPES:\t{mses}\t{maes}\t{rmses}\t{evs}")
+
+        
+    mse_avg = np.mean(np.array(mses))
+    mae_avg = np.mean(np.array(maes))
+    rmse_avg = np.mean(np.array(rmses))
+    ev_avg = np.mean(np.array(evs))
+    
+    print("Average across all stations")
+
+    print('MSE: ', round((mse_avg),4))
+    print('MAE: ', round(mae_avg,4))
+    print('RMSE: ', round(rmse_avg,4))
+    print('explained_variance: ', round(ev_avg,4))    
+
+    
+    # stationX_training_input = training_input[:, :, :, 0]
+    # stationX_training_target = training_target[:, :, 0]
+    
+    # stationX_val_input = val_input[:, :, :, 0]
+    # stationX_val_target = val_target[:, :, 0]
+    
+    # print(f"Training Input SHAPE:\t{training_input.shape}")
+    # print(f"Training Target SHAPE:\t{training_target.shape}")
+    
+    # model = LinearSVR()
+    
+    # model.fit(stationX_training_input, stationX_training_target)
+    
+    # stationX_val_pred = model.predict(stationX_val_input)
+    
+    # stationX_val_pred = stationX_val_pred*stds[0]+means[0]
+    # stationX_val_target = stationX_val_target*stds[0]+means[0]
+    
+    # mses.append(get_results(stationX_val_target, stationX_val_pred))
+    
+    
 
     # for epoch in range(epochs):
     #     epoch_start = process_time()
