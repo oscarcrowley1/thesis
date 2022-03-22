@@ -22,6 +22,7 @@ for thing in object:
 
 plt.xlabel("Iterations")
 plt.ylabel("Loss")
+plt.yscale("log")
 plt.legend()
 plt.show()
 

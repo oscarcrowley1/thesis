@@ -1,0 +1,5 @@
+Num Juncs:	9
+Num Channels:	2
+Num Days:	0.3333333333333333
+FILES USED:
+SM_20180419.txt
