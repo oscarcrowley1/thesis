@@ -138,7 +138,7 @@ def fill_array(array):
     return array
 
 #txt_directory = "interpret_csv/ALPHA_1week"
-txt_directory = "interpret_csv_bravo/BRAVO_1file"
+txt_directory = "interpret_csv_bravo/BRAVO_82"
 csv_directory = "interpret_csv_bravo/csv_files"
 
 concat_flow_array = None
@@ -255,18 +255,18 @@ for txt_filename in sorted(os.listdir(txt_directory)):
         check_is_empty = check_node_list and (num_lanes == 0)
 
         if(check_node_list and (not check_is_duplicate) and (not check_is_empty)):
-            print(f"PASSED:\t{row}")
+            # print(f"PASSED:\t{row}")
             used_count = used_count+1
             total_ds = 0
             total_vo = 0
             total_vk = 0
 
             # for lane in range(num_lanes):
-            print(lane_bools)
+            # print(lane_bools)
             
             lane_num = 0
             for lane in lane_bools:
-                print(lane)
+                # print(lane)
                 if lane:
                     total_ds = total_ds + int(ds_list[lane_num])
                     total_vo = total_vo + int(vo_list[lane_num])
@@ -328,8 +328,8 @@ for txt_filename in sorted(os.listdir(txt_directory)):
     else:
         concat_density_array = np.concatenate([concat_density_array, density_array], axis=0)
 
-    print(df.head(50))
-    print(df.tail(50))
+    # print(df.head(50))
+    # print(df.tail(50))
 
 output_array = np.stack([concat_flow_array, concat_density_array], axis=2)
 
@@ -344,18 +344,18 @@ output_array.astype(np.float64)
 
 
 
-# np.save("interpret_csv_bravo/node_values_alpha", output_array)
+np.save("interpret_csv_bravo/node_values_alpha", output_array)
 
-# f = open("interpret_csv_bravo/nv_info.txt", "w")
-# info_string = "Num Juncs:\t" + str(output_array.shape[1]) + "\nNum Channels:\t" + str(output_array.shape[2]) + "\nNum Days:\t" + str(output_array.shape[0]/1440)
-# f.write(info_string)
-# f.write(files_string)
-# f.close()
+f = open("interpret_csv_bravo/nv_info.txt", "w")
+info_string = "Num Juncs:\t" + str(output_array.shape[1]) + "\nNum Channels:\t" + str(output_array.shape[2]) + "\nNum Days:\t" + str(output_array.shape[0]/1440)
+f.write(info_string)
+f.write(files_string)
+f.close()
 
-# if os.path.isfile("interpret_csv_bravo/adj_mat_alpha.npy") and os.path.isfile("interpret_csv_bravo/adj_info.txt"):
-#     with zipfile.ZipFile("interpret_csv_bravo/SCATS.zip", "w") as zip_object:
-#         zip_object.write("interpret_csv_bravo/node_values_alpha.npy")
-#         zip_object.write("interpret_csv_bravo/adj_mat_alpha.npy")
-#         zip_object.write("interpret_csv_bravo/adj_info.txt")
-#         zip_object.write("interpret_csv_bravo/nv_info.txt")
-#     print("Zipped")
+if os.path.isfile("interpret_csv_bravo/adj_mat_alpha.npy") and os.path.isfile("interpret_csv_bravo/adj_info.txt"):
+    with zipfile.ZipFile("interpret_csv_bravo/SCATS.zip", "w") as zip_object:
+        zip_object.write("interpret_csv_bravo/node_values_alpha.npy")
+        zip_object.write("interpret_csv_bravo/adj_mat_alpha.npy")
+        zip_object.write("interpret_csv_bravo/adj_info.txt")
+        zip_object.write("interpret_csv_bravo/nv_info.txt")
+    print("Zipped")

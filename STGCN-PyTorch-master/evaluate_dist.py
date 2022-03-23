@@ -29,6 +29,8 @@ import sys
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
 
+dist_bool = True
+
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
@@ -48,7 +50,11 @@ if __name__ == '__main__':
 
 
     num_timesteps_input = 25
-    num_timesteps_output = 1
+    
+    if dist_bool:
+        num_timesteps_output = 2
+    else:
+        num_timesteps_output = 1
 
     #print_save(f, A)
 
@@ -74,7 +80,7 @@ if __name__ == '__main__':
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
         # ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299", map_location=torch.device('cpu')))#for use on my computer
-        ex_net.load_state_dict(torch.load("saved_models/model_0309_2356_e59", map_location=torch.device('cpu')))#for use on my computer
+        ex_net.load_state_dict(torch.load("saved_models/model_0323_0634_e999_out2", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
         ex_net.eval()
@@ -103,4 +109,7 @@ if __name__ == '__main__':
         plt.title("Flow prediction for 15 minutes ahead")
         # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
         plt.legend()
+        plt.show()
+        
+        plt.plot(out_UN_std)
         plt.show()

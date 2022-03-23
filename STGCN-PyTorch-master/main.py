@@ -22,7 +22,7 @@ writer = SummaryWriter()
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 26
-num_timesteps_output = 1
+num_output = 1
 
 plot_rate = 20
 save_rate = 20
@@ -32,6 +32,12 @@ save_rate = 20
 
 epochs = 1000
 batch_size = 32
+dist_bool = True
+
+if not dist_bool:
+    num_output = 1
+else:
+    num_output = 2
 
 parser = argparse.ArgumentParser(description='STGCN')
 parser.add_argument('--enable-cuda', action='store_true',
@@ -61,7 +67,9 @@ def train_epoch(training_input, training_target, batch_size):
     """
     permutation = torch.randperm(training_input.shape[0])
 
-    epoch_training_log_losses = []
+    if dist_bool:
+        epoch_training_log_losses = []
+        
     epoch_training_classic_losses = []
 
     for i in range(0, training_input.shape[0], batch_size):
@@ -77,18 +85,30 @@ def train_epoch(training_input, training_target, batch_size):
         out = net(A_wave, X_batch)
         #print(f"OUTTYPE:\t{out.type}")
         #loss = loss_criterion(out, y_batch)
-        log_loss = negLogLik_loss(out, y_batch)
         # print(out[..., 0].shape)
         # print(y_batch.shape)
-        classic_loss = loss_criterion(out[:, :, 0][..., None], y_batch)
-        log_loss.backward()
-        optimizer.step()
-        epoch_training_log_losses.append(log_loss.detach().cpu().numpy())
+        
+        
+        if dist_bool:
+            log_loss = negLogLik_loss(out, y_batch)
+            classic_loss = loss_criterion(out[:, :, 0][..., None], y_batch)
+            epoch_training_log_losses.append(log_loss.detach().cpu().numpy())
+            log_loss.backward()
+        else:
+            classic_loss = loss_criterion(out, y_batch)
+            classic_loss.backward()
+            
         epoch_training_classic_losses.append(classic_loss.detach().cpu().numpy())
+            
+        optimizer.step()
     print("Batch: {}".format(i))
     print("Finished Loops")
-    return sum(epoch_training_log_losses)/len(epoch_training_log_losses), sum(epoch_training_classic_losses)/len(epoch_training_classic_losses)
+    if dist_bool:
+        average_loss_s = sum(epoch_training_log_losses)/len(epoch_training_log_losses), sum(epoch_training_classic_losses)/len(epoch_training_classic_losses)
+    else:
+        average_loss_s = sum(epoch_training_classic_losses)/len(epoch_training_classic_losses)
 
+    return average_loss_s
 
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
@@ -117,7 +137,7 @@ if __name__ == '__main__':
     torch.manual_seed(rand_seed)
 
     print_save(f, f"Input Timesteps:\t{num_timesteps_input}")
-    print_save(f, f"Output Timesteps:\t{num_timesteps_output}")
+    print_save(f, f"Output Timesteps:\t{num_output}")
     print_save(f, f"Use GPU:\t{use_gpu}")
     print_save(f, f"Plot Rate:\t{plot_rate}")
     print_save(f, f"Epochs:\t{epochs}")
@@ -203,7 +223,7 @@ if __name__ == '__main__':
     net = STGCN(A_wave.shape[0],
                 training_input.shape[3],
                 num_timesteps_input,
-                num_timesteps_output).to(device=args.device)
+                num_output).to(device=args.device)
     
     # writer.add_graph(net, (A_wave, val_input))
     
@@ -217,8 +237,9 @@ if __name__ == '__main__':
     loss_criterion = nn.MSELoss()
     #loss_criterion = negLogLik_loss()
 
-    training_log_losses = []
-    validation_log_losses = []
+    if dist_bool:
+        training_log_losses = []
+        validation_log_losses = []
 
     training_classic_losses = []
     validation_classic_losses = []
@@ -239,14 +260,18 @@ if __name__ == '__main__':
         epoch_start = process_time()
         print("Epoch Number: {}".format(epoch))
         print("Epoch Number: {}".format(epoch))
-        log_loss, classic_loss = train_epoch(training_input, training_target,
-                           batch_size=batch_size)
+        if dist_bool:
+            log_loss, classic_loss = train_epoch(training_input, training_target,
+                            batch_size=batch_size)
+        else:
+            classic_loss = train_epoch(training_input, training_target,
+                            batch_size=batch_size)
         print("Returned Losses")
-
-        training_log_losses.append(log_loss)
-        training_classic_losses.append(classic_loss)
+        if dist_bool:
+            training_log_losses.append(log_loss)
+            writer.add_scalar("Training Log Loss", log_loss, epoch)
         
-        writer.add_scalar("Training Log Loss", log_loss, epoch)
+        training_classic_losses.append(classic_loss)
         writer.add_scalar("Training Classic Loss", classic_loss, epoch)
         
         # Run validation
@@ -257,10 +282,13 @@ if __name__ == '__main__':
 
             out = net(A_wave, val_input)
             #val_loss = loss_criterion(out, val_target).to(device="cpu")
-            val_log_loss = negLogLik_loss(out, val_target).to(device="cpu")
-            val_classic_loss = loss_criterion(out[:, :, 0][..., None], val_target).to(device="cpu")
+            if dist_bool:
+                val_log_loss = negLogLik_loss(out, val_target).to(device="cpu")
+                validation_log_losses.append((val_log_loss.detach().numpy()).item())
+                val_classic_loss = loss_criterion(out[:, :, 0][..., None], val_target).to(device="cpu")
+            else:
+                val_classic_loss = loss_criterion(out, val_target).to(device="cpu")
             #validation_losses.append(np.asscalar(val_loss.detach().numpy()))
-            validation_log_losses.append((val_log_loss.detach().numpy()).item())
             validation_classic_losses.append((val_classic_loss.detach().numpy()).item())
 
             # out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
@@ -283,15 +311,20 @@ if __name__ == '__main__':
             out = None
             val_input = val_input.to(device="cpu")
             val_target = val_target.to(device="cpu")
-            
-        writer.add_scalar("Validation Log Loss", val_log_loss, epoch)
+        
+        if dist_bool:
+            writer.add_scalar("Validation Log Loss", val_log_loss, epoch)
+        
         writer.add_scalar("Validation Classic Loss", val_classic_loss, epoch)
         # writer.add_scalar("Validation MAE", mae, epoch)
         # #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
         # writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
-
-        print("Training loss: {}".format(training_log_losses[-1]))
-        print("Validation loss: {}".format(validation_log_losses[-1]))
+        if dist_bool:
+            print("Training loss: {}".format(training_log_losses[-1]))
+            print("Validation loss: {}".format(validation_log_losses[-1]))
+        else:
+            print("Training loss: {}".format(training_classic_losses[-1]))
+            print("Validation loss: {}".format(validation_classic_losses[-1]))
         #print("Validation MAE: {}".format(validation_maes[-1]))
         #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
         # if (epoch+1)%plot_rate==0:
@@ -305,7 +338,7 @@ if __name__ == '__main__':
         #     print("PLOTTED")
         if (epoch+1) % save_rate == 0:
             now = datetime.now()
-            time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch)
+            time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch) + "_out" + str(num_output)
 
             torch.save(net.state_dict(), ("saved_models/model_" + time_string))
             shutil.copy("STGCN-PyTorch-master/run_info.txt", "run_info_" + time_string)
@@ -314,7 +347,10 @@ if __name__ == '__main__':
         if not os.path.exists(checkpoint_path):
             os.makedirs(checkpoint_path)
         with open("checkpoints/losses.pk", "wb") as fd:
-            pk.dump((training_log_losses, validation_log_losses, validation_maes), fd)
+            if dist_bool:
+                pk.dump((training_log_losses, validation_log_losses, validation_maes), fd)
+            else:
+                pk.dump((training_classic_losses, validation_classic_losses, validation_maes), fd)
 
         epoch_stop = process_time()
         epoch_length = epoch_stop-epoch_start
@@ -324,7 +360,10 @@ if __name__ == '__main__':
     writer.flush()
     writer.close()
     
-    torch.save(net.state_dict(), "saved_models/my_model")
+    now = datetime.now()
+    time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch) + "_out" + str(num_output)
+
+    torch.save(net.state_dict(), ("saved_models/model_" + time_string))
 
     training_stop = process_time()
     print(f"Training Time:\t{training_stop-training_start}")

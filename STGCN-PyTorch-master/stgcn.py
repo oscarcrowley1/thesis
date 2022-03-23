@@ -119,7 +119,7 @@ class STGCN(nn.Module):
     """
 
     def __init__(self, num_nodes, num_features, num_timesteps_input,
-                 num_timesteps_output):
+                 num_output):
         """
         :param num_nodes: Number of nodes in the graph.
         :param num_features: Number of features at each node in each time step.
@@ -138,7 +138,7 @@ class STGCN(nn.Module):
         #self.last_temporal = TimeBlock(in_channels=64, out_channels=64)
         num_temporals = 4
         self.fully = nn.Linear((num_timesteps_input - 2 * num_temporals) * 64, # 2*X, X indicates how many temporals as each cuts down the num timesteps by 2
-                               2)
+                               num_output)
 
     def forward(self, A_hat, X):
         """
