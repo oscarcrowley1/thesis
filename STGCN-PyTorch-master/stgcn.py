@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+dropout_rate = 0.3
 
 class TimeBlock(nn.Module):
     """
@@ -22,7 +23,7 @@ class TimeBlock(nn.Module):
         self.conv1 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
         self.conv2 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
         self.conv3 = nn.Conv2d(in_channels, out_channels, (1, kernel_size))
-        self.dropoutT = nn.Dropout(p=0.3)
+        self.dropoutT = nn.Dropout(p=dropout_rate)
 
     def forward(self, X):
         """
@@ -67,7 +68,7 @@ class STGCNBlock(nn.Module):
         self.temporal2 = TimeBlock(in_channels=spatial_channels,
                                    out_channels=out_channels)
         self.batch_norm = nn.BatchNorm2d(num_nodes)
-        self.dropoutST = nn.Dropout(p=0.3)
+        self.dropoutST = nn.Dropout(p=dropout_rate)
         self.reset_parameters()
 
     def reset_parameters(self):

@@ -155,24 +155,25 @@ if __name__ == '__main__':
 
     print_save(f, "Split Data")
     
-    total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_features = new_generate_dataset(X)
 
     print_save(f, "Shuffle Data")
 
-    test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
+    # test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
 
-    before_indx = np.arange((480*36))
-    after_indx = np.arange((480*45), total_input.shape[0])
+    # before_indx = np.arange((480*36))
+    # after_indx = np.arange((480*45), total_input.shape[0])
 
-    print(before_indx)
-    print(after_indx)
+    # print(before_indx)
+    # print(after_indx)
 
-    other_indx = np.concatenate((before_indx, after_indx))
-    print(other_indx)
-    np.random.shuffle(other_indx)
-    split_line = int(other_indx.shape[0] * (5/9))
-    training_indx = other_indx[:split_line]
-    val_indx = other_indx[split_line:]
+    # other_indx = np.concatenate((before_indx, after_indx))
+    # print(other_indx)
+    # np.random.shuffle(other_indx)
+    # split_line = int(other_indx.shape[0] * (5/9))
+    # training_indx = other_indx[:split_line]
+    # val_indx = other_indx[split_line:]
 
     # test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
 
@@ -203,14 +204,14 @@ if __name__ == '__main__':
     # test_input = total_input[split_line2:, :, :, :]
     # test_target = total_target[split_line2:, :, :]
 
-    training_input = total_input[training_indx, :, :, :]
-    training_target = total_target[training_indx, :, :]
+    # training_input = total_input[training_indx, :, :, :]
+    # training_target = total_target[training_indx, :, :]
 
-    val_input = total_input[val_indx, :, :, :]
-    val_target = total_target[val_indx, :, :]
+    # val_input = total_input[val_indx, :, :, :]
+    # val_target = total_target[val_indx, :, :]
 
-    test_input = total_input[test_indx, :, :, :]
-    test_target = total_target[test_indx, :, :]
+    # test_input = total_input[test_indx, :, :, :]
+    # test_target = total_target[test_indx, :, :]
 
     # split_line1 = int(X.shape[2] * 0.6)#0.6
     # split_line2 = int(X.shape[2] * 0.9)#0.8

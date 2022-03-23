@@ -9,7 +9,7 @@ def print_save(file, string_to_use):
     print(string_to_use)
     file.write(string_to_use + "\n")
 
-def load_scats_data():
+def load_scats_data(dataset):
     # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat.npy")
     #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values.npy")):
     #     with zipfile.ZipFile("STGCN-PyTorch-master/data/METR-LA.zip", 'r') as zip_ref:
@@ -18,16 +18,30 @@ def load_scats_data():
     # A = np.load("STGCN-PyTorch-master/data/adj_mat.npy")
     # X = np.load("STGCN-PyTorch-master/data/node_values.npy").transpose((1, 2, 0))
     # X = X.astype(np.float32)
+    if dataset == "alpha":
+        if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
+                or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
+            with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_alpha.zip", 'r') as zip_ref:
+                zip_ref.extractall("STGCN-PyTorch-master/data/")
+        
+        A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_alpha.npy")
+        A = A.astype(np.float32)
+        X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
+        X = X.astype(np.float32)
+
+    elif dataset == "bravo":
+        if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
+                or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
+            with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravo.zip", 'r') as zip_ref:
+                zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-    if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
-            or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
-        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_0603.zip", 'r') as zip_ref:
-            zip_ref.extractall("STGCN-PyTorch-master/data/")
-    
-    A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_alpha.npy")
-    A = A.astype(np.float32)
-    X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
-    X = X.astype(np.float32)
+        A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_bravo.npy")
+        A = A.astype(np.float32)
+        X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_bravo.npy").transpose((1, 2, 0))
+        X = X.astype(np.float32)
+
+    else:
+        print("ERROR NO DATASET")
 
     # info_string += X.shape)
     # X = X[:, 0, :] # Flow only for predictions
@@ -146,9 +160,38 @@ def new_generate_dataset(X):
     total_input = torch.from_numpy(np.array(features))
     total_target = torch.from_numpy(np.array(target))
 
-    return torch.from_numpy(np.array(features)), \
-           torch.from_numpy(np.array(target)), \
-           num_features
+    test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
+
+    before_indx = np.arange((480*36))
+    after_indx = np.arange((480*45), total_input.shape[0])
+
+    print(before_indx)
+    print(after_indx)
+
+    other_indx = np.concatenate((before_indx, after_indx))
+    print(other_indx)
+    np.random.shuffle(other_indx)
+    split_line = int(other_indx.shape[0] * (5/9))
+    training_indx = other_indx[:split_line]
+    val_indx = other_indx[split_line:]
+
+    training_input = total_input[training_indx, :, :, :]
+    training_target = total_target[training_indx, :, :]
+
+    val_input = total_input[val_indx, :, :, :]
+    val_target = total_target[val_indx, :, :]
+
+    test_input = total_input[test_indx, :, :, :]
+    test_target = total_target[test_indx, :, :]
+
+    # return torch.from_numpy(np.array(features)), \
+    #        torch.from_numpy(np.array(target)), \
+    #        num_features
+
+    return training_input, training_target, \
+            val_input, val_target, \
+            test_input, test_target, \
+            num_features
 
 def get_results(y_true, y_pred): #produces metrics
     explained_variance=metrics.explained_variance_score(y_true, y_pred)

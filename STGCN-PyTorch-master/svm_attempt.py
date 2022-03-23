@@ -128,39 +128,39 @@ if __name__ == '__main__':
 
     # print_save(f, "Split Data")
     
-    total_input, total_target, num_timesteps_input = new_generate_dataset(X)
-
+    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_features = new_generate_dataset(X)
     # print_save(f, "Shuffle Data")
 
-    rand_indx = torch.randperm(total_input.shape[0])
+    # rand_indx = torch.randperm(total_input.shape[0])
 
-    # split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    # # split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    # # split_line2 = int(total_input.shape[0] * 0.9)#0.8
+
+    # split_line1 = int(total_input.shape[0] * 0.5)#0.6
     # split_line2 = int(total_input.shape[0] * 0.9)#0.8
 
-    split_line1 = int(total_input.shape[0] * 0.5)#0.6
-    split_line2 = int(total_input.shape[0] * 0.9)#0.8
+    # training_indx = rand_indx[:split_line1]
+    # val_indx = rand_indx[split_line1:split_line2]
+    # test_indx = rand_indx[split_line2:]
 
-    training_indx = rand_indx[:split_line1]
-    val_indx = rand_indx[split_line1:split_line2]
-    test_indx = rand_indx[split_line2:]
+    # # training_input = total_input[:split_line1, :, :, :]
+    # # training_target = total_target[:split_line1, :, :]
 
-    # training_input = total_input[:split_line1, :, :, :]
-    # training_target = total_target[:split_line1, :, :]
+    # # val_input = total_input[split_line1:split_line2, :, :, :]
+    # # val_target = total_target[split_line1:split_line2, :, :]
 
-    # val_input = total_input[split_line1:split_line2, :, :, :]
-    # val_target = total_target[split_line1:split_line2, :, :]
+    # # test_input = total_input[split_line2:, :, :, :]
+    # # test_target = total_target[split_line2:, :, :]
 
-    # test_input = total_input[split_line2:, :, :, :]
-    # test_target = total_target[split_line2:, :, :]
+    # training_input = total_input[training_indx, :, :, :]
+    # training_target = total_target[training_indx, :, :]
 
-    training_input = total_input[training_indx, :, :, :]
-    training_target = total_target[training_indx, :, :]
+    # val_input = total_input[val_indx, :, :, :]
+    # val_target = total_target[val_indx, :, :]
 
-    val_input = total_input[val_indx, :, :, :]
-    val_target = total_target[val_indx, :, :]
-
-    test_input = total_input[test_indx, :, :, :]
-    test_target = total_target[test_indx, :, :]
+    # test_input = total_input[test_indx, :, :, :]
+    # test_target = total_target[test_indx, :, :]
 
     # split_line1 = int(X.shape[2] * 0.6)#0.6
     # split_line2 = int(X.shape[2] * 0.9)#0.8
