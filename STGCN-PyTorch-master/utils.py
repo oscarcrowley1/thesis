@@ -143,6 +143,9 @@ def new_generate_dataset(X):
         target.append(np.expand_dims(target_to_append, axis=1))
         #target.append(X[:, 0, index_array[-1]])
 
+    total_input = torch.from_numpy(np.array(features))
+    total_target = torch.from_numpy(np.array(target))
+
     return torch.from_numpy(np.array(features)), \
            torch.from_numpy(np.array(target)), \
            num_features

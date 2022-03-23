@@ -110,36 +110,57 @@ if __name__ == '__main__':
 
 
     
-    total_input, total_target = generate_dataset(X,
-                                                       num_timesteps_input=num_timesteps_input,
-                                                       num_timesteps_output=num_timesteps_output)
+    # total_input, total_target = generate_dataset(X,
+    #                                                    num_timesteps_input=num_timesteps_input,
+    #                                                    num_timesteps_output=num_timesteps_output)
 
-    new_total_input, new_total_target = new_generate_dataset(X,
-                                                       num_timesteps_input=num_timesteps_input,
-                                                       num_timesteps_output=num_timesteps_output)
+    new_total_input, new_total_target, new_num_timesteps = new_generate_dataset(X)
 
 
-    print(f"Input comparison:\tOG:{total_input.shape}\tNEW:{new_total_input.shape}")
-    print(f"Target comparison:\tOG:{total_target.shape}\tNEW:{new_total_target.shape}")
+    print(f"Input comparison:\tNEW:{new_total_input.shape}")
+    print(f"Target comparison:\tNEW:{new_total_target.shape}")
 
-    split_line1 = int(total_input.shape[0] * 0.6)#0.6
-    split_line2 = int(total_input.shape[0] * 0.9)#0.8
+    test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
 
-    training_input = total_input[:split_line1, :, :, :]
-    training_target = total_input[:split_line1, :, :]
+    before_indx = np.arange((480*36))
+    after_indx = np.arange((480*45), new_total_input.shape[0])
 
-    val_input = total_input[split_line1:split_line2, :, :, :]
-    val_target = total_input[split_line1:split_line2, :, :]
+    print(before_indx)
+    print(after_indx)
 
-    test_input = total_input[split_line2:, :, :, :]
-    test_target = total_input[split_line2:, :, :]
+    other_indx = np.concatenate((before_indx, after_indx))
+    print(other_indx)
+    np.random.shuffle(other_indx)
+    split_line = int(other_indx.shape[0] * (5/9))
+    training_indx = other_indx[:split_line]
+    val_indx = other_indx[split_line:]
+
+    # split_line1 = int(total_input.shape[0] * 0.6)#0.6
+    # split_line2 = int(total_input.shape[0] * 0.9)#0.8
+
+    # plt.scatter(training_indx, range(training_indx.shape[0]))
+    # plt.scatter(val_indx, range(val_indx.shape[0]))
+    # plt.scatter(test_indx, range(test_indx.shape[0]))
+    plt.scatter(training_indx, training_indx)
+    plt.scatter(val_indx, val_indx)
+    plt.scatter(test_indx, test_indx)
+    plt.show()
+
+    training_input = new_total_input[training_indx, :, :, :]
+    training_target = new_total_target[training_indx, :, :]
+
+    val_input = new_total_input[val_indx, :, :, :]
+    val_target = new_total_target[val_indx, :, :]
+
+    test_input = new_total_input[test_indx, :, :, :]
+    test_target = new_total_target[test_indx, :, :]
 
     print("END")
 
-    # train_original_data = X[:, :, :split_line1]
-    # val_original_data = X[:, :, split_line1:split_line2]
-    # # test_original_data = X[:, :, split_line2:split_line3]
-    # test_original_data = X[:, :, split_line2:]
+    # train_original_data = X[:, :, training_indx]
+    # val_original_data = X[:, :, val_indx]
+    # # test_original_data = X[:, :, test_indxsplit_line3]
+    # test_original_data = X[:, :, test_indx]
 
     # training_input, training_target = generate_dataset(train_original_data,
     #                                                    num_timesteps_input=num_timesteps_input,

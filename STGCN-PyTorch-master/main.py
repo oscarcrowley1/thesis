@@ -32,7 +32,7 @@ save_rate = 20
 
 epochs = 1000
 batch_size = 32
-dist_bool = True
+dist_bool = False
 
 if not dist_bool:
     num_output = 1
@@ -159,17 +159,40 @@ if __name__ == '__main__':
 
     print_save(f, "Shuffle Data")
 
-    rand_indx = torch.randperm(total_input.shape[0])
+    test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
+
+    before_indx = np.arange((480*36))
+    after_indx = np.arange((480*45), total_input.shape[0])
+
+    print(before_indx)
+    print(after_indx)
+
+    other_indx = np.concatenate((before_indx, after_indx))
+    print(other_indx)
+    np.random.shuffle(other_indx)
+    split_line = int(other_indx.shape[0] * (5/9))
+    training_indx = other_indx[:split_line]
+    val_indx = other_indx[split_line:]
+
+    # test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
+
+    # other_indx = np.concatenate(np.arange((480*36)), np.arange((480*45), total_input.shape[0]))
+    # np.random.shuffle(other_indx)
+    # split_line = int(other_indx.shape * (5/9))
+    # training_indx = other_indx[:split_line]
+    # val_indx = other_indx[split_line:]
+
+    # rand_indx = torch.randperm(total_input.shape[0])
 
     # split_line1 = int(total_input.shape[0] * 0.6)#0.6
     # split_line2 = int(total_input.shape[0] * 0.9)#0.8
 
-    split_line1 = int(total_input.shape[0] * 0.5)#0.6
-    split_line2 = int(total_input.shape[0] * 0.9)#0.8
+    # split_line1 = int(total_input.shape[0] * 0.5)#0.6
+    # split_line2 = int(total_input.shape[0] * 0.9)#0.8
 
-    training_indx = rand_indx[:split_line1]
-    val_indx = rand_indx[split_line1:split_line2]
-    test_indx = rand_indx[split_line2:]
+    # training_indx = rand_indx[:split_line1]
+    # val_indx = rand_indx[split_line1:split_line2]
+    # test_indx = rand_indx[split_line2:]
 
     # training_input = total_input[:split_line1, :, :, :]
     # training_target = total_target[:split_line1, :, :]
