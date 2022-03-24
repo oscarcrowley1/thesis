@@ -33,7 +33,10 @@ def count_parameters(model):
     return total_params
 
 if __name__ == '__main__':
-    A, X, means, stds, info_string = load_scats_data("alpha")
+
+    experiment = "alpha"
+
+    A, X, means, stds, info_string = load_scats_data(experiment)
     #print(means.shape)
 
 
@@ -94,6 +97,7 @@ if __name__ == '__main__':
             
             plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
             plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
+            print(f"\nStop number:\t{stop_num}")
             mse, mae, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
             
             mses.append(mse)
@@ -127,7 +131,7 @@ if __name__ == '__main__':
         avg_std = np.std(np.array(avgs))
         stddev_std = np.std(np.array(stddevs))
         
-        print("Average across all stations")
+        print("\nAverage across all stations")
 
         print('MSE: ', round((mse_avg),4))
         print('MAE: ', round(mae_avg,4))
@@ -137,7 +141,7 @@ if __name__ == '__main__':
         print('STDDEV of Vehicles: ', round(stddev_avg,4))    
         
 
-        print("Standard Deviation across all stations")
+        print("\nStandard Deviation across all stations")
 
         print('MSE: ', round((mse_std),4))
         print('MAE: ', round(mae_std,4))
@@ -145,6 +149,8 @@ if __name__ == '__main__':
         print('explained_variance: ', round(ev_std,4))  
         print('Average Number of Vehicles: ', round(avg_std,4))  
         print('STDDEV of Vehicles: ', round(stddev_std,4))    
+
+        print("\n results together")
     
         mse, mae, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
 

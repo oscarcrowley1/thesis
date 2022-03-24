@@ -33,7 +33,7 @@ save_rate = 20
 epochs = 1000
 batch_size = 32
 dist_bool = False
-data_zip = "alpha"
+data_zip = "bravo"
 
 if not dist_bool:
     num_output = 1
