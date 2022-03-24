@@ -116,7 +116,7 @@ if __name__ == '__main__':
 #     print_save(f, f"Epochs:\t{epochs}")
 #     print_save(f, f"Batch Size:\t{batch_size}")
 
-    A, X, means, stds, info_string = load_scats_data("bravo")
+    A, X, means, stds, info_string = load_scats_data("alpha")
 
     # print_save(f, info_string)
 
@@ -219,6 +219,8 @@ if __name__ == '__main__':
     maes = []
     rmses = []
     evs = []
+    avgs = []
+    stddevs = []
 
     #output_array = []
 
@@ -238,8 +240,8 @@ if __name__ == '__main__':
         stationX_training_input = training_input[:, station_num, :, 0]
         stationX_training_target = training_target[:, station_num, 0]
         
-        stationX_val_input = val_input[:, station_num, :, 0]
-        stationX_val_target = val_target[:, station_num, 0]
+        stationX_test_input = test_input[:, station_num, :, 0]
+        stationX_test_target = test_target[:, station_num, 0]
         
         print(f"Training Input SHAPE:\t{training_input.shape}")
         print(f"Training Target SHAPE:\t{training_target.shape}")
@@ -251,18 +253,23 @@ if __name__ == '__main__':
         print(f"PARAMS:\t{len(model.get_params())}")
         print(f"COEFS:\t{len(model.coef_)}")
         
-        stationX_val_pred = model.predict(stationX_val_input)
+        stationX_test_pred = model.predict(stationX_test_input)
         
-        stationX_val_pred = stationX_val_pred*stds[0]+means[0]
-        stationX_val_target = stationX_val_target*stds[0]+means[0]
+        stationX_test_pred = stationX_test_pred*stds[0]+means[0]
+        stationX_test_target = stationX_test_target*stds[0]+means[0]
         
         print(f"Station:\t{station_num}")
-        mse, mae, rmse, ev = get_results(stationX_val_target, stationX_val_pred)
+        mse, mae, rmse, ev = get_results(stationX_test_target, stationX_test_pred)
         
         mses.append(mse)
         maes.append(mae)
         rmses.append(rmse)
         evs.append(ev)
+        
+        print('Average Number of Vehicles: ', np.mean(np.array(stationX_test_target)))
+        print('STDDEV of Vehicles: ', np.std(np.array(stationX_test_target)))
+        avgs.append(np.mean(np.array(stationX_test_target)))
+        stddevs.append(np.std(np.array(stationX_test_target)))
         
     print("All stations finished")
     
@@ -273,13 +280,34 @@ if __name__ == '__main__':
     mae_avg = np.mean(np.array(maes))
     rmse_avg = np.mean(np.array(rmses))
     ev_avg = np.mean(np.array(evs))
+    avg_avg = np.mean(np.array(avgs))
+    stddev_avg = np.mean(np.array(stddevs))
+    
+    mse_std = np.std(np.array(mses))
+    mae_std = np.std(np.array(maes))
+    rmse_std = np.std(np.array(rmses))
+    ev_std = np.std(np.array(evs))
+    avg_std = np.std(np.array(avgs))
+    stddev_std = np.std(np.array(stddevs))
     
     print("Average across all stations")
 
     print('MSE: ', round((mse_avg),4))
     print('MAE: ', round(mae_avg,4))
     print('RMSE: ', round(rmse_avg,4))
-    print('explained_variance: ', round(ev_avg,4))    
+    print('explained_variance: ', round(ev_avg,4))  
+    print('Average Number of Vehicles: ', round(avg_avg,4))  
+    print('STDDEV of Vehicles: ', round(stddev_avg,4))    
+    
+
+    print("Standard Deviation across all stations")
+
+    print('MSE: ', round((mse_std),4))
+    print('MAE: ', round(mae_std,4))
+    print('RMSE: ', round(rmse_std,4))
+    print('explained_variance: ', round(ev_std,4))  
+    print('Average Number of Vehicles: ', round(avg_std,4))  
+    print('STDDEV of Vehicles: ', round(stddev_std,4))     
 
     
     # stationX_training_input = training_input[:, :, :, 0]

@@ -1,3 +1,4 @@
+from cmath import inf
 import numpy as np
 import pandas as pd
 #import folium
@@ -35,18 +36,23 @@ client = openrouteservice.Client(key='5b3ce3597851110001cf62484b7969c841cd4ddab8
 
 np.set_printoptions(suppress=True) # stops scientific notation
 
-coord_array = np.array([[53.347369, -6.255022], #48i
-                        [53.347474, -6.254784], #48ii
-                        [53.346772, -6.259125], #48iii
-                        [53.347122, -6.258851], #145i
-                        [53.347054, -6.258609], #145ii
-                        [53.344705, -6.252184], #145iii
-                        [53.344835, -6.252252], #152i
-                        [53.349220, -6.251510], #152ii
-                        [53.349175, -6.251907]  #152iii
-                        [53.349175, -6.251907]  #354i
+coord_array = np.array([[53.344098, -6.267605], #48i
+                        [53.344125, -6.266844], #48ii
+                        [53.344245, -6.267262], #48iii
+                        [53.343453, -6.246057], #145i
+                        [53.343385, -6.246416], #145ii
+                        [53.343766, -6.246543], #145iii
+                        [53.346145, -6.280301], #152i
+                        [53.346662, -6.280573], #152ii
+                        [53.346777, -6.280269],  #152iii
+                        [53.349220, -6.251510], #354i
                         [53.349175, -6.251907]  #354ii
                         ])
+
+junction0 = [0,1,2]
+junction1 = [3,4,5]
+junction2 = [6,7,8]
+junction3 = [9,10]
 
 #coord_array = np.ndarray(coord_array)
 num_points = coord_array.shape[0]
@@ -54,7 +60,16 @@ adj_array = np.empty([num_points, num_points])
 
 for from_point in range(num_points):
     for to_point in range(num_points):
-        if (to_point != from_point):
+        if (to_point == from_point ):
+            distance = 0
+            
+        # elif (to_point in junction0 and from_point in junction0) or \
+        #         (to_point in junction1 and from_point in junction1) or \
+        #             (to_point in junction2 and from_point in junction2) or \
+        #                 (to_point in junction3 and from_point in junction3):
+        #     distance = inf
+            
+        else:
             coords = ((coord_array[from_point][1], coord_array[from_point][0]), (coord_array[to_point][1], coord_array[to_point][0]))
             
             #print(coords)
@@ -78,11 +93,6 @@ for from_point in range(num_points):
             
             distance = round(res['routes'][0]['summary']['distance']/1000, 4)
             
-            
-            
-        else:
-            distance = 0
-            
         print(f"DISTANCE from point {from_point} to {to_point} is:\t{distance}")
         print("\n")
         adj_array[from_point][to_point] = distance
@@ -98,6 +108,9 @@ plt.title("Pre-Kernelisation Adjacency Matrix")
 plt.colorbar()
 plt.show()
 
+np.save("interpret_csv_bravo/distance_mat_bravo", adj_array)
+
+
 kernelised_adj = v_gauss_kernel(adj_array, adj_array)
 
 print(kernelised_adj)
@@ -109,8 +122,8 @@ plt.title("Post-Kernelisation Adjacency Matrix")
 plt.colorbar()
 plt.show()
 
-## TRYING TRASPOSE
-kernelised_adj = np.transpose(kernelised_adj)
+# ## TRYING TRASPOSE
+# kernelised_adj = np.transpose(kernelised_adj)
 
 ##commmented when not saving
 np.save("interpret_csv_bravo/adj_mat_bravo", kernelised_adj)

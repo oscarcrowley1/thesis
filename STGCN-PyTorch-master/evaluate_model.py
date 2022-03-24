@@ -33,7 +33,7 @@ def count_parameters(model):
     return total_params
 
 if __name__ == '__main__':
-    A, X, means, stds, info_string = load_scats_data()
+    A, X, means, stds, info_string = load_scats_data("alpha")
     #print(means.shape)
 
 
@@ -47,16 +47,17 @@ if __name__ == '__main__':
     # split_line3 = int(X.shape[2] * 0.2)
 
     
-    total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = new_generate_dataset(X)
 
-    ex_test_input = total_input[ex_split_line1:, :, :]
-    ex_test_target = total_target[ex_split_line1:, :, :]
+    # test_input = total_input[ex_split_line1:, :, :]
+    # test_target = total_target[ex_split_line1:, :, :]
 
     A_wave = get_normalized_adj(A)
     A_wave = torch.from_numpy(A_wave)#removed to device
 
     ex_net = STGCN(A_wave.shape[0],
-                ex_test_input.shape[3],
+                test_input.shape[3],
                 num_timesteps_input,
                 num_timesteps_output)#.to(device=args.device)
     
@@ -69,29 +70,82 @@ if __name__ == '__main__':
     with torch.no_grad():
         ex_net.eval()
     
-        out = ex_net(A_wave, ex_test_input)
+        out = ex_net(A_wave, test_input)
         # print(ex_test_input.shape)
         # print(ex_test_target.shape)
         # print(out.shape)
+        mses = []
+        maes = []
+        rmses = []
+        evs = []
+        avgs = []
+        stddevs = []
+        
+        for stop_num in range(out.shape[1]):
+        #stop_num = 7 # 5high 1low
+            time_step = 0
         
         
-        stop_num = 7 # 5high 1low
-        time_step = 0
+            test_target_UN = test_target*stds[0]+means[0]
+            out_UN = out*stds[0]+means[0]
+            
+            plot_time = np.array(range(test_target_UN[:, stop_num, 0].shape[0]))/20
+            print(plot_time)
+            
+            plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
+            plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
+            mse, mae, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
+            
+            mses.append(mse)
+            maes.append(mae)
+            rmses.append(rmse)
+            evs.append(ev)
+            
+            print('Average Number of Vehicles: ', np.mean(np.array(test_target_UN[:, stop_num, 0])))
+            print('STDDEV of Vehicles: ', np.std(np.array(test_target_UN[:, stop_num, 0])))
+            avgs.append(np.mean(np.array(test_target_UN[:, stop_num, 0])))
+            stddevs.append(np.std(np.array(test_target_UN[:, stop_num, 0])))
         
+            plt.xlabel("Time (hours)")
+            plt.ylabel("Flow (cars/interval)")
+            plt.title("Flow prediction for 15 minutes ahead")
+            # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
+            plt.legend()
+            plt.show()
+            
+        mse_avg = np.mean(np.array(mses))
+        mae_avg = np.mean(np.array(maes))
+        rmse_avg = np.mean(np.array(rmses))
+        ev_avg = np.mean(np.array(evs))
+        avg_avg = np.mean(np.array(avgs))
+        stddev_avg = np.mean(np.array(stddevs))
         
-        ex_test_target_UN = ex_test_target*stds[0]+means[00]
-        out_UN = out*stds[0]+means[0]
+        mse_std = np.std(np.array(mses))
+        mae_std = np.std(np.array(maes))
+        rmse_std = np.std(np.array(rmses))
+        ev_std = np.std(np.array(evs))
+        avg_std = np.std(np.array(avgs))
+        stddev_std = np.std(np.array(stddevs))
         
-        plot_time = np.array(range(ex_test_target_UN[:, stop_num, 0].shape[0]))/20
-        print(plot_time)
+        print("Average across all stations")
+
+        print('MSE: ', round((mse_avg),4))
+        print('MAE: ', round(mae_avg,4))
+        print('RMSE: ', round(rmse_avg,4))
+        print('explained_variance: ', round(ev_avg,4))  
+        print('Average Number of Vehicles: ', round(avg_avg,4))  
+        print('STDDEV of Vehicles: ', round(stddev_avg,4))    
         
-        plt.plot(plot_time, ex_test_target_UN[:, stop_num, 0], label="Target")
-        plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
-        mse, mae, rmse, ev = get_results(ex_test_target_UN[:, :, 0], out_UN[:, :, 0])
-        plt.xlabel("Time (hours)")
-        plt.ylabel("Flow (cars/interval)")
-        plt.title("Flow prediction for 15 minutes ahead")
-        # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
-        plt.legend()
-        plt.show()
+
+        print("Standard Deviation across all stations")
+
+        print('MSE: ', round((mse_std),4))
+        print('MAE: ', round(mae_std,4))
+        print('RMSE: ', round(rmse_std,4))
+        print('explained_variance: ', round(ev_std,4))  
+        print('Average Number of Vehicles: ', round(avg_std,4))  
+        print('STDDEV of Vehicles: ', round(stddev_std,4))    
+    
+        mse, mae, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
+
     
