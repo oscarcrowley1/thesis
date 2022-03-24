@@ -19,25 +19,25 @@ def load_scats_data(dataset):
     # X = np.load("STGCN-PyTorch-master/data/node_values.npy").transpose((1, 2, 0))
     # X = X.astype(np.float32)
     if dataset == "alpha":
-        if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
-                or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
-            with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_alpha.zip", 'r') as zip_ref:
-                zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
+        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
+        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_alpha.zip", 'r') as zip_ref:
+            zip_ref.extractall("STGCN-PyTorch-master/data/")
         
-        A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_alpha.npy")
+        A = np.load("STGCN-PyTorch-master/data/alpha_data/adj_mat_alpha.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
+        X = np.load("STGCN-PyTorch-master/data/alpha_data/node_values_alpha.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     elif dataset == "bravo":
-        if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
-                or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
-            with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravo.zip", 'r') as zip_ref:
-                zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
+        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
+        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravo.zip", 'r') as zip_ref:
+            zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-        A = np.load("STGCN-PyTorch-master/data/interpret_csv/adj_mat_bravo.npy")
+        A = np.load("STGCN-PyTorch-master/data/bravo_data/adj_mat_bravo.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/interpret_csv/node_values_bravo.npy").transpose((1, 2, 0))
+        X = np.load("STGCN-PyTorch-master/data/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     else:
@@ -193,7 +193,7 @@ def new_generate_dataset(X):
             test_input, test_target, \
             num_features
 
-def get_results(y_true, y_pred): #produces metrics
+def get_results(y_true, y_pred): # produces metrics
     explained_variance=metrics.explained_variance_score(y_true, y_pred)
     mean_absolute_error=metrics.mean_absolute_error(y_true, y_pred) 
     mse=metrics.mean_squared_error(y_true, y_pred)

@@ -321,9 +321,9 @@ f.write(files_string)
 f.close()
 
 if os.path.isfile("interpret_csv/adj_mat_alpha.npy") and os.path.isfile("interpret_csv/adj_info.txt"):
-    with zipfile.ZipFile("interpret_csv/SCATS.zip", "w") as zip_object:
-        zip_object.write("interpret_csv/node_values_alpha.npy")
-        zip_object.write("interpret_csv/adj_mat_alpha.npy")
-        zip_object.write("interpret_csv/adj_info.txt")
-        zip_object.write("interpret_csv/nv_info.txt")
+    with zipfile.ZipFile("interpret_csv/SCATS_alpha.zip", "w") as zip_object:
+        zip_object.write("interpret_csv/node_values_alpha.npy", arcname="alpha_data/node_values_alpha.npy")
+        zip_object.write("interpret_csv/adj_mat_alpha.npy", arcname="alpha_data/adj_mat_alpha.npy")
+        zip_object.write("interpret_csv/adj_info.txt", arcname="alpha_data/adj_info.npy")
+        zip_object.write("interpret_csv/nv_info.txt", arcname="alpha_data/nv_info.npy")
     print("Zipped")

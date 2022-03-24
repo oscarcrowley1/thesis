@@ -116,7 +116,7 @@ if __name__ == '__main__':
 #     print_save(f, f"Epochs:\t{epochs}")
 #     print_save(f, f"Batch Size:\t{batch_size}")
 
-    A, X, means, stds, info_string = load_scats_data()
+    A, X, means, stds, info_string = load_scats_data("bravo")
 
     # print_save(f, info_string)
 
@@ -234,7 +234,7 @@ if __name__ == '__main__':
     print(f"Training Target SHAPE:\t{training_target.shape}")
     
     #station_num = 1
-    for station_num in range(9):
+    for station_num in range(training_input.shape[1]):
         stationX_training_input = training_input[:, station_num, :, 0]
         stationX_training_target = training_target[:, station_num, 0]
         

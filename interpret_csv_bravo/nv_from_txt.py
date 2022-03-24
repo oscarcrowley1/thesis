@@ -344,7 +344,7 @@ output_array.astype(np.float64)
 
 
 
-np.save("interpret_csv_bravo/node_values_alpha", output_array)
+np.save("interpret_csv_bravo/node_values_bravo", output_array)
 
 f = open("interpret_csv_bravo/nv_info.txt", "w")
 info_string = "Num Juncs:\t" + str(output_array.shape[1]) + "\nNum Channels:\t" + str(output_array.shape[2]) + "\nNum Days:\t" + str(output_array.shape[0]/1440)
@@ -352,10 +352,10 @@ f.write(info_string)
 f.write(files_string)
 f.close()
 
-if os.path.isfile("interpret_csv_bravo/adj_mat_alpha.npy") and os.path.isfile("interpret_csv_bravo/adj_info.txt"):
-    with zipfile.ZipFile("interpret_csv_bravo/SCATS.zip", "w") as zip_object:
-        zip_object.write("interpret_csv_bravo/node_values_alpha.npy")
-        zip_object.write("interpret_csv_bravo/adj_mat_alpha.npy")
-        zip_object.write("interpret_csv_bravo/adj_info.txt")
-        zip_object.write("interpret_csv_bravo/nv_info.txt")
+if os.path.isfile("interpret_csv_bravo/adj_mat_bravo.npy") and os.path.isfile("interpret_csv_bravo/adj_info.txt"):
+    with zipfile.ZipFile("interpret_csv_bravo/SCATS_bravo.zip", "w") as zip_object:
+        zip_object.write("interpret_csv/node_values_bravo.npy", arcname="bravo_data/node_values_bravo.npy")
+        zip_object.write("interpret_csv/adj_mat_bravo.npy", arcname="bravo_data/adj_mat_bravo.npy")
+        zip_object.write("interpret_csv/adj_info.txt", arcname="bravo_data/adj_info.npy")
+        zip_object.write("interpret_csv/nv_info.txt", arcname="bravo_data/nv_info.npy")
     print("Zipped")

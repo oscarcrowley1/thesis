@@ -33,6 +33,7 @@ save_rate = 20
 epochs = 1000
 batch_size = 32
 dist_bool = False
+data_zip = "alpha"
 
 if not dist_bool:
     num_output = 1
@@ -132,7 +133,7 @@ if __name__ == '__main__':
 
 # f.close()
     print_save(f, "Begin Setup")
-    rand_seed = 8#was7
+    rand_seed = 8 # was 7
     print_save(f, f"Random Seed:\t{rand_seed}")
     torch.manual_seed(rand_seed)
 
@@ -143,7 +144,7 @@ if __name__ == '__main__':
     print_save(f, f"Epochs:\t{epochs}")
     print_save(f, f"Batch Size:\t{batch_size}")
 
-    A, X, means, stds, info_string = load_scats_data()
+    A, X, means, stds, info_string = load_scats_data(data_zip)
 
     print_save(f, info_string)
 
@@ -156,7 +157,7 @@ if __name__ == '__main__':
     print_save(f, "Split Data")
     
     # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
-    training_input, training_target, val_input, val_target, test_input, test_target, num_features = new_generate_dataset(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = new_generate_dataset(X)
 
     print_save(f, "Shuffle Data")
 
