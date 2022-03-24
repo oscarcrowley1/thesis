@@ -8,9 +8,9 @@ Epochs:	1000
 Batch Size:	32
 Input Info
 --------------
-Adjacency Shape:	(9, 9)
-Data Shape:	(9, 2, 39360)
-Num Stops:	9
+Adjacency Shape:	(11, 11)
+Data Shape:	(11, 2, 39360)
+Num Stops:	11
 Num Channels:	2
 Num Days:	82.0
 
@@ -20,6 +20,6 @@ Normalise Adjacency Matrix
 Initialise STGCN
 
 PARAMETERS:
-Total Trainable Params: 60389
-60389
+Total Trainable Params: 60397
+60397
 Begin Training
