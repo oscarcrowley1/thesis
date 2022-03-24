@@ -17,7 +17,7 @@ from sklearn.svm import LinearSVR
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset, get_results
 
-writer = SummaryWriter()
+# writer = SummaryWriter()
 
 
 use_gpu = True #CHANGE FOR MY COMPUTER???
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 #     print_save(f, f"Epochs:\t{epochs}")
 #     print_save(f, f"Batch Size:\t{batch_size}")
 
-    A, X, means, stds, info_string = load_scats_data("alpha")
+    A, X, means, stds, info_string = load_scats_data("bravo")
 
     # print_save(f, info_string)
 
