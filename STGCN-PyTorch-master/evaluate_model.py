@@ -25,7 +25,7 @@ def count_parameters(model):
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad: continue
         param = parameter.numel()
-        print_save(f, f"{name}:\t{parameter}")
+        print(f"{name}:\t{parameter}")
         table.add_row([name, param])
         total_params+=param
     print(table)
@@ -64,11 +64,14 @@ if __name__ == '__main__':
                 num_timesteps_input,
                 num_timesteps_output)#.to(device=args.device)
     
+    total_params = count_parameters(ex_net)
+    
     if False:#if torch.cuda.is_available():
         ex_net.load_state_dict(torch.load("saved_models/model_0222_1341_e299"))
     else:
         # ex_net.load_state_dict(torch.load("saved_models/model_0302_1645_e999", map_location=torch.device('cpu')))#for use on my computer
-        ex_net.load_state_dict(torch.load("saved_models/model_0303_1700_e299", map_location=torch.device('cpu')))#for use on my computer
+        # ex_net.load_state_dict(torch.load("saved_models/model_0303_1700_e299", map_location=torch.device('cpu')))#for use on my computer
+        ex_net.load_state_dict(torch.load("final_models/alpha_d03_nodist_2403/model_0324_1627_e999_out1", map_location=torch.device('cpu')))#for use on my computer
     
     with torch.no_grad():
         ex_net.eval()
