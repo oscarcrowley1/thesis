@@ -196,10 +196,12 @@ def new_generate_dataset(X):
 def get_results(y_true, y_pred): # produces metrics
     explained_variance=metrics.explained_variance_score(y_true, y_pred)
     mean_absolute_error=metrics.mean_absolute_error(y_true, y_pred) 
+    mean_absolute_percentage_error=metrics.mean_absolute_percentage_error(y_true, y_pred) 
     mse=metrics.mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
     print('MSE: ', round((mse),4))    
     print('MAE: ', round(mean_absolute_error,4))
+    print('MAPE: ', round(mean_absolute_percentage_error,4))    
     print('RMSE: ', round(rmse,4))
     print('explained_variance: ', round(explained_variance,4))
-    return mse, mean_absolute_error, rmse, explained_variance
+    return mse, mean_absolute_error, mean_absolute_percentage_error, rmse, explained_variance

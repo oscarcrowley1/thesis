@@ -97,6 +97,7 @@ if __name__ == '__main__':
         # print(out.shape)
         mses = []
         maes = []
+        mapes = []
         rmses = []
         evs = []
         avgs = []
@@ -116,10 +117,11 @@ if __name__ == '__main__':
             plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
             plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
             print(f"\nStop number:\t{stop_num}")
-            mse, mae, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
+            mse, mae, mape, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
             
             mses.append(mse)
             maes.append(mae)
+            mapes.append(mape)
             rmses.append(rmse)
             evs.append(ev)
             
@@ -137,6 +139,7 @@ if __name__ == '__main__':
             
         mse_avg = np.mean(np.array(mses))
         mae_avg = np.mean(np.array(maes))
+        mape_avg = np.mean(np.array(mapes))
         rmse_avg = np.mean(np.array(rmses))
         ev_avg = np.mean(np.array(evs))
         avg_avg = np.mean(np.array(avgs))
@@ -144,6 +147,7 @@ if __name__ == '__main__':
         
         mse_std = np.std(np.array(mses))
         mae_std = np.std(np.array(maes))
+        mape_std = np.std(np.array(mapes))
         rmse_std = np.std(np.array(rmses))
         ev_std = np.std(np.array(evs))
         avg_std = np.std(np.array(avgs))
@@ -153,6 +157,7 @@ if __name__ == '__main__':
 
         print('MSE: ', round((mse_avg),4))
         print('MAE: ', round(mae_avg,4))
+        print('MAE: ', round(mape_avg,4))
         print('RMSE: ', round(rmse_avg,4))
         print('explained_variance: ', round(ev_avg,4))  
         print('Average Number of Vehicles: ', round(avg_avg,4))  
@@ -163,6 +168,7 @@ if __name__ == '__main__':
 
         print('MSE: ', round((mse_std),4))
         print('MAE: ', round(mae_std,4))
+        print('MAE: ', round(mape_std,4))
         print('RMSE: ', round(rmse_std,4))
         print('explained_variance: ', round(ev_std,4))  
         print('Average Number of Vehicles: ', round(avg_std,4))  
@@ -170,6 +176,6 @@ if __name__ == '__main__':
 
         print("\n results together")
     
-        mse, mae, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
+        mse, mae, mape, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
 
     

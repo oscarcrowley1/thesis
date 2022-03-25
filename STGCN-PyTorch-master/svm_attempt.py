@@ -217,6 +217,7 @@ if __name__ == '__main__':
     
     mses = []
     maes = []
+    mapes = []
     rmses = []
     evs = []
     avgs = []
@@ -259,10 +260,11 @@ if __name__ == '__main__':
         stationX_test_target = stationX_test_target*stds[0]+means[0]
         
         print(f"Station:\t{station_num}")
-        mse, mae, rmse, ev = get_results(stationX_test_target, stationX_test_pred)
+        mse, mae, mape, rmse, ev = get_results(stationX_test_target, stationX_test_pred)
         
         mses.append(mse)
         maes.append(mae)
+        mapes.append(mape)
         rmses.append(rmse)
         evs.append(ev)
         
@@ -278,6 +280,7 @@ if __name__ == '__main__':
         
     mse_avg = np.mean(np.array(mses))
     mae_avg = np.mean(np.array(maes))
+    mape_avg = np.mean(np.array(mapes))
     rmse_avg = np.mean(np.array(rmses))
     ev_avg = np.mean(np.array(evs))
     avg_avg = np.mean(np.array(avgs))
@@ -285,6 +288,7 @@ if __name__ == '__main__':
     
     mse_std = np.std(np.array(mses))
     mae_std = np.std(np.array(maes))
+    mape_std = np.std(np.array(mapes))
     rmse_std = np.std(np.array(rmses))
     ev_std = np.std(np.array(evs))
     avg_std = np.std(np.array(avgs))
@@ -294,6 +298,7 @@ if __name__ == '__main__':
 
     print('MSE: ', round((mse_avg),4))
     print('MAE: ', round(mae_avg,4))
+    print('MAPE: ', round(mape_avg,4))
     print('RMSE: ', round(rmse_avg,4))
     print('explained_variance: ', round(ev_avg,4))  
     print('Average Number of Vehicles: ', round(avg_avg,4))  
@@ -304,6 +309,7 @@ if __name__ == '__main__':
 
     print('MSE: ', round((mse_std),4))
     print('MAE: ', round(mae_std,4))
+    print('MAPE: ', round(mape_std,4))
     print('RMSE: ', round(rmse_std,4))
     print('explained_variance: ', round(ev_std,4))  
     print('Average Number of Vehicles: ', round(avg_std,4))  
