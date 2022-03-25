@@ -366,7 +366,7 @@ if __name__ == '__main__':
             time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch) + "_out" + str(num_output)
 
             torch.save(net.state_dict(), ("saved_models/model_" + time_string))
-            shutil.copy("STGCN-PyTorch-master/run_info.txt", "run_info_" + time_string)
+            shutil.copy("STGCN-PyTorch-master/run_info.txt", "saved_models/run_info_" + time_string)
 
         checkpoint_path = "checkpoints/"
         if not os.path.exists(checkpoint_path):
