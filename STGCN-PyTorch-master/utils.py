@@ -41,7 +41,14 @@ def load_scats_data(dataset):
         X = X.astype(np.float32)
 
     else:
-        print("ERROR NO DATASET")
+        print("EVALUATION DATASET")
+        # with zipfile.ZipFile((dataset + "/"), 'r') as zip_ref:
+        #     zip_ref.extractall("STGCN-PyTorch-master/data/")
+    
+        A = np.load(dataset + "/bravo_data/adj_mat_bravo.npy")
+        A = A.astype(np.float32)
+        X = np.load(dataset + "/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
+        X = X.astype(np.float32)
 
     # info_string += X.shape)
     # X = X[:, 0, :] # Flow only for predictions

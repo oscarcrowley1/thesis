@@ -38,19 +38,26 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 0
+    model_int = 1
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/alpha_d03_nodist_2403/model_0324_1627_e999_out1"
         junction_set = "alpha"
     elif model_int == 1:
         """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
-        model_string = "final_models/bravo_d03_nodist_2503_e06d10/model_0324_2131_e999_out1"
+        model_string = "final_models/bravo_d03_nodist_2403_e06d10/model_0324_2131_e999_out1"
+        junction_set = "bravo"
+    elif model_int == 2:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2503_e15d10/model_0325_1957_e999_out1_LATEST"
         junction_set = "bravo"
     else:
         print("ERROR NO MODEL CHOSEN")
+        
+    folder_string = (model_string.rsplit("/", 1))[0]
 
-    A, X, means, stds, info_string = load_scats_data(junction_set)
+
+    A, X, means, stds, info_string = load_scats_data(folder_string)
     #print(means.shape)
 
 
@@ -189,7 +196,6 @@ if __name__ == '__main__':
         df["RMSE"] = rmses
         df["EV"] = evs
         
-        folder_string = (model_string.rsplit("/", 1))[0]
         
         df.to_csv(folder_string + "/results")
         # print(df)
