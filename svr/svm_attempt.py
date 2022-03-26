@@ -13,8 +13,12 @@ from prettytable import PrettyTable
 import sys
 import shutil
 from sklearn.svm import LinearSVR
+import pandas as pd
 
-from stgcn import STGCN
+# from stgcn import STGCN
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(1, 'STGCN-PyTorch-master/')
+
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset, get_results
 
 # writer = SummaryWriter()
@@ -49,37 +53,37 @@ else:
 print(f"Device: {args.device}")
 
 
-def train_epoch(training_input, training_target, batch_size):
-    """
-    Trains one epoch with the given data.
-    :param training_input: Training inputs of shape (num_samples, num_nodes,
-    num_timesteps_train, num_features).
-    :param training_target: Training targets of shape (num_samples, num_nodes,
-    num_timesteps_predict).
-    :param batch_size: Batch size to use during training.
-    :return: Average loss for this epoch.
-    """
-    permutation = torch.randperm(training_input.shape[0])
+# def train_epoch(training_input, training_target, batch_size):
+#     """
+#     Trains one epoch with the given data.
+#     :param training_input: Training inputs of shape (num_samples, num_nodes,
+#     num_timesteps_train, num_features).
+#     :param training_target: Training targets of shape (num_samples, num_nodes,
+#     num_timesteps_predict).
+#     :param batch_size: Batch size to use during training.
+#     :return: Average loss for this epoch.
+#     """
+#     permutation = torch.randperm(training_input.shape[0])
 
-    epoch_training_losses = []
-    for i in range(0, training_input.shape[0], batch_size):
-        print("Batch: {}".format(i), end='\r')
-        net.train()
-        optimizer.zero_grad()
+#     epoch_training_losses = []
+#     for i in range(0, training_input.shape[0], batch_size):
+#         print("Batch: {}".format(i), end='\r')
+#         net.train()
+#         optimizer.zero_grad()
 
-        indices = permutation[i:i + batch_size]
-        X_batch, y_batch = training_input[indices], training_target[indices]
-        X_batch = X_batch.to(device=args.device)
-        y_batch = y_batch.to(device=args.device)
+#         indices = permutation[i:i + batch_size]
+#         X_batch, y_batch = training_input[indices], training_target[indices]
+#         X_batch = X_batch.to(device=args.device)
+#         y_batch = y_batch.to(device=args.device)
 
-        out = net(A_wave, X_batch)
-        loss = loss_criterion(out, y_batch)
-        loss.backward()
-        optimizer.step()
-        epoch_training_losses.append(loss.detach().cpu().numpy())
-    print("Batch: {}".format(i))
-    print("Finished Loops")
-    return sum(epoch_training_losses)/len(epoch_training_losses)
+#         out = net(A_wave, X_batch)
+#         loss = loss_criterion(out, y_batch)
+#         loss.backward()
+#         optimizer.step()
+#         epoch_training_losses.append(loss.detach().cpu().numpy())
+#     print("Batch: {}".format(i))
+#     print("Finished Loops")
+#     return sum(epoch_training_losses)/len(epoch_training_losses)
 
 
 def count_parameters(model):
@@ -115,8 +119,9 @@ if __name__ == '__main__':
 #     print_save(f, f"Plot Rate:\t{plot_rate}")
 #     print_save(f, f"Epochs:\t{epochs}")
 #     print_save(f, f"Batch Size:\t{batch_size}")
+    data_string = "alpha"
 
-    A, X, means, stds, info_string = load_scats_data("bravo")
+    A, X, means, stds, info_string = load_scats_data(data_string)
 
     # print_save(f, info_string)
 
@@ -293,6 +298,41 @@ if __name__ == '__main__':
     ev_std = np.std(np.array(evs))
     avg_std = np.std(np.array(avgs))
     stddev_std = np.std(np.array(stddevs))
+    
+    mses.append(mse_avg)
+    maes.append(mae_avg)
+    mapes.append(mape_avg)
+    rmses.append(rmse_avg)
+    evs.append(ev_avg)
+    avgs.append(avg_avg)
+    stddevs.append(stddev_avg)
+    
+    mses.append(mse_std)
+    maes.append(mae_std)
+    mapes.append(mape_std)
+    rmses.append(rmse_std)
+    evs.append(ev_std)
+    avgs.append(avg_std)
+    stddevs.append(stddev_std)
+    
+    df = pd.DataFrame()
+        
+    node_list = list(range(training_input.shape[1]))
+    node_list.append("Average")
+    node_list.append("Standard Deviation")
+    df["NODE"] = node_list
+    
+    df["AVG"] = avgs
+    df["STDDEV"] = stddevs
+    
+    df["MSE"] = mses
+    df["MAE"] = maes
+    df["MAPE"] = mapes
+    df["RMSE"] = rmses
+    df["EV"] = evs
+    
+    
+    df.to_csv("svr/results_" + data_string)
     
     print("Average across all stations")
 

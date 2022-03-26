@@ -2,17 +2,20 @@ from cProfile import label
 import os
 import argparse
 import pickle as pk
+from platform import node
 from re import S
 from tracemalloc import stop
 from webbrowser import get
 import numpy as np
 import matplotlib.pyplot as plt
+from sympy import appellf1
 import torch
 import torch.nn as nn
 from time import process_time
 from torch.utils.tensorboard import SummaryWriter
 from prettytable import PrettyTable
 import sys
+import pandas as pd
 
 
 from stgcn import STGCN
@@ -35,7 +38,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 1
+    model_int = 0
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/alpha_d03_nodist_2403/model_0324_1627_e999_out1"
@@ -153,11 +156,49 @@ if __name__ == '__main__':
         avg_std = np.std(np.array(avgs))
         stddev_std = np.std(np.array(stddevs))
         
+        mses.append(mse_avg)
+        maes.append(mae_avg)
+        mapes.append(mape_avg)
+        rmses.append(rmse_avg)
+        evs.append(ev_avg)
+        avgs.append(avg_avg)
+        stddevs.append(stddev_avg)
+        
+        mses.append(mse_std)
+        maes.append(mae_std)
+        mapes.append(mape_std)
+        rmses.append(rmse_std)
+        evs.append(ev_std)
+        avgs.append(avg_std)
+        stddevs.append(stddev_std)
+        
+        
+        df = pd.DataFrame()
+        
+        node_list = list(range(out.shape[1]))
+        node_list.append("Average")
+        node_list.append("Standard Deviation")
+        df["NODE"] = node_list
+        
+        df["AVG"] = avgs
+        df["STDDEV"] = stddevs
+        
+        df["MSE"] = mses
+        df["MAE"] = maes
+        df["MAPE"] = mapes
+        df["RMSE"] = rmses
+        df["EV"] = evs
+        
+        folder_string = (model_string.rsplit("/", 1))[0]
+        
+        df.to_csv(folder_string + "/results")
+        # print(df)
+                
         print("\nAverage across all stations")
 
         print('MSE: ', round((mse_avg),4))
         print('MAE: ', round(mae_avg,4))
-        print('MAE: ', round(mape_avg,4))
+        print('MAPE: ', round(mape_avg,4))
         print('RMSE: ', round(rmse_avg,4))
         print('explained_variance: ', round(ev_avg,4))  
         print('Average Number of Vehicles: ', round(avg_avg,4))  
@@ -168,7 +209,7 @@ if __name__ == '__main__':
 
         print('MSE: ', round((mse_std),4))
         print('MAE: ', round(mae_std,4))
-        print('MAE: ', round(mape_std,4))
+        print('MAPE: ', round(mape_std,4))
         print('RMSE: ', round(rmse_std,4))
         print('explained_variance: ', round(ev_std,4))  
         print('Average Number of Vehicles: ', round(avg_std,4))  
