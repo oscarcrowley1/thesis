@@ -18,7 +18,7 @@ import openrouteservice
 #from openrouteservice import convert
 import json
 
-epsilon = 1.5
+epsilon = 3.2
 delta_squared = 10 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
