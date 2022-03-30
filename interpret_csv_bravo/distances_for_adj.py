@@ -19,7 +19,7 @@ import openrouteservice
 import json
 
 epsilon = 1.5
-delta_squared = 10 # oringinally 10, 1 gave good spread
+delta_squared = 2.5 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
     if(array > epsilon):
@@ -44,7 +44,7 @@ coord_array = np.array([[53.344098, -6.267605], #48i
                         [53.343766, -6.246543], #145iii
                         [53.346145, -6.280301], #152i
                         [53.346662, -6.280573], #152ii
-                        [53.346777, -6.280269],  #152iii
+                        [53.346777, -6.280269], #152iii
                         [53.349220, -6.251510], #354i
                         [53.349175, -6.251907]  #354ii
                         ])
