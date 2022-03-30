@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-epsilon = 3.2
+epsilon = 1.2
 delta_squared = 10
 
 def gauss_kernel(array, array_copy):

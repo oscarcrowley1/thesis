@@ -18,7 +18,7 @@ import openrouteservice
 #from openrouteservice import convert
 import json
 
-epsilon = 3.2
+epsilon = 1.5
 delta_squared = 10 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
@@ -123,7 +123,7 @@ plt.colorbar()
 plt.show()
 
 # ## TRYING TRASPOSE
-# kernelised_adj = np.transpose(kernelised_adj)
+kernelised_adj = np.transpose(kernelised_adj)
 
 ##commmented when not saving
 np.save("interpret_csv_bravo/adj_mat_bravo", kernelised_adj)
