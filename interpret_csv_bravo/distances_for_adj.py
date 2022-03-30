@@ -62,6 +62,12 @@ for from_point in range(num_points):
     for to_point in range(num_points):
         if (to_point == from_point ):
             distance = 0
+
+        elif (to_point in junction0 and from_point in junction0) or \
+                (to_point in junction1 and from_point in junction1) or \
+                    (to_point in junction2 and from_point in junction2) or \
+                        (to_point in junction3 and from_point in junction3):
+                        distance = inf
             
         # elif (to_point in junction0 and from_point in junction0) or \
         #         (to_point in junction1 and from_point in junction1) or \
@@ -123,7 +129,7 @@ plt.colorbar()
 plt.show()
 
 # ## TRYING TRASPOSE
-kernelised_adj = np.transpose(kernelised_adj)
+# kernelised_adj = np.transpose(kernelised_adj)
 
 ##commmented when not saving
 np.save("interpret_csv_bravo/adj_mat_bravo", kernelised_adj)

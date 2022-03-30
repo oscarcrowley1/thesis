@@ -38,7 +38,8 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 1
+    model_int = 6
+    
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/alpha_d03_nodist_2403/model_0324_1627_e999_out1"
@@ -51,6 +52,23 @@ if __name__ == '__main__':
         """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/bravo_d03_nodist_2503_e15d10/model_0325_1957_e999_out1_LATEST"
         junction_set = "bravo"
+    elif model_int == 3:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=3.2, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2503_e32d10/model_0329_1656_e999_out1"
+        junction_set = "bravo"
+    elif model_int == 4:
+        """Bravo Junctions. Dropout 0.3. Diagonal adjacency matrix. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2903_diag/model_0329_2151_e839_out1"
+        junction_set = "bravo"
+    elif model_int == 5:
+        """Bravo Junctions. Dropout 0.3. TRANSPOSED Adjacency values epsilon=1.5, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2903_TRANS_e15d10/model_0330_1147_e879_out1"
+        junction_set = "bravo"
+    elif model_int == 6:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2503_e15d10_PRUNING/model_0330_1703_e999_out1"
+        junction_set = "bravo"
+        
     else:
         print("ERROR NO MODEL CHOSEN")
         
@@ -197,7 +215,7 @@ if __name__ == '__main__':
         df["EV"] = evs
         
         
-        df.to_csv(folder_string + "/results")
+        df.to_csv(folder_string + "/results.csv")
         # print(df)
                 
         print("\nAverage across all stations")

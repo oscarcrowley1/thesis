@@ -1,3 +1,4 @@
+from cmath import inf
 import numpy as np
 import pandas as pd
 #import folium
@@ -46,13 +47,26 @@ coord_array = np.array([[53.347369, -6.255022], #183i
                         [53.349175, -6.251907]  #354ii
                         ])
 
+junction0 = [0,1]
+junction1 = [2,3,4]
+junction2 = [5,6]
+junction3 = [7,8]
+
 #coord_array = np.ndarray(coord_array)
 num_points = coord_array.shape[0]
 adj_array = np.empty([num_points, num_points])
 
 for from_point in range(num_points):
     for to_point in range(num_points):
-        if (to_point != from_point):
+        if (to_point == from_point):
+            distance = 0
+
+        elif (to_point in junction0 and from_point in junction0) or \
+                (to_point in junction1 and from_point in junction1) or \
+                    (to_point in junction2 and from_point in junction2) or \
+                        (to_point in junction3 and from_point in junction3):
+                        distance = inf
+        else:
             coords = ((coord_array[from_point][1], coord_array[from_point][0]), (coord_array[to_point][1], coord_array[to_point][0]))
             
             #print(coords)
@@ -78,8 +92,7 @@ for from_point in range(num_points):
             
             
             
-        else:
-            distance = 0
+        
             
         print(f"DISTANCE from point {from_point} to {to_point} is:\t{distance}")
         print("\n")
