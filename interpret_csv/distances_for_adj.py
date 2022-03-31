@@ -127,7 +127,7 @@ plt.show()
 np.save("interpret_csv/adj_mat_alpha", kernelised_adj)
 
 f = open("interpret_csv/adj_info.txt", "w")
-info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
+info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array) + "\nAdjacency Matrix:\n" + str(kernelised_adj)
 f.write(info_string)
 f.close()
 

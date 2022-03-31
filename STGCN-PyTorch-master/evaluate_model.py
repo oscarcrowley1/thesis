@@ -38,7 +38,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 6
+    model_int = 8
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -57,17 +57,25 @@ if __name__ == '__main__':
         model_string = "final_models/bravo_d03_nodist_2503_e32d10/model_0329_1656_e999_out1"
         junction_set = "bravo"
     elif model_int == 4:
-        """Bravo Junctions. Dropout 0.3. Diagonal adjacency matrix. 1000 iterations. 2 channel input. No distribution"""
+        """Bravo Junctions. Dropout 0.3. Diagonal adjacency matrix. 840 iterations. 2 channel input. No distribution"""
         model_string = "final_models/bravo_d03_nodist_2903_diag/model_0329_2151_e839_out1"
         junction_set = "bravo"
     elif model_int == 5:
-        """Bravo Junctions. Dropout 0.3. TRANSPOSED Adjacency values epsilon=1.5, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
+        """Bravo Junctions. Dropout 0.3. TRANSPOSED Adjacency values epsilon=1.5, delta squared=10. 880 iterations. 2 channel input. No distribution"""
         model_string = "final_models/bravo_d03_nodist_2903_TRANS_e15d10/model_0330_1147_e879_out1"
         junction_set = "bravo"
     elif model_int == 6:
         """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/bravo_d03_nodist_2503_e15d10_PRUNING/model_0330_1703_e999_out1"
         junction_set = "bravo"
+    elif model_int == 7:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. MORE FINE TUNED PRUNING. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_nodist_2503_e15d10_MOREPRUNING/model_0331_1616_e999_out1"
+        junction_set = "bravo"
+    elif model_int == 8:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. PRUNING. 1000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/alpha_d03_nodist_2403_PRUNING/model_0331_1958_e999_out1"
+        junction_set = "alpha"
         
     else:
         print("ERROR NO MODEL CHOSEN")
@@ -160,7 +168,7 @@ if __name__ == '__main__':
         
             plt.xlabel("Time (hours)")
             plt.ylabel("Flow (cars/interval)")
-            plt.title("Flow prediction for 15 minutes ahead")
+            plt.title("Sensor {stop_num} Flow prediction for 15 minutes ahead")
             # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
             plt.legend()
             plt.show()

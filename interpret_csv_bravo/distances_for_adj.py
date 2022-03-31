@@ -18,8 +18,8 @@ import openrouteservice
 #from openrouteservice import convert
 import json
 
-epsilon = 1.5
-delta_squared = 2.5 # oringinally 10, 1 gave good spread
+epsilon = 2.5
+delta_squared = 10 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
     if(array > epsilon):
@@ -54,6 +54,24 @@ junction1 = [3,4,5]
 junction2 = [6,7,8]
 junction3 = [9,10]
 
+routes = [[0,4],
+          [0,10],
+          [1,6],
+          [2,4],
+          [2,6],
+          [2,10],
+          [3,1],
+          [4,1],
+          [5,1],
+          [6,0],
+          [7,2],
+          [7,10],
+          [8,0],
+          [8,2],
+          [8,10],
+          [9,5],
+          [10,5]]
+
 #coord_array = np.ndarray(coord_array)
 num_points = coord_array.shape[0]
 adj_array = np.empty([num_points, num_points])
@@ -63,11 +81,11 @@ for from_point in range(num_points):
         if (to_point == from_point ):
             distance = 0
 
-        elif (to_point in junction0 and from_point in junction0) or \
-                (to_point in junction1 and from_point in junction1) or \
-                    (to_point in junction2 and from_point in junction2) or \
-                        (to_point in junction3 and from_point in junction3):
-                        distance = inf
+        # elif (to_point in junction0 and from_point in junction0) or \
+        #         (to_point in junction1 and from_point in junction1) or \
+        #             (to_point in junction2 and from_point in junction2) or \
+        #                 (to_point in junction3 and from_point in junction3):
+        #                 distance = inf
             
         # elif (to_point in junction0 and from_point in junction0) or \
         #         (to_point in junction1 and from_point in junction1) or \
@@ -75,7 +93,8 @@ for from_point in range(num_points):
         #                 (to_point in junction3 and from_point in junction3):
         #     distance = inf
             
-        else:
+        # else:
+        elif [from_point, to_point] in routes:
             coords = ((coord_array[from_point][1], coord_array[from_point][0]), (coord_array[to_point][1], coord_array[to_point][0]))
             
             #print(coords)
@@ -98,6 +117,9 @@ for from_point in range(num_points):
             #duration_txt = "<h4> <b>Duration :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['duration']/60,1))+" Mins. </strong>" +"</h4></b>"
             
             distance = round(res['routes'][0]['summary']['distance']/1000, 4)
+
+        else:
+            distance = inf
             
         print(f"DISTANCE from point {from_point} to {to_point} is:\t{distance}")
         print("\n")
@@ -135,7 +157,7 @@ plt.show()
 np.save("interpret_csv_bravo/adj_mat_bravo", kernelised_adj)
 
 f = open("interpret_csv_bravo/adj_info.txt", "w")
-info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
+info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array) + "\nAdjacency Matrix:\n" + str(kernelised_adj)
 f.write(info_string)
 f.close()
 

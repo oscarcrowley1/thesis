@@ -44,10 +44,11 @@ def load_scats_data(dataset):
         print("EVALUATION DATASET")
         # with zipfile.ZipFile((dataset + "/"), 'r') as zip_ref:
         #     zip_ref.extractall("STGCN-PyTorch-master/data/")
+        junc_set = (dataset.split('/')[-1]).split('_')[0]
     
-        A = np.load(dataset + "/bravo_data/adj_mat_bravo.npy")
+        A = np.load(dataset + "/" + junc_set + "_data/adj_mat_" + junc_set + ".npy")
         A = A.astype(np.float32)
-        X = np.load(dataset + "/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
+        X = np.load(dataset + "/" + junc_set + "_data/node_values_" + junc_set + ".npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     # info_string += X.shape)
