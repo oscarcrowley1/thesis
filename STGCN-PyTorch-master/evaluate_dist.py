@@ -27,7 +27,7 @@ import sys
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects
 
 dist_bool = True
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # split_line3 = int(X.shape[2] * 0.2)
 
     
-    total_input, total_target, num_timesteps_input = new_generate_dataset(X)
+    total_input, total_target, num_timesteps_input = generate_feature_vects(X)
 
     ex_test_input = total_input[ex_split_line1:, :, :]
     ex_test_target = total_target[ex_split_line1:, :, :]

@@ -19,7 +19,7 @@ import pandas as pd
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset, get_results
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
 
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
@@ -73,8 +73,8 @@ if __name__ == '__main__':
     
 
     
-    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
-    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = new_generate_dataset(X)
+    # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
 
     # test_input = total_input[ex_split_line1:, :, :]
     # test_target = total_target[ex_split_line1:, :, :]

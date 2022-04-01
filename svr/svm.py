@@ -19,7 +19,7 @@ import pandas as pd
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, 'STGCN-PyTorch-master/')
 
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset, get_results
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
 
 # writer = SummaryWriter()
 
@@ -133,8 +133,8 @@ if __name__ == '__main__':
 
     # print_save(f, "Split Data")
     
-    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
-    training_input, training_target, val_input, val_target, test_input, test_target, num_features = new_generate_dataset(X)
+    # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_features = generate_feature_vects(X)
     # print_save(f, "Shuffle Data")
 
     # rand_indx = torch.randperm(total_input.shape[0])

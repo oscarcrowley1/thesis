@@ -15,7 +15,7 @@ import shutil
 
 
 from stgcn import STGCN, negLogLik_loss
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects
 
 writer = SummaryWriter()
 
@@ -156,8 +156,8 @@ if __name__ == '__main__':
 
     print_save(f, "Split Data")
     
-    # total_input, total_target, num_timesteps_input = new_generate_dataset(X)
-    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = new_generate_dataset(X)
+    # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
+    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
 
     print_save(f, "Shuffle Data")
 

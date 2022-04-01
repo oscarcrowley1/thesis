@@ -13,7 +13,7 @@ from prettytable import PrettyTable
 
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, new_generate_dataset
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects
 
 #writer = SummaryWriter()
 
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     #                                                    num_timesteps_input=num_timesteps_input,
     #                                                    num_timesteps_output=num_timesteps_output)
 
-    new_total_input, new_total_target, new_num_timesteps = new_generate_dataset(X)
+    new_total_input, new_total_target, new_num_timesteps = generate_feature_vects(X)
 
 
     print(f"Input comparison:\tNEW:{new_total_input.shape}")
