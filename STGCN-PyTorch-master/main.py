@@ -30,10 +30,10 @@ save_rate = 20
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 1000
+epochs = 3000
 batch_size = 32
 dist_bool = False
-data_zip = "alpha"
+data_zip = "bravo"
 
 if not dist_bool:
     num_output = 1
@@ -249,7 +249,12 @@ if __name__ == '__main__':
                 training_input.shape[3],
                 num_timesteps_input,
                 num_output).to(device=args.device)
-    
+
+    load_model = True
+    if load_model == True:
+        model_string = "final_models/bravo_d03_nodist_2503_e15d10_PRUNING/model_0330_1703_e999_out1"
+        net.load_state_dict(torch.load(model_string))
+
     # writer.add_graph(net, (A_wave, val_input))
     
     # writer.flush()

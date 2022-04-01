@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     #print_save(f, A)
 
-    ex_split_line1 = int(X.shape[2] * 0.8)#0.6
+    # ex_split_line1 = int(X.shape[2] * 0.8)#0.6
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
 
