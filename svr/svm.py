@@ -14,11 +14,10 @@ import sys
 import shutil
 from sklearn.svm import LinearSVR
 import pandas as pd
+from joblib import dump, load
 
-# from stgcn import STGCN
-# insert at 1, 0 is the script path (or '' in REPL)
+# Allows us to use files form this folder
 sys.path.insert(1, 'STGCN-PyTorch-master/')
-
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
 
 # writer = SummaryWriter()
@@ -227,6 +226,10 @@ if __name__ == '__main__':
     evs = []
     avgs = []
     stddevs = []
+    
+    station_day_val = []
+    station_dayS_val = []
+    all_station_days_val = []
 
     #output_array = []
 
@@ -243,18 +246,23 @@ if __name__ == '__main__':
     
     #station_num = 1
     may7 = np.arange(0, 480)
+    may14 = np.arange(480*7, 480*8)
+    may1213 = np.arange(480*5, 480*7)
+    weekdays = np.append(np.arange(480, 480*5), np.arange(480*7, 480*9))
     
+    day_nums = np.arange(0,9)
+    
+    an_day_mses, an_day_maes, an_day_mapes, an_day_rmses, an_day_evs, an_day_avgs, an_day_stddevs = [], [], [], [], [], [], []
+
+    # subset = []
+    subset = []
     for station_num in range(training_input.shape[1]):
-        # stationX_training_input = training_input[:, station_num, :, 0]
-        # stationX_training_target = training_target[:, station_num, 0]
         
-        # stationX_test_input = test_input[:, station_num, :, 0]
-        # stationX_test_target = test_target[:, station_num, 0]
-        stationX_training_input = training_input[may7, station_num, :, 0]
-        stationX_training_target = training_target[may7, station_num, 0]
+        stationX_training_input = training_input[:, station_num, :, 0]
+        stationX_training_target = training_target[:, station_num, 0]
         
-        stationX_test_input = test_input[may7, station_num, :, 0]
-        stationX_test_target = test_target[may7, station_num, 0]
+        
+        
         
         print(f"Training Input SHAPE:\t{training_input.shape}")
         print(f"Training Target SHAPE:\t{training_target.shape}")
@@ -263,8 +271,21 @@ if __name__ == '__main__':
         
         model.fit(stationX_training_input, stationX_training_target)
         
+        
+        
         print(f"PARAMS:\t{len(model.get_params())}")
         print(f"COEFS:\t{len(model.coef_)}")
+        
+        if len(subset) != 0:
+            # stationX_training_input = training_input[subset, station_num, :, 0]
+            # stationX_training_target = training_target[subset, station_num, 0]
+            
+            stationX_test_input = test_input[subset, station_num, :, 0]
+            stationX_test_target = test_target[subset, station_num, 0]
+        else:
+            
+            stationX_test_input = test_input[:, station_num, :, 0]
+            stationX_test_target = test_target[:, station_num, 0]
         
         stationX_test_pred = model.predict(stationX_test_input)
         
@@ -273,6 +294,24 @@ if __name__ == '__main__':
         
         print(f"Station:\t{station_num}")
         mse, mae, mape, rmse, ev = get_results(stationX_test_target, stationX_test_pred)
+        
+        day_mses, day_maes, day_mapes, day_rmses, day_evs, day_avgs, day_stddevs = [], [], [], [], [], [], []
+
+        for i in range(9):
+            
+            day_mse, day_mae, day_mape, day_rmse, day_ev = get_results(stationX_test_target[i*480:(i+1)*480], stationX_test_pred[i*480:(i+1)*480])
+            
+            day_mses.append(day_mse)
+            day_maes.append(day_mae)
+            day_mapes.append(day_mape)
+            day_rmses.append(day_rmse)
+            day_evs.append(day_ev)
+            
+        an_day_mses.append(day_mses)
+        an_day_maes.append(day_maes)
+        an_day_mapes.append(day_mapes)
+        an_day_rmses.append(day_rmses)
+        an_day_evs.append(day_evs)
         
         mses.append(mse)
         maes.append(mae)
@@ -284,6 +323,24 @@ if __name__ == '__main__':
         print('STDDEV of Vehicles: ', np.std(np.array(stationX_test_target)))
         avgs.append(np.mean(np.array(stationX_test_target)))
         stddevs.append(np.std(np.array(stationX_test_target)))
+        
+    an_day_mses = np.array(an_day_mses)
+    an_day_maes = np.array(an_day_maes)
+    an_day_mapes = np.array(an_day_mapes)
+    an_day_rmses = np.array(an_day_rmses)
+    an_day_evs = np.array(an_day_evs)
+    
+    avg_day_mses = np.mean(an_day_mses, axis=0)
+    avg_day_maes = np.mean(an_day_maes, axis=0)
+    avg_day_mapes = np.mean(an_day_mapes, axis=0)
+    avg_day_rmses = np.mean(an_day_rmses, axis=0)
+    avg_day_evs = np.mean(an_day_evs, axis=0)
+    
+    print(f"MSES for each DAY:\t{avg_day_mses}")
+    print(f"MAES for each DAY:\t{avg_day_maes}")
+    print(f"MAPES for each DAY:\t{avg_day_mapes}")
+    print(f"RMSES for each DAY:\t{avg_day_rmses}")
+    print(f"EVS for each DAY:\t{avg_day_evs}")
         
     print("All stations finished")
     

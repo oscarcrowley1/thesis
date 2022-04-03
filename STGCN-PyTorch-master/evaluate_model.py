@@ -168,7 +168,7 @@ if __name__ == '__main__':
         
             plt.xlabel("Time (hours)")
             plt.ylabel("Flow (cars/interval)")
-            plt.title("Sensor {stop_num} Flow prediction for 15 minutes ahead")
+            plt.title(f"Sensor {stop_num} Flow prediction for 15 minutes ahead")
             # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
             plt.legend()
             plt.show()
@@ -251,11 +251,55 @@ if __name__ == '__main__':
     
         mse, mae, mape, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
         
-        print("\nJust for May 7")
-        
-        
         may7 = np.arange(0, 480)
+        may14 = np.arange(480*7, 480*8)
+        may1213 = np.arange(480*5, 480*7)
+        weekdays = np.append(np.arange(480, 480*5), np.arange(480*7, 480*9))
+        
+        print("\nJust for May 7")
         mse, mae, mape, rmse, ev = get_results(test_target_UN[may7, :, 0], out_UN[may7, :, 0])
+        
+        print("\nJust for May 14")
+        mse, mae, mape, rmse, ev = get_results(test_target_UN[may14, :, 0], out_UN[may14, :, 0])
+        
+        print("\nJust for May 12 and 13")
+        mse, mae, mape, rmse, ev = get_results(test_target_UN[may1213, :, 0], out_UN[may1213, :, 0])
+        
+        print("\nWeekdays")
+        mse, mae, mape, rmse, ev = get_results(test_target_UN[weekdays, :, 0], out_UN[weekdays, :, 0])
 
+        day_mses, day_maes, day_mapes, day_rmses, day_evs, day_avgs, day_stddevs = [], [], [], [], [], [], []
 
-    
+        for day in range(9):
+            print(f"Results for Day {day}")
+            day_range = np.arange(480*day, 480*(day+1))
+            day_mse, day_mae, day_mape, day_rmse, day_ev = get_results(test_target_UN[day_range, :, 0], out_UN[day_range, :, 0])
+            
+            day_mses.append(day_mse)
+            day_maes.append(day_mae)
+            day_mapes.append(day_mape)
+            day_rmses.append(day_rmse)
+            day_evs.append(day_ev)
+            
+            all_stops_that_day = test_target_UN[day_range, :, 0]
+            
+            day_avgs.append(np.mean(np.array(test_target_UN[day_range, :, 0])))
+            day_stddevs.append(np.std(np.array(test_target_UN[day_range, :, 0])))
+
+        df = pd.DataFrame()
+        
+        node_list = list(range(9))
+        # node_list.append("Average")
+        # node_list.append("Standard Deviation")
+        df["NODE"] = node_list
+        
+        df["AVG"] = day_avgs
+        df["STDDEV"] = day_stddevs
+        
+        df["MSE"] = day_mses
+        df["MAE"] = day_maes
+        df["MAPE"] = day_mapes
+        df["RMSE"] = day_rmses
+        df["EV"] = day_evs
+        
+        df.to_csv(folder_string + "/day_results.csv")
