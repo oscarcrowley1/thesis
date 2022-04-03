@@ -242,12 +242,19 @@ if __name__ == '__main__':
     print(f"Training Target SHAPE:\t{training_target.shape}")
     
     #station_num = 1
+    may7 = np.arange(0, 480)
+    
     for station_num in range(training_input.shape[1]):
-        stationX_training_input = training_input[:, station_num, :, 0]
-        stationX_training_target = training_target[:, station_num, 0]
+        # stationX_training_input = training_input[:, station_num, :, 0]
+        # stationX_training_target = training_target[:, station_num, 0]
         
-        stationX_test_input = test_input[:, station_num, :, 0]
-        stationX_test_target = test_target[:, station_num, 0]
+        # stationX_test_input = test_input[:, station_num, :, 0]
+        # stationX_test_target = test_target[:, station_num, 0]
+        stationX_training_input = training_input[may7, station_num, :, 0]
+        stationX_training_target = training_target[may7, station_num, 0]
+        
+        stationX_test_input = test_input[may7, station_num, :, 0]
+        stationX_test_target = test_target[may7, station_num, 0]
         
         print(f"Training Input SHAPE:\t{training_input.shape}")
         print(f"Training Target SHAPE:\t{training_target.shape}")
@@ -331,8 +338,8 @@ if __name__ == '__main__':
     df["RMSE"] = rmses
     df["EV"] = evs
     
-    
-    df.to_csv("svr/results_" + data_string)
+    # FOR SAVING
+    # df.to_csv("svr/results_" + data_string)
     
     print("Average across all stations")
 
@@ -354,113 +361,3 @@ if __name__ == '__main__':
     print('explained_variance: ', round(ev_std,4))  
     print('Average Number of Vehicles: ', round(avg_std,4))  
     print('STDDEV of Vehicles: ', round(stddev_std,4))     
-
-    
-    # stationX_training_input = training_input[:, :, :, 0]
-    # stationX_training_target = training_target[:, :, 0]
-    
-    # stationX_val_input = val_input[:, :, :, 0]
-    # stationX_val_target = val_target[:, :, 0]
-    
-    # print(f"Training Input SHAPE:\t{training_input.shape}")
-    # print(f"Training Target SHAPE:\t{training_target.shape}")
-    
-    # model = LinearSVR()
-    
-    # model.fit(stationX_training_input, stationX_training_target)
-    
-    # stationX_val_pred = model.predict(stationX_val_input)
-    
-    # stationX_val_pred = stationX_val_pred*stds[0]+means[0]
-    # stationX_val_target = stationX_val_target*stds[0]+means[0]
-    
-    # mses.append(get_results(stationX_val_target, stationX_val_pred))
-    
-    
-
-    # for epoch in range(epochs):
-    #     epoch_start = process_time()
-    #     print("Epoch Number: {}".format(epoch))
-    #     print("Epoch Number: {}".format(epoch))
-    #     loss = train_epoch(training_input, training_target,
-    #                        batch_size=batch_size)
-    #     print("Returned Losses")
-    #     training_losses.append(loss)
-        
-    #     writer.add_scalar("Training Loss", loss, epoch)
-        
-    #     # Run validation
-    #     with torch.no_grad():
-    #         net.eval()
-    #         val_input = val_input.to(device=args.device)
-    #         val_target = val_target.to(device=args.device)
-
-    #         out = net(A_wave, val_input)
-    #         val_loss = loss_criterion(out, val_target).to(device="cpu")
-    #         #validation_losses.append(np.asscalar(val_loss.detach().numpy()))
-    #         validation_losses.append((val_loss.detach().numpy()).item())
-
-    #         out_unnormalized = out.detach().cpu().numpy()*stds[0]+means[0]
-    #         target_unnormalized = val_target.detach().cpu().numpy()*stds[0]+means[0]
-
-
-    #         # if (epoch+1)%plot_rate==0:
-    #         #     plt.plot(out_unnormalized[:, 0, 2], label="Out")
-    #         #     plt.plot(target_unnormalized[:, 0, 2], label="Target")
-    #         #     plt.legend()
-    #         #     plt.show()
-
-    #         mae = np.mean(np.absolute(out_unnormalized - target_unnormalized)) #why would mae be calculated after normalisation
-    #         rmse = np.sqrt(np.mean((out_unnormalized - target_unnormalized)**2))
-
-    #         #mae_15min = np.mean(np.absolute(out_unnormalized[:,:,4] - target_unnormalized[:,:,4]))
-
-    #         validation_maes.append(mae)
-
-    #         out = None
-    #         val_input = val_input.to(device="cpu")
-    #         val_target = val_target.to(device="cpu")
-            
-    #     writer.add_scalar("Validation Loss", val_loss, epoch)
-    #     writer.add_scalar("Validation MAE", mae, epoch)
-    #     #writer.add_scalar("Validation MAE 15th min", rmse, epoch)
-    #     writer.add_scalar("Validation MSE Unnormalised", rmse, epoch)
-
-    #     print("Training loss: {}".format(training_losses[-1]))
-    #     print("Validation loss: {}".format(validation_losses[-1]))
-    #     print("Validation MAE: {}".format(validation_maes[-1]))
-    #     #print(f"THE LENGTHS: {training_losses}\t{validation_losses}\t{validation_maes}")
-    #     # if (epoch+1)%plot_rate==0:
-    #     #     x_epoch_end = process_time()
-    #     #     print(f"Time for {plot_rate} epochs:\t{x_epoch_end-x_epoch_start}")
-    #     #     x_epoch_start = x_epoch_end
-    #     #     plt.plot(training_losses, label="training loss")
-    #     #     plt.plot(validation_losses, label="validation loss")
-    #     #     plt.legend()
-    #     #     plt.show()
-    #     #     print("PLOTTED")
-    #     if (epoch+1) % save_rate == 0:
-    #         now = datetime.now()
-    #         time_string = now.strftime("%m%d_%H%M") + "_e" + str(epoch)
-
-    #         torch.save(net.state_dict(), ("saved_models/model_" + time_string))
-    #         shutil.copy("STGCN-PyTorch-master/run_info.txt", "run_info_" + time_string)
-
-    #     checkpoint_path = "checkpoints/"
-    #     if not os.path.exists(checkpoint_path):
-    #         os.makedirs(checkpoint_path)
-    #     with open("checkpoints/losses.pk", "wb") as fd:
-    #         pk.dump((training_losses, validation_losses, validation_maes), fd)
-
-    #     epoch_stop = process_time()
-    #     epoch_length = epoch_stop-epoch_start
-    #     print(f"Epoch Time:\t{epoch_length}")
-    #     writer.add_scalar("Epoch Length", epoch_length, epoch)
-            
-    # writer.flush()
-    # writer.close()
-    
-    # torch.save(net.state_dict(), "saved_models/my_model")
-
-    # training_stop = process_time()
-    # print(f"Training Time:\t{training_stop-training_start}")

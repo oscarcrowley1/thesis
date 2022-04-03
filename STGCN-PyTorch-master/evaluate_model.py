@@ -38,7 +38,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 8
+    model_int = 6
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -247,8 +247,15 @@ if __name__ == '__main__':
         print('Average Number of Vehicles: ', round(avg_std,4))  
         print('STDDEV of Vehicles: ', round(stddev_std,4))    
 
-        print("\n results together")
+        print("\nResults together")
     
         mse, mae, mape, rmse, ev = get_results(test_target_UN[:, :, 0], out_UN[:, :, 0])
+        
+        print("\nJust for May 7")
+        
+        
+        may7 = np.arange(0, 480)
+        mse, mae, mape, rmse, ev = get_results(test_target_UN[may7, :, 0], out_UN[may7, :, 0])
+
 
     
