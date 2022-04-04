@@ -247,10 +247,10 @@ def generate_weekday_feature_vects(X):
     
     
 
-    test_indx = np.concatenate((np.arange((480*37), (480*41)), np.arange((480*43), (480*45)))) # day 36 mon to 44 tues inclusive
+    test_indx = np.concatenate((np.arange((480*36), (480*41)), np.arange((480*43), (480*45)))) # day 36 mon to 44 tues inclusive
 
-    before_indx = np.concatenate((np.arange((480*1), (480*6)), np.arange((480*8), (480*13)), np.arange((480*15), (480*20)), np.arange((480*22), (480*27)), np.arange((480*29), (480*34))))
-    after_indx = np.concatenate((np.arange((480*45), (480*48)), np.arange((480*50), (480*55)), np.arange((480*57), (480*62)), np.arange((480*64), (480*69)), np.arange((480*71), total_input.shape[0])))
+    before_indx = np.concatenate((np.arange((480*1), (480*6)), np.arange((480*8), (480*13)), np.arange((480*15), (480*20)), np.arange((480*22), (480*27)), np.arange((480*30), (480*34)))) # bank holidays day 29 and 57
+    after_indx = np.concatenate((np.arange((480*45), (480*48)), np.arange((480*50), (480*55)), np.arange((480*58), (480*62)), np.arange((480*64), (480*69)), np.arange((480*71), total_input.shape[0])))
     # after_indx = np.arange((480*45), total_input.shape[0])
 
     print(before_indx)
@@ -263,11 +263,11 @@ def generate_weekday_feature_vects(X):
     training_indx = other_indx[:split_line]
     val_indx = other_indx[split_line:]
     
-    plt.scatter(test_indx, test_indx, label="test")
-    plt.scatter(training_indx, training_indx, label="train")
-    plt.scatter(val_indx, val_indx, label="val")
-    plt.legend()
-    plt.show()
+    # plt.scatter(test_indx, test_indx, label="test")
+    # plt.scatter(training_indx, training_indx, label="train")
+    # plt.scatter(val_indx, val_indx, label="val")
+    # plt.legend()
+    # plt.show()
 
     training_input = total_input[training_indx, :, :, :]
     training_target = total_target[training_indx, :, :]
@@ -301,5 +301,5 @@ def get_results(y_true, y_pred): # produces metrics
     return mse, mean_absolute_error, mean_absolute_percentage_error, rmse, explained_variance
 
 
-A, X, means, stds, info = load_scats_data("alpha")
-weekday_vects = generate_weekday_feature_vects(X)
+# A, X, means, stds, info = load_scats_data("alpha")
+# weekday_vects = generate_weekday_feature_vects(X)

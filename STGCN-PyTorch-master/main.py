@@ -15,7 +15,7 @@ import shutil
 
 
 from stgcn import STGCN, negLogLik_loss
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, generate_weekday_feature_vects
 
 writer = SummaryWriter()
 
@@ -34,6 +34,8 @@ epochs = 3000
 batch_size = 32
 dist_bool = False
 data_zip = "bravo"
+all_days = False
+load_model = False
 
 if not dist_bool:
     num_output = 1
@@ -157,7 +159,12 @@ if __name__ == '__main__':
     print_save(f, "Split Data")
     
     # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
-    training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
+    if all_days == True:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
+    else:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_weekday_feature_vects(X)
+
+    print
 
     print_save(f, "Shuffle Data")
 
@@ -250,7 +257,7 @@ if __name__ == '__main__':
                 num_timesteps_input,
                 num_output).to(device=args.device)
 
-    load_model = True
+
     if load_model == True:
         model_string = "final_models/bravo_d03_nodist_2503_e15d10_PRUNING/model_0330_1703_e999_out1"
         net.load_state_dict(torch.load(model_string))
