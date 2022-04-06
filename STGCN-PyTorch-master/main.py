@@ -15,7 +15,7 @@ import shutil
 
 
 from stgcn import STGCN, negLogLik_loss
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, generate_weekday_feature_vects, generate_flow_only_feature_vects
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, generate_weekday_feature_vects, generate_flow_only_feature_vects, generate_density_only_feature_vects
 
 writer = SummaryWriter()
 
@@ -30,12 +30,12 @@ save_rate = 50
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 5000
+epochs = 4000
 batch_size = 32
 dist_bool = False
-data_zip = "bravo"
+data_zip = "bravoplus" # alpha bravo bravoplus
 # all_days = True
-feature_vec_type = 2 # 0 all days. 1 weekdays only. 2 all days flow only
+feature_vec_type = 0 # 0 all days. 1 weekdays only. 2 all days flow only. 3 all days density only
 load_model = False
 
 if not dist_bool:
@@ -170,6 +170,8 @@ if __name__ == '__main__':
         training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_weekday_feature_vects(X)
     elif feature_vec_type == 2:
         training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_flow_only_feature_vects(X)
+    elif feature_vec_type == 3:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_density_only_feature_vects(X)
 
     print_save(f, "Shuffle Data")
 

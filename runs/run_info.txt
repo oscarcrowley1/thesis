@@ -1,14 +1,14 @@
 Begin Setup
 Random Seed:	8
 Input Timesteps:	26
-Output Timesteps:	2
+Output Timesteps:	1
 Use GPU:	True
 Plot Rate:	20
-Epochs:	5000
+Epochs:	1000
 Batch Size:	32
-Distribution:	True
+Distribution:	False
 Load Model:	False
-All Days used:	True
+Feature Vector Type:	3
 Input Info
 --------------
 Adjacency Shape:	(11, 11)
@@ -23,6 +23,6 @@ Normalise Adjacency Matrix
 Initialise STGCN
 
 PARAMETERS:
-Total Trainable Params: 61486
-61486
+Total Trainable Params: 59821
+59821
 Begin Training
