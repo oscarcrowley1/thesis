@@ -15,7 +15,7 @@ import shutil
 
 
 from stgcn import STGCN, negLogLik_loss
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, generate_weekday_feature_vects
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, generate_weekday_feature_vects, generate_flow_only_feature_vects
 
 writer = SummaryWriter()
 
@@ -25,16 +25,17 @@ num_timesteps_input = 26
 num_output = 1
 
 plot_rate = 20
-save_rate = 20
+save_rate = 50
 
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 3000
+epochs = 5000
 batch_size = 32
 dist_bool = False
 data_zip = "bravo"
-all_days = False
+# all_days = True
+feature_vec_type = 2 # 0 all days. 1 weekdays only. 2 all days flow only
 load_model = False
 
 if not dist_bool:
@@ -145,6 +146,9 @@ if __name__ == '__main__':
     print_save(f, f"Plot Rate:\t{plot_rate}")
     print_save(f, f"Epochs:\t{epochs}")
     print_save(f, f"Batch Size:\t{batch_size}")
+    print_save(f, f"Distribution:\t{dist_bool}")
+    print_save(f, f"Load Model:\t{load_model}")
+    print_save(f, f"Feature Vector Type:\t{feature_vec_type}")
 
     A, X, means, stds, info_string = load_scats_data(data_zip)
 
@@ -159,12 +163,13 @@ if __name__ == '__main__':
     print_save(f, "Split Data")
     
     # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
-    if all_days == True:
-        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
-    else:
-        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_weekday_feature_vects(X)
 
-    print
+    if feature_vec_type == 0:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_feature_vects(X)
+    elif feature_vec_type == 1:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_weekday_feature_vects(X)
+    elif feature_vec_type == 2:
+        training_input, training_target, val_input, val_target, test_input, test_target, num_timesteps_input = generate_flow_only_feature_vects(X)
 
     print_save(f, "Shuffle Data")
 
