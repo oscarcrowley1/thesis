@@ -48,9 +48,9 @@ def load_scats_data(dataset):
         with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravoplus.zip", 'r') as zip_ref:
             zip_ref.extractall("STGCN-PyTorch-master/data/")
     
-        A = np.load("STGCN-PyTorch-master/data/bravo_data/adj_mat_bravoplus.npy")
+        A = np.load("STGCN-PyTorch-master/data/bravoplus_data/adj_mat_bravoplus.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/bravo_data/node_values_bravoplus.npy").transpose((1, 2, 0))
+        X = np.load("STGCN-PyTorch-master/data/bravoplus_data/node_values_bravoplus.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     else:

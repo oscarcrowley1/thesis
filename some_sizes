@@ -1,0 +1,75 @@
+ONE CHANNEL
++-------------------------------+------------+
+|            Modules            | Parameters |
++-------------------------------+------------+
+|         block1.Theta1         |    1024    |
+| block1.temporal1.conv1.weight |    192     |
+|  block1.temporal1.conv1.bias  |     64     |
+| block1.temporal1.conv2.weight |    192     |
+|  block1.temporal1.conv2.bias  |     64     |
+| block1.temporal1.conv3.weight |    192     |
+|  block1.temporal1.conv3.bias  |     64     |
+| block1.temporal2.conv1.weight |    3072    |
+|  block1.temporal2.conv1.bias  |     64     |
+| block1.temporal2.conv2.weight |    3072    |
+|  block1.temporal2.conv2.bias  |     64     |
+| block1.temporal2.conv3.weight |    3072    |
+|  block1.temporal2.conv3.bias  |     64     |
+|    block1.batch_norm.weight   |     11     |
+|     block1.batch_norm.bias    |     11     |
+|         block2.Theta1         |    1024    |
+| block2.temporal1.conv1.weight |   12288    |
+|  block2.temporal1.conv1.bias  |     64     |
+| block2.temporal1.conv2.weight |   12288    |
+|  block2.temporal1.conv2.bias  |     64     |
+| block2.temporal1.conv3.weight |   12288    |
+|  block2.temporal1.conv3.bias  |     64     |
+| block2.temporal2.conv1.weight |    3072    |
+|  block2.temporal2.conv1.bias  |     64     |
+| block2.temporal2.conv2.weight |    3072    |
+|  block2.temporal2.conv2.bias  |     64     |
+| block2.temporal2.conv3.weight |    3072    |
+|  block2.temporal2.conv3.bias  |     64     |
+|    block2.batch_norm.weight   |     11     |
+|     block2.batch_norm.bias    |     11     |
+|          fully.weight         |    1088    |
+|           fully.bias          |     1      |
++-------------------------------+------------+
+Total Trainable Params: 59821
+
+
+BRAVOPLUS
++-------------------------------+------------+
+|         block1.Theta1         |    1024    |
+| block1.temporal1.conv1.weight |    384     |
+|  block1.temporal1.conv1.bias  |     64     |
+| block1.temporal1.conv2.weight |    384     |
+|  block1.temporal1.conv2.bias  |     64     |
+| block1.temporal1.conv3.weight |    384     |
+|  block1.temporal1.conv3.bias  |     64     |
+| block1.temporal2.conv1.weight |    3072    |
+|  block1.temporal2.conv1.bias  |     64     |
+| block1.temporal2.conv2.weight |    3072    |
+|  block1.temporal2.conv2.bias  |     64     |
+| block1.temporal2.conv3.weight |    3072    |
+|  block1.temporal2.conv3.bias  |     64     |
+|    block1.batch_norm.weight   |     14     |
+|     block1.batch_norm.bias    |     14     |
+|         block2.Theta1         |    1024    |
+| block2.temporal1.conv1.weight |   12288    |
+|  block2.temporal1.conv1.bias  |     64     |
+| block2.temporal1.conv2.weight |   12288    |
+|  block2.temporal1.conv2.bias  |     64     |
+| block2.temporal1.conv3.weight |   12288    |
+|  block2.temporal1.conv3.bias  |     64     |
+| block2.temporal2.conv1.weight |    3072    |
+|  block2.temporal2.conv1.bias  |     64     |
+| block2.temporal2.conv2.weight |    3072    |
+|  block2.temporal2.conv2.bias  |     64     |
+| block2.temporal2.conv3.weight |    3072    |
+|  block2.temporal2.conv3.bias  |     64     |
+|    block2.batch_norm.weight   |     14     |
+|     block2.batch_norm.bias    |     14     |
+|          fully.weight         |    1088    |
+|           fully.bias          |     1      |
++-------------------------------+------------+

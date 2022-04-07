@@ -4,16 +4,16 @@ Input Timesteps:	26
 Output Timesteps:	1
 Use GPU:	True
 Plot Rate:	20
-Epochs:	1000
+Epochs:	4000
 Batch Size:	32
 Distribution:	False
 Load Model:	False
-Feature Vector Type:	3
+Feature Vector Type:	0
 Input Info
 --------------
-Adjacency Shape:	(11, 11)
-Data Shape:	(11, 2, 39360)
-Num Stops:	11
+Adjacency Shape:	(14, 14)
+Data Shape:	(14, 2, 39360)
+Num Stops:	14
 Num Channels:	2
 Num Days:	82.0
 
@@ -23,6 +23,6 @@ Normalise Adjacency Matrix
 Initialise STGCN
 
 PARAMETERS:
-Total Trainable Params: 59821
-59821
+Total Trainable Params: 60409
+60409
 Begin Training
