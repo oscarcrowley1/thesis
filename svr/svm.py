@@ -257,7 +257,7 @@ if __name__ == '__main__':
     # subset = []
     subset = []
     for station_num in range(training_input.shape[1]):
-        
+        print(training_input)
         stationX_training_input = training_input[:, station_num, :, 0]
         stationX_training_target = training_target[:, station_num, 0]
         

@@ -1,0 +1,28 @@
+Begin Setup
+Random Seed:	8
+Input Timesteps:	26
+Output Timesteps:	1
+Use GPU:	False
+Plot Rate:	20
+Epochs:	4000
+Batch Size:	32
+Distribution:	False
+Load Model:	False
+Feature Vector Type:	0
+Input Info
+--------------
+Adjacency Shape:	(14, 14)
+Data Shape:	(14, 2, 39360)
+Num Stops:	14
+Num Channels:	2
+Num Days:	82.0
+
+Split Data
+Shuffle Data
+Normalise Adjacency Matrix
+Initialise STGCN
+
+PARAMETERS:
+Total Trainable Params: 60409
+60409
+Begin Training

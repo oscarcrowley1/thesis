@@ -20,7 +20,7 @@ from utils import generate_dataset, load_scats_data, get_normalized_adj, print_s
 writer = SummaryWriter()
 
 
-use_gpu = True #CHANGE FOR MY COMPUTER???
+use_gpu = False #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 26
 num_output = 1
 
@@ -30,12 +30,12 @@ save_rate = 50
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 4000
+epochs = 1500
 batch_size = 32
 dist_bool = False
 data_zip = "bravoplus" # alpha bravo bravoplus
 # all_days = True
-feature_vec_type = 0 # 0 all days. 1 weekdays only. 2 all days flow only. 3 all days density only
+feature_vec_type = 1 # 0 all days. 1 weekdays only. 2 all days flow only. 3 all days density only
 load_model = False
 
 if not dist_bool:
