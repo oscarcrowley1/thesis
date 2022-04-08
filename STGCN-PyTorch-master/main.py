@@ -30,10 +30,10 @@ save_rate = 50
 # num_timesteps_input = 15
 # num_timesteps_output = 15
 
-epochs = 1500
+epochs = 1000
 batch_size = 32
 dist_bool = False
-data_zip = "bravoplus" # alpha bravo bravoplus
+data_zip = "alpha" # alpha bravo bravoplus
 # all_days = True
 feature_vec_type = 1 # 0 all days. 1 weekdays only. 2 all days flow only. 3 all days density only
 load_model = False

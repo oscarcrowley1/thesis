@@ -52,7 +52,7 @@ np.save("interpret_csv/adj_mat_alpha", adj_array)
 
 
 if os.path.isfile("interpret_csv/node_values_alpha.npy") and os.path.isfile("interpret_csv/nv_info.txt"):
-    with zipfile.ZipFile("interpret_csv/SCATS.zip", "w") as zip_object:
+    with zipfile.ZipFile("interpret_csv/SCATS_alpha.zip", "w") as zip_object:
         zip_object.write("interpret_csv/node_values_alpha.npy")
         zip_object.write("interpret_csv/adj_mat_alpha.npy")
         zip_object.write("interpret_csv/adj_info.txt")
