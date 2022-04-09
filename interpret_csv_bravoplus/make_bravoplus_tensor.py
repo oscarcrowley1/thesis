@@ -7,23 +7,23 @@ import sklearn.metrics as metrics
 import matplotlib.pyplot as plt
 
 # if dataset == "alpha":
-        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
-        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
-with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_alpha.zip", 'r') as zip_ref:
-    zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("DC-STGCN/data/adj_mat_alpha.npy")
+        #         or not os.path.isfile("DC-STGCN/data/node_values_alpha.npy")):
+with zipfile.ZipFile("DC-STGCN/data/SCATS_alpha.zip", 'r') as zip_ref:
+    zip_ref.extractall("DC-STGCN/data/")
 
-X_alpha = np.load("STGCN-PyTorch-master/data/alpha_data/node_values_alpha.npy").transpose((1, 2, 0))
+X_alpha = np.load("DC-STGCN/data/alpha_data/node_values_alpha.npy").transpose((1, 2, 0))
 X_alpha = X_alpha.astype(np.float32)
 
     # elif dataset == "bravo":
-        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
-        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
-with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravo.zip", 'r') as zip_ref:
-    zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("DC-STGCN/data/adj_mat_bravo.npy")
+        #         or not os.path.isfile("DC-STGCN/data/node_values_bravo.npy")):
+with zipfile.ZipFile("DC-STGCN/data/SCATS_bravo.zip", 'r') as zip_ref:
+    zip_ref.extractall("DC-STGCN/data/")
 
-# A = np.load("STGCN-PyTorch-master/data/bravo_data/adj_mat_bravo.npy")
+# A = np.load("DC-STGCN/data/bravo_data/adj_mat_bravo.npy")
 # A = A.astype(np.float32)
-X_bravo = np.load("STGCN-PyTorch-master/data/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
+X_bravo = np.load("DC-STGCN/data/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
 X_bravo = X_bravo.astype(np.float32)
 
 print(X_alpha.shape)

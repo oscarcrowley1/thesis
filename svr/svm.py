@@ -17,7 +17,7 @@ import pandas as pd
 from joblib import dump, load
 
 # Allows us to use files form this folder
-sys.path.insert(1, 'STGCN-PyTorch-master/')
+sys.path.insert(1, 'DC-STGCN/')
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
 
 # writer = SummaryWriter()
@@ -103,7 +103,7 @@ def count_parameters(model):
 
 
 if __name__ == '__main__':
-#     f = open("STGCN-PyTorch-master/run_info.txt", "w")
+#     f = open("DC-STGCN/run_info.txt", "w")
 # # info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
 
 # # f.close()

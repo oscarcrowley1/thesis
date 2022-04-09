@@ -12,51 +12,51 @@ def print_save(file, string_to_use):
     file.write(string_to_use + "\n")
 
 def load_scats_data(dataset):
-    # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat.npy")
-    #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values.npy")):
-    #     with zipfile.ZipFile("STGCN-PyTorch-master/data/METR-LA.zip", 'r') as zip_ref:
-    #         zip_ref.extractall("STGCN-PyTorch-master/data/")
+    # if (not os.path.isfile("DC-STGCN/data/adj_mat.npy")
+    #         or not os.path.isfile("DC-STGCN/data/node_values.npy")):
+    #     with zipfile.ZipFile("DC-STGCN/data/METR-LA.zip", 'r') as zip_ref:
+    #         zip_ref.extractall("DC-STGCN/data/")
 
-    # A = np.load("STGCN-PyTorch-master/data/adj_mat.npy")
-    # X = np.load("STGCN-PyTorch-master/data/node_values.npy").transpose((1, 2, 0))
+    # A = np.load("DC-STGCN/data/adj_mat.npy")
+    # X = np.load("DC-STGCN/data/node_values.npy").transpose((1, 2, 0))
     # X = X.astype(np.float32)
     if dataset == "alpha":
-        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_alpha.npy")
-        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_alpha.npy")):
-        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_alpha.zip", 'r') as zip_ref:
-            zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("DC-STGCN/data/adj_mat_alpha.npy")
+        #         or not os.path.isfile("DC-STGCN/data/node_values_alpha.npy")):
+        with zipfile.ZipFile("DC-STGCN/data/SCATS_alpha.zip", 'r') as zip_ref:
+            zip_ref.extractall("DC-STGCN/data/")
         
-        A = np.load("STGCN-PyTorch-master/data/alpha_data/adj_mat_alpha.npy")
+        A = np.load("DC-STGCN/data/alpha_data/adj_mat_alpha.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/alpha_data/node_values_alpha.npy").transpose((1, 2, 0))
+        X = np.load("DC-STGCN/data/alpha_data/node_values_alpha.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     elif dataset == "bravo":
-        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
-        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
-        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravo.zip", 'r') as zip_ref:
-            zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("DC-STGCN/data/adj_mat_bravo.npy")
+        #         or not os.path.isfile("DC-STGCN/data/node_values_bravo.npy")):
+        with zipfile.ZipFile("DC-STGCN/data/SCATS_bravo.zip", 'r') as zip_ref:
+            zip_ref.extractall("DC-STGCN/data/")
     
-        A = np.load("STGCN-PyTorch-master/data/bravo_data/adj_mat_bravo.npy")
+        A = np.load("DC-STGCN/data/bravo_data/adj_mat_bravo.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
+        X = np.load("DC-STGCN/data/bravo_data/node_values_bravo.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     elif dataset == "bravoplus":
-        # if (not os.path.isfile("STGCN-PyTorch-master/data/adj_mat_bravo.npy")
-        #         or not os.path.isfile("STGCN-PyTorch-master/data/node_values_bravo.npy")):
-        with zipfile.ZipFile("STGCN-PyTorch-master/data/SCATS_bravoplus.zip", 'r') as zip_ref:
-            zip_ref.extractall("STGCN-PyTorch-master/data/")
+        # if (not os.path.isfile("DC-STGCN/data/adj_mat_bravo.npy")
+        #         or not os.path.isfile("DC-STGCN/data/node_values_bravo.npy")):
+        with zipfile.ZipFile("DC-STGCN/data/SCATS_bravoplus.zip", 'r') as zip_ref:
+            zip_ref.extractall("DC-STGCN/data/")
     
-        A = np.load("STGCN-PyTorch-master/data/bravoplus_data/adj_mat_bravoplus.npy")
+        A = np.load("DC-STGCN/data/bravoplus_data/adj_mat_bravoplus.npy")
         A = A.astype(np.float32)
-        X = np.load("STGCN-PyTorch-master/data/bravoplus_data/node_values_bravoplus.npy").transpose((1, 2, 0))
+        X = np.load("DC-STGCN/data/bravoplus_data/node_values_bravoplus.npy").transpose((1, 2, 0))
         X = X.astype(np.float32)
 
     else:
         print("EVALUATION DATASET")
         # with zipfile.ZipFile((dataset + "/"), 'r') as zip_ref:
-        #     zip_ref.extractall("STGCN-PyTorch-master/data/")
+        #     zip_ref.extractall("DC-STGCN/data/")
         junc_set = (dataset.split('/')[-1]).split('_')[0]
     
         A = np.load(dataset + "/" + junc_set + "_data/adj_mat_" + junc_set + ".npy")
