@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-adjacency = np.load("DC-STGCN/data/adj_mat.npy")
+adjacency = np.load("DC_STGCN/data/adj_mat.npy")
 print(adjacency.dtype)
 
-adjacency_alpha = np.load("DC-STGCN/data/adj_mat_alpha.npy")
+adjacency_alpha = np.load("DC_STGCN/data/adj_mat_alpha.npy")
 print(adjacency_alpha.dtype)
 
-node_vals = np.load("DC-STGCN/data/node_values.npy")
+node_vals = np.load("DC_STGCN/data/node_values.npy")
 print(node_vals.dtype)
 
-node_vals_alpha = np.load("DC-STGCN/data/node_values_alpha.npy")
+node_vals_alpha = np.load("DC_STGCN/data/node_values_alpha.npy")
 print(node_vals_alpha.dtype)
 
 sheet = 0

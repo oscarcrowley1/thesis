@@ -20,7 +20,7 @@ from utils import generate_dataset, load_scats_data, get_normalized_adj, print_s
 writer = SummaryWriter()
 
 
-use_gpu = False #CHANGE FOR MY COMPUTER???
+use_gpu = True #CHANGE FOR MY COMPUTER???
 num_timesteps_input = 26
 num_output = 1
 

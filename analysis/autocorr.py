@@ -15,7 +15,7 @@ output = autocorrelation(X, dim=2)
 print(X.shape)
 print(output.shape)
 
-one_station_channel = output[:, 0, :]
+one_station_channel = output[:, 1, :]
 print(one_station_channel.shape)
 for station_num in range(one_station_channel.shape[0]):
     plt.plot(np.array(range(one_station_channel.shape[1]))/20, one_station_channel[station_num, :], label=f"Station {station_num}")

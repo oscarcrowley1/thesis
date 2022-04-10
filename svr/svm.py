@@ -17,7 +17,7 @@ import pandas as pd
 from joblib import dump, load
 
 # Allows us to use files form this folder
-sys.path.insert(1, 'DC-STGCN/')
+sys.path.insert(1, 'DC_STGCN/')
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
 
 # writer = SummaryWriter()
@@ -103,7 +103,7 @@ def count_parameters(model):
 
 
 if __name__ == '__main__':
-#     f = open("DC-STGCN/run_info.txt", "w")
+#     f = open("DC_STGCN/run_info.txt", "w")
 # # info_string = "Epsilon:\t" + str(epsilon) + "\nDelta Squared:\t" + str(delta_squared) + "\nUses these distances\n" + str(coord_array)
 
 # # f.close()
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 #     print_save(f, f"Plot Rate:\t{plot_rate}")
 #     print_save(f, f"Epochs:\t{epochs}")
 #     print_save(f, f"Batch Size:\t{batch_size}")
-    data_string = "bravo"
+    data_string = "bravoplus"
 
     A, X, means, stds, info_string = load_scats_data(data_string)
 
@@ -271,7 +271,7 @@ if __name__ == '__main__':
         
         model.fit(stationX_training_input, stationX_training_target)
         
-        
+        dump(model, "svr/model_" + str(data_string) + "_" + str(station_num) + ".joblib")
         
         print(f"PARAMS:\t{len(model.get_params())}")
         print(f"COEFS:\t{len(model.coef_)}")
@@ -291,6 +291,8 @@ if __name__ == '__main__':
         
         stationX_test_pred = stationX_test_pred*stds[0]+means[0]
         stationX_test_target = stationX_test_target*stds[0]+means[0]
+        
+        np.save("svr/" + str(data_string) + "_station_" + str(station_num), stationX_test_pred)
         
         print(f"Station:\t{station_num}")
         mse, mae, mape, rmse, ev = get_results(stationX_test_target, stationX_test_pred)

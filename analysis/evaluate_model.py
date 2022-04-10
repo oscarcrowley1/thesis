@@ -16,7 +16,9 @@ from torch.utils.tensorboard import SummaryWriter
 from prettytable import PrettyTable
 import sys
 import pandas as pd
-
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(1, 'DC_STGCN')
 
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results
@@ -38,7 +40,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 6
+    model_int = 10
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -76,7 +78,14 @@ if __name__ == '__main__':
         """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. PRUNING. 1000 iterations. 2 channel input. No distribution"""
         model_string = "final_models/alpha_d03_nodist_2403_PRUNING/model_0331_1958_e999_out1"
         junction_set = "alpha"
-        
+    elif model_int == 9:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 4000 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_i4000_nodist_2503_e15d10_PRUNING/model_0401_0836_e2999_out1"
+        junction_set = "bravo"
+    elif model_int == 10:
+        """Bravo Plus Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 2700 iterations. 2 channel input. No distribution"""
+        model_string = "final_models/bravoplus_d03_nodist_2503_e15d10_PRUNING/model_0408_1153_e2699_out1"
+        junction_set = "bravoplus"
     else:
         print("ERROR NO MODEL CHOSEN")
         
@@ -147,11 +156,35 @@ if __name__ == '__main__':
             test_target_UN = test_target*stds[0]+means[0]
             out_UN = out*stds[0]+means[0]
             
-            plot_time = np.array(range(test_target_UN[:, stop_num, 0].shape[0]))/20
+            plot_time = np.array(range(test_target_UN[:, stop_num, 0].shape[0]))/480
             print(plot_time)
             
             plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
-            plt.plot(plot_time, out_UN[:, stop_num, 0], label="Predictions")
+            
+            svr_preds = np.load("svr/" + str(junction_set) + "_station_" + str(stop_num) + ".npy")
+            plt.plot(plot_time, svr_preds, label="SVR Predictions")
+            # plt.plot(plot_time, test_target_UN[:, stop_num, 0])
+            plt.plot(plot_time, out_UN[:, stop_num, 0], label="STGCN Predictions")
+            
+
+            # plt.title(f"Flow for Sensor {stop_num} in Set Bravo Plus")
+            plt.xlabel("Time (days)")
+            plt.ylabel("Flow (vehicles/hour)")
+            plt.title(f"Sensor {stop_num} Flow prediction for 15 minutes ahead")
+            # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
+            plt.legend()
+            # plt.show()
+            
+            abs_svr_error = np.abs(test_target_UN[:, stop_num, 0] - svr_preds)
+            abs_stgcn_error = np.abs(test_target_UN[:, stop_num, 0] - out_UN[:, stop_num, 0])
+            plt.plot(plot_time, abs_svr_error)
+            plt.plot(plot_time, abs_stgcn_error)
+            # plt.show()
+            
+            plt.plot(plot_time, abs_svr_error - abs_stgcn_error)
+            # plt.show()
+
+            
             print(f"\nStop number:\t{stop_num}")
             mse, mae, mape, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
             
@@ -165,13 +198,6 @@ if __name__ == '__main__':
             print('STDDEV of Vehicles: ', np.std(np.array(test_target_UN[:, stop_num, 0])))
             avgs.append(np.mean(np.array(test_target_UN[:, stop_num, 0])))
             stddevs.append(np.std(np.array(test_target_UN[:, stop_num, 0])))
-        
-            plt.xlabel("Time (hours)")
-            plt.ylabel("Flow (cars/interval)")
-            plt.title(f"Sensor {stop_num} Flow prediction for 15 minutes ahead")
-            # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
-            plt.legend()
-            plt.show()
             
         mse_avg = np.mean(np.array(mses))
         mae_avg = np.mean(np.array(maes))

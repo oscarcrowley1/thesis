@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 from pytorch_forecasting.utils import autocorrelation
 
-# if (not os.path.isfile("DC-STGCN/data/adj_mat_alpha.npy")
-#             or not os.path.isfile("DC-STGCN/data/node_values_alpha.npy")):
-#         with zipfile.ZipFile("DC-STGCN/data/SCATS.zip", 'r') as zip_ref:
-#             zip_ref.extractall("DC-STGCN/data/")
+# if (not os.path.isfile("DC_STGCN/data/adj_mat_alpha.npy")
+#             or not os.path.isfile("DC_STGCN/data/node_values_alpha.npy")):
+#         with zipfile.ZipFile("DC_STGCN/data/SCATS.zip", 'r') as zip_ref:
+#             zip_ref.extractall("DC_STGCN/data/")
 
 # if (not os.path.isfile("adj_mat_alpha.npy")
 #             or not os.path.isfile("node_values_alpha.npy")):
 #         with zipfile.ZipFile("SCATS.zip", 'r') as zip_ref:
-#             zip_ref.extractall("DC-STGCN/data/")
+#             zip_ref.extractall("DC_STGCN/data/")
     
 A = np.load("interpret_csv/adj_mat_alpha.npy")
 A = A.astype(np.float32)

@@ -5,12 +5,12 @@ import torch
 import matplotlib.pyplot as plt
 
 experiment = "alpha"
-# if (not os.path.isfile("DC-STGCN/data/adj_mat_alpha.npy")
-#             or not os.path.isfile("DC-STGCN/data/node_values_alpha.npy")):
-with zipfile.ZipFile("DC-STGCN/data/SCATS.zip", 'r') as zip_ref:
-    zip_ref.extractall("DC-STGCN/data/")
+# if (not os.path.isfile("DC_STGCN/data/adj_mat_alpha.npy")
+#             or not os.path.isfile("DC_STGCN/data/node_values_alpha.npy")):
+with zipfile.ZipFile("DC_STGCN/data/SCATS.zip", 'r') as zip_ref:
+    zip_ref.extractall("DC_STGCN/data/")
     
-A = np.load("DC-STGCN/data/interpret_csv/adj_mat_alpha.npy")
+A = np.load("DC_STGCN/data/interpret_csv/adj_mat_alpha.npy")
 A = A.astype(np.float32)
 X = np.load("interpret_csv/node_values_alpha.npy").transpose((1, 2, 0))
 X = X.astype(np.float32)
