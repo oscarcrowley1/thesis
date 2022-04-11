@@ -18,7 +18,7 @@ import openrouteservice
 #from openrouteservice import convert
 import json
 
-epsilon = 2.5
+epsilon = 1.5
 delta_squared = 10 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
@@ -87,14 +87,8 @@ for from_point in range(num_points):
         #                 (to_point in junction3 and from_point in junction3):
         #                 distance = inf
             
-        # elif (to_point in junction0 and from_point in junction0) or \
-        #         (to_point in junction1 and from_point in junction1) or \
-        #             (to_point in junction2 and from_point in junction2) or \
-        #                 (to_point in junction3 and from_point in junction3):
-        #     distance = inf
-            
-        # else:
-        elif [from_point, to_point] in routes:
+        else:
+        # elif [from_point, to_point] in routes:
             coords = ((coord_array[from_point][1], coord_array[from_point][0]), (coord_array[to_point][1], coord_array[to_point][0]))
             
             #print(coords)
@@ -118,8 +112,8 @@ for from_point in range(num_points):
             
             distance = round(res['routes'][0]['summary']['distance']/1000, 4)
 
-        else:
-            distance = inf
+        # else:
+        #     distance = inf
             
         print(f"DISTANCE from point {from_point} to {to_point} is:\t{distance}")
         print("\n")
@@ -132,8 +126,8 @@ print(adj_array)
 plt.imshow(adj_array)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Pre-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Distance Matrix")
+plt.colorbar(label="Distance (kilometres)")
 plt.show()
 
 np.save("interpret_csv_bravo/distance_mat_bravo", adj_array)
@@ -146,8 +140,8 @@ print(kernelised_adj)
 plt.imshow(kernelised_adj)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Post-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Adjacency Matrix")
+plt.colorbar(label="Adjacency (no unit)")
 plt.show()
 
 # ## TRYING TRASPOSE

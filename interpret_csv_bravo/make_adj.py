@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
-epsilon = 1.2
+epsilon = 2.5
 delta_squared = 10
 
 def gauss_kernel(array, array_copy):
@@ -27,8 +27,8 @@ print(adj_array_prek)
 plt.imshow(adj_array_prek)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Pre-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Distance Matrix")
+plt.colorbar(label="Distance (kilometres)")
 plt.show()
 
 adj_array = v_gauss_kernel(adj_array_prek, adj_array_prek)
@@ -46,8 +46,8 @@ print(adj_array)
 plt.imshow(adj_array)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Post-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Adjacency Matrix")
+plt.colorbar(label="Adjacency (no unit)")
 plt.show()
 # colors = [ im.cmap(im.norm(value)) for value in values]
 # # create a patch (proxy artist) for every color 

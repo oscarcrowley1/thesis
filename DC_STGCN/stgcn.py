@@ -100,13 +100,9 @@ class STGCNBlock(nn.Module):
         # return t3
 
 def negLogLik_loss(dist, target):
-    #target_np = target.detach().cpu().numpy()
-    #dist_np = dist.detach().cpu().numpy()
-    #print(f"OUTTYPE{dist.type}")
-    #print(f"OUTTYPE{target.type}")
     mean = dist[..., 0][..., None]
     std = torch.clamp(dist[..., 1][..., None], min=0.01)
-    
+    print(f"mean shape:\t{mean.shape}")
     norm_dist = torch.distributions.Normal(mean, std)
         
     return -norm_dist.log_prob(target).sum()

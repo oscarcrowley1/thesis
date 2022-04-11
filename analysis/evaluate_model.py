@@ -40,7 +40,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 10
+    model_int = 9
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -165,6 +165,7 @@ if __name__ == '__main__':
             plt.plot(plot_time, svr_preds, label="SVR Predictions")
             # plt.plot(plot_time, test_target_UN[:, stop_num, 0])
             plt.plot(plot_time, out_UN[:, stop_num, 0], label="STGCN Predictions")
+            np.save(folder_string + "/stop" + str(stop_num) + "_preds", out_UN[:, stop_num, 0])
             
 
             # plt.title(f"Flow for Sensor {stop_num} in Set Bravo Plus")

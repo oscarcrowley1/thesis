@@ -55,10 +55,10 @@ info_string = "Diagonal matrix of 1s"
 f.write(info_string)
 f.close()
 
-if os.path.isfile("interpret_csv_bravo/node_values_bravo.npy") and os.path.isfile("interpret_csv_bravo/nv_info.txt"):
-    with zipfile.ZipFile("interpret_csv_bravo/SCATS_bravo.zip", "w") as zip_object:
-        zip_object.write("interpret_csv_bravo/node_values_bravo.npy", arcname="bravo_data/node_values_bravo.npy")
-        zip_object.write("interpret_csv_bravo/adj_mat_bravo.npy", arcname="bravo_data/adj_mat_bravo.npy")
-        zip_object.write("interpret_csv_bravo/adj_info.txt", arcname="bravo_data/adj_info.npy")
-        zip_object.write("interpret_csv_bravo/nv_info.txt", arcname="bravo_data/nv_info.npy")
-    print("Zipped")
+# if os.path.isfile("interpret_csv_bravo/node_values_bravo.npy") and os.path.isfile("interpret_csv_bravo/nv_info.txt"):
+#     with zipfile.ZipFile("interpret_csv_bravo/SCATS_bravo.zip", "w") as zip_object:
+#         zip_object.write("interpret_csv_bravo/node_values_bravo.npy", arcname="bravo_data/node_values_bravo.npy")
+#         zip_object.write("interpret_csv_bravo/adj_mat_bravo.npy", arcname="bravo_data/adj_mat_bravo.npy")
+#         zip_object.write("interpret_csv_bravo/adj_info.txt", arcname="bravo_data/adj_info.npy")
+#         zip_object.write("interpret_csv_bravo/nv_info.txt", arcname="bravo_data/nv_info.npy")
+#     print("Zipped")

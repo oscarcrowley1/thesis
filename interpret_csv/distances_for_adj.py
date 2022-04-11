@@ -105,9 +105,11 @@ print(adj_array)
 plt.imshow(adj_array)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Pre-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Distance Matrix")
+plt.colorbar(label="Distance (kilometres)")
 plt.show()
+
+np.save("interpret_csv/dist_mat_alpha", adj_array)
 
 kernelised_adj = v_gauss_kernel(adj_array, adj_array)
 
@@ -116,12 +118,9 @@ print(kernelised_adj)
 plt.imshow(kernelised_adj)
 plt.xlabel("To Sensor")
 plt.ylabel("From Sensor")
-plt.title("Post-Kernelisation Adjacency Matrix")
-plt.colorbar()
+plt.title("Adjacency Matrix")
+plt.colorbar(label="Adjacency (no unit)")
 plt.show()
-
-# ## TRYING TRASPOSE
-# kernelised_adj = np.transpose(kernelised_adj)
 
 ##commmented when not saving
 np.save("interpret_csv/adj_mat_alpha", kernelised_adj)

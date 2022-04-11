@@ -398,7 +398,7 @@ if __name__ == '__main__':
     df["EV"] = evs
     
     # FOR SAVING
-    # df.to_csv("svr/results_" + data_string)
+    df.to_csv("svr/results_" + data_string + ".csv")
     
     print("Average across all stations")
 

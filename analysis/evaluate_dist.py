@@ -26,6 +26,8 @@ from prettytable import PrettyTable
 import sys
 
 
+sys.path.insert(1, 'DC_STGCN')
+
 from stgcn import STGCN
 from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects
 
@@ -46,7 +48,7 @@ def count_parameters(model):
     return total_params
 
 if __name__ == '__main__':
-    A, X, means, stds, info_string = load_scats_data()
+    A, X, means, stds, info_string = load_scats_data('alpha')
 
 
     num_timesteps_input = 25
@@ -63,10 +65,11 @@ if __name__ == '__main__':
     # split_line3 = int(X.shape[2] * 0.2)
 
     
-    total_input, total_target, num_timesteps_input = generate_feature_vects(X)
+    #total_input, total_target, num_timesteps_input = generate_feature_vects(X)
+    training_input, training_target, val_input, val_target, ex_test_input, ex_test_target, num_timesteps_input = generate_feature_vects(X)
 
-    ex_test_input = total_input[ex_split_line1:, :, :]
-    ex_test_target = total_target[ex_split_line1:, :, :]
+    # ex_test_input = total_input[ex_split_line1:, :, :]
+    # ex_test_target = total_target[ex_split_line1:, :, :]
 
     A_wave = get_normalized_adj(A)
     A_wave = torch.from_numpy(A_wave)#removed to device
@@ -98,13 +101,15 @@ if __name__ == '__main__':
         out_UN_std = out[:, stop_num, 1]*stds[0]
         
         print(out.shape)
+        plot_time = np.array(range(ex_test_target_UN[:, stop_num, 0].shape[0]))/480
+
+        plt.fill_between(plot_time, out_UN_mean - out_UN_std, out_UN_mean + out_UN_std, color='r', label="Predictions Window", alpha=0.2)
+        plt.plot(plot_time, ex_test_target_UN[:, stop_num, 0], label="Target")
+        plt.plot(plot_time, out_UN_mean, label="Predictions")
+        # plt.plot(out_UN_mean - out_UN_std, label="Predictions+")
+        # plt.plot(out_UN_mean + out_UN_std, label="Predictions+")
         
-        plt.plot(ex_test_target_UN[:, stop_num, 0], label="Target")
-        plt.plot(out_UN_mean, label="Predictions")
-        plt.fill_between(range(len(out_UN_mean)), out_UN_mean - out_UN_std, out_UN_mean + out_UN_std, label="Predictions+", alpha=0.5)
-        plt.plot(out_UN_mean - out_UN_std, label="Predictions+")
-        plt.plot(out_UN_mean + out_UN_std, label="Predictions+")
-        plt.xlabel("Time (3 min intervals)")
+        plt.xlabel("Time (Days)")
         plt.ylabel("Flow (cars/min")
         plt.title("Flow prediction for 15 minutes ahead")
         # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
