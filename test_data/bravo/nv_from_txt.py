@@ -20,38 +20,44 @@ def time_to_index(time_value, first_date, date_obj):
     return int((h*20) + math.floor(m/3))
 
 
-def sensor_to_index(junc_num, sensor_letter):
-    if(junc_num=="183"):
-        if(sensor_letter=="AC"):
-            return int(0)
-        elif(sensor_letter=="B"):
-            return int(1)
+def sensor_to_index(junc_num, sensor_letter, num_lanes):
+    if(junc_num=="48"):
+        if(sensor_letter=="A"):
+            if(num_lanes==2):
+                return int(0)
+            else:
+                return int(1)
+        elif(sensor_letter=="BC"):
+            return int(2)
         else:
             print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
             return int(0)   
-    elif(junc_num=="196"):
-        if(sensor_letter=="A"):
-            return int(2)
-        elif(sensor_letter=="ABE"):
+    elif(junc_num=="145"):
+        if(sensor_letter=="AB"):
             return int(3)
-        elif(sensor_letter=="D"):
+        elif(sensor_letter=="AC"):
             return int(4)
+        elif(sensor_letter=="C"):
+            return int(5)
         else:
             print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
             return int(0)
-    elif(junc_num=="288"):
+    elif(junc_num=="152"):
         if(sensor_letter=="A"):
-            return int(5)
-        elif(sensor_letter=="B"):
-            return int(6)
+            if(num_lanes==3):
+                return int(6)
+            else:
+                return int(7)
+        elif(sensor_letter=="C"):
+            return int(8)
         else:
             print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
             return int(0)
     elif(junc_num=="354"):
         if(sensor_letter=="A"):
-            return int(7)
+            return int(9)
         elif(sensor_letter=="B"):
-            return int(8)
+            return int(10)
         else:
             print("ERROR IN S_TO_I, JUNC: " + str(junc_num) + "SENS: " + str(sensor_letter))
             return int(0)
@@ -131,8 +137,7 @@ def fill_array(array):
 
     return array
 
-#txt_directory = "interpret_csv/ALPHA_1week"
-junc_set = "alpha"
+junc_set = "bravo"
 # time_set = "jan1_jan14"
 # time_set = "jan29_feb11"
 # time_set = "feb5_feb18"
@@ -150,8 +155,8 @@ first_date = None
 for txt_filename in sorted(os.listdir(txt_directory)):
     files_string = files_string + txt_filename + "\n"
 
-    # read_filename = "interpret_csv/ALPHA/all_junc_alpha_01Jun18.txt"
-    # write_filename = "interpret_csv/ALPHA/new_all_junc.csv"
+    # read_filename = "interpret_csv_bravo/ALPHA/all_junc_alpha_01Jun18.txt"
+    # write_filename = "interpret_csv_bravo/ALPHA/new_all_junc.csv"
     name, suffix = txt_filename.split(".", 2)
     csv_filename = name + ".csv"
 
@@ -181,9 +186,9 @@ for txt_filename in sorted(os.listdir(txt_directory)):
 
     df = pd.read_csv(write_filename, names=df_titles, skiprows=1)
 
-    our_nodes = ["183", "196", "288", "354"]
+    our_nodes = ["48", "145", "152", "354"]
 
-    print(df.head())
+    # print(df.head(30))
     current_time = "00:00"
 
     df_size = df.size
@@ -196,7 +201,7 @@ for txt_filename in sorted(os.listdir(txt_directory)):
 
     #time_dim = 1440
     time_dim = 480
-    sensor_dim = 9
+    sensor_dim = 11
     channel_dim = 2
 
     density_array = np.empty((time_dim, sensor_dim))
@@ -221,35 +226,56 @@ for txt_filename in sorted(os.listdir(txt_directory)):
 
         t_small = 1
 
-        ds_list = [row["DS_A"], row["DS_B"], row["DS_C"], row["DS_D"]]
+        ds_list = [str(row["DS_A"]), str(row["DS_B"]), str(row["DS_C"]), str(row["DS_D"])]
         vo_list = [row["VO_A"], row["VO_B"], row["VO_C"], row["VO_D"]]
         vk_list = [row["VK_A"], row["VK_B"], row["VK_C"], row["VK_D"]]
 
         if ":" in other_column:
-            current_time = other_column        
+            current_time = other_column
+            done_145ac = False
+            done_145ab = False        
         current_time_list.append(current_time)
 
         check_is_node = salk_column.isnumeric()
         check_node_list = (int_column in our_nodes) and check_is_node
 
         #check_is_duplicate = (if)
+        lane_bools = ((ds_list[0]).isnumeric()) , ((ds_list[1]).isnumeric()) , ((ds_list[2]).isnumeric()) , ((ds_list[3]).isnumeric())
+        lane0_bool, lane1_bool, lane2_bool, lane3_bool = lane_bools
+        
+        
+        
         if check_node_list:
-            num_lanes = ((ds_list[0]).isnumeric()) + ((ds_list[1]).isnumeric()) + ((ds_list[2]).isnumeric()) + ((ds_list[3]).isnumeric())
+            num_lanes = int(lane0_bool) + int(lane1_bool) + int(lane2_bool) + int(lane3_bool)
         else:
             num_lanes = None
 
-        check_is_duplicate = check_node_list and (int_column == "183" and (num_lanes == 1 or num_lanes == 2))
+        check_is_duplicate = check_node_list and \
+            ((int_column == "183" and (num_lanes == 1 or num_lanes == 2)) or \
+                other_column == "L" or \
+                    (int_column == "145" and salk_column == "205") or \
+                        (int_column == "145" and salk_column == "212")) or \
+                            (int_column == "48" and salk_column == "213")
+        check_is_empty = check_node_list and (num_lanes == 0)
 
-        if(check_node_list and not check_is_duplicate):
+        if(check_node_list and (not check_is_duplicate) and (not check_is_empty)):
+            # print(f"PASSED:\t{row}")
             used_count = used_count+1
             total_ds = 0
             total_vo = 0
             total_vk = 0
 
-            for lane in range(num_lanes):
-                total_ds = total_ds + int(ds_list[lane])
-                total_vo = total_vo + int(vo_list[lane])
-                total_vk = total_vk + int(vk_list[lane])
+            # for lane in range(num_lanes):
+            # print(lane_bools)
+            
+            lane_num = 0
+            for lane in lane_bools:
+                # print(lane)
+                if lane:
+                    total_ds = total_ds + int(ds_list[lane_num])
+                    total_vo = total_vo + int(vo_list[lane_num])
+                    total_vk = total_vk + int(vk_list[lane_num])
+                lane_num = lane_num+1
             
             
             avg_ds = total_ds/num_lanes
@@ -268,7 +294,7 @@ for txt_filename in sorted(os.listdir(txt_directory)):
             density_list.append(density)
 
             time_index = time_to_index(current_time, first_date, current_datetime)
-            sensor_index = sensor_to_index(int_column, sensor_column)
+            sensor_index = sensor_to_index(int_column, sensor_column, num_lanes=num_lanes)
 
             if math.isnan(flow_array[time_index, sensor_index]):
                 flow_array[time_index, sensor_index] = flow
@@ -306,16 +332,21 @@ for txt_filename in sorted(os.listdir(txt_directory)):
     else:
         concat_density_array = np.concatenate([concat_density_array, density_array], axis=0)
 
-    print(df.head(25))
-    print(df.tail(25))
+    # print(df.head(50))
+    # print(df.tail(50))
 
 output_array = np.stack([concat_flow_array, concat_density_array], axis=2)
 
-print(output_array.shape) # 1440*9*2
+print(output_array.shape) # 1440*11*2
+# print(output_array) # 1440*11*2
 
 #print(output_array.type)
 output_array.astype(np.float64)
 # output_array.astype(float32)
+
+
+
+
 
 np.save("test_data/" + junc_set + "/" + junc_set + "_" + time_set + "_data.npy", output_array)
 
@@ -325,10 +356,10 @@ f.write(info_string)
 f.write(files_string)
 f.close()
 
-# if os.path.isfile("interpret_csv/adj_mat_alpha.npy") and os.path.isfile("interpret_csv/adj_info.txt"):
-#     with zipfile.ZipFile("interpret_csv/SCATS_alpha.zip", "w") as zip_object:
-#         zip_object.write("interpret_csv/node_values_alpha.npy", arcname="alpha_data/node_values_alpha.npy")
-#         zip_object.write("interpret_csv/adj_mat_alpha.npy", arcname="alpha_data/adj_mat_alpha.npy")
-#         zip_object.write("interpret_csv/adj_info.txt", arcname="alpha_data/adj_info.npy")
-#         zip_object.write("interpret_csv/nv_info.txt", arcname="alpha_data/nv_info.npy")
+# if os.path.isfile("interpret_csv_bravo/adj_mat_bravo.npy") and os.path.isfile("interpret_csv_bravo/adj_info.txt"):
+#     with zipfile.ZipFile("interpret_csv_bravo/SCATS_bravo.zip", "w") as zip_object:
+#         zip_object.write("interpret_csv/node_values_bravo.npy", arcname="bravo_data/node_values_bravo.npy")
+#         zip_object.write("interpret_csv/adj_mat_bravo.npy", arcname="bravo_data/adj_mat_bravo.npy")
+#         zip_object.write("interpret_csv/adj_info.txt", arcname="bravo_data/adj_info.npy")
+#         zip_object.write("interpret_csv/nv_info.txt", arcname="bravo_data/nv_info.npy")
 #     print("Zipped")
