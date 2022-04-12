@@ -40,7 +40,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 9
+    model_int = 0
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -105,6 +105,7 @@ if __name__ == '__main__':
     # split_line2 = int(X.shape[2] * 0.15)#0.8
     # split_line3 = int(X.shape[2] * 0.2)
     date_strings = ["jan1_jan14","jan29_feb11","feb5_feb18","jun17_jun30"]
+    
     for date_string in date_strings:
         test_string = junction_set + "_" + date_string + "_data"
         X, means, stds, info_string = load_test_scats_data(test_string)

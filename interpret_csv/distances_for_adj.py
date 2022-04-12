@@ -19,7 +19,7 @@ import openrouteservice
 import json
 
 epsilon = 0.6
-delta_squared = 10 # oringinally 10, 1 gave good spread
+delta_squared = 1 # oringinally 10, 1 gave good spread
 
 def gauss_kernel(array, array_copy):
     if(array > epsilon):
