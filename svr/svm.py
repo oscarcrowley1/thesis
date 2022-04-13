@@ -211,7 +211,8 @@ if __name__ == '__main__':
             dump(model, "svr/model_" + str(data_string) + "_" + str(station_num) + ".joblib")
             
             print(f"PARAMS:\t{len(model.get_params())}")
-            print(f"COEFS:\t{len(model.coef_)}")
+            print(f"COEFS:\t{len(model.coef_)}\t{model.coef_}")
+            print(f"INTERCEPTS:\t{len(model.intercept_)}\t{model.intercept_}")
             
             # if len(subset) != 0:
             #     # stationX_training_input = training_input[subset, station_num, :, 0]
