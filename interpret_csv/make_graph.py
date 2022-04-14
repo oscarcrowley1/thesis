@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 adj_matrix = np.load("interpret_csv/adj_mat_alpha_0603.npy")
+# adj_matrix = np.load("interpret_csv/dist_mat_alpha_0603.npy")
 
 #adj_matrix = np.transpose(adj_matrix)
 
@@ -51,7 +52,8 @@ graph_drawing = nx.draw_networkx(graph, pos=node_pos, with_labels=True, arrows=T
 dummy_plot = plt.scatter(inf, inf, cmap="Blues") # plt.get_cmap("YlGnBu"))
 
 # heatmap = plt.pcolor(info,cmap=plt.get_cmap("viridis"))
-
-plt.title("Kernelised Graph Structure")
-plt.colorbar(dummy_plot)# plt.get_cmap("YlGnBu"))
+ax = plt.gca()
+ax.set_facecolor((0.8, 0.8, 0.8))
+plt.title("Adjacency Graph for Set 2")
+plt.colorbar(dummy_plot, label="Adjacency (no unit)")# plt.get_cmap("YlGnBu"))
 plt.show()
