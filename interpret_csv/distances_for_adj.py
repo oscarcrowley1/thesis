@@ -61,11 +61,11 @@ for from_point in range(num_points):
         if (to_point == from_point):
             distance = 0
 
-        # elif (to_point in junction0 and from_point in junction0) or \
-        #         (to_point in junction1 and from_point in junction1) or \
-        #             (to_point in junction2 and from_point in junction2) or \
-        #                 (to_point in junction3 and from_point in junction3):
-        #                 distance = inf
+        elif (to_point in junction0 and from_point in junction0) or \
+                (to_point in junction1 and from_point in junction1) or \
+                    (to_point in junction2 and from_point in junction2) or \
+                        (to_point in junction3 and from_point in junction3):
+                        distance = inf
         else:
             coords = ((coord_array[from_point][1], coord_array[from_point][0]), (coord_array[to_point][1], coord_array[to_point][0]))
             

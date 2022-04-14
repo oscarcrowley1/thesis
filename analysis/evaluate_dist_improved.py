@@ -152,7 +152,9 @@ if __name__ == '__main__':
             inside = greater & lesser
             # print(f"INSIDE:\t{inside}")
             frac_in = np.count_nonzero(inside)/len(inside)
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+            # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M %d/%m/%Y'))
+
 
             plt.scatter(plot_date, (test_target_UN_stopnum), alpha=0.5, label="Target", marker='.')
             
@@ -165,9 +167,11 @@ if __name__ == '__main__':
             
             plt.fill_between(plot_date, out_UN_mean_stopnum-out_UN_std_stopnum, out_UN_mean_stopnum+out_UN_std_stopnum, color='r', alpha=0.4, label="Prediction Window")
             plt.plot(plot_date, out_UN_mean_stopnum_plot, c='c', label="Predictions")
+            # plt.vlines([datetime.datetime.fromisoformat('2018-05-15T08:00:00'), ymin=inf, ymax])
+            # plt.axvline([datetime.datetime.fromisoformat('2018-05-15T08:00:00')])
             plt.subplots_adjust(bottom=0.17)
             plt.xlim([plot_date[0]-100*interval_length, plot_date[-1]+100*interval_length])
-            plt.xticks(rotation = 30)
+            plt.xticks(rotation = 30, ha="right")
             # plt.title(f"Flow for Sensor {stop_num} in Set Bravo Plus")
             plt.xlabel("Date")
             plt.ylabel("Flow (vehicles/hour)")
@@ -177,12 +181,14 @@ if __name__ == '__main__':
             plt.show()
             
             plt.subplots_adjust(bottom=0.17)
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M %d/%m/%Y'))
+            # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
             plt.xlim([plot_date[0]-100*interval_length, plot_date[-1]+100*interval_length])
-            plt.xticks(rotation = 30)
+            plt.xticks(rotation = 30, ha="right")
             plt.title(f"Standard Deviation of our Distribution for Node {stop_num}")
             plt.xlabel("Date")
-            plt.ylabel("Standard Deviation (vehicles/hour)")
+            # plt.ylabel("Standard Deviation (vehicles/hour)")
+            # plt.ylabel("Relative Standard Deviation (no unit)")
             plt.plot(plot_date, out_UN_std_stopnum)
             plt.show()
             

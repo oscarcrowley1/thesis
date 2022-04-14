@@ -326,6 +326,84 @@ def generate_test_feature_vects(X):
     #         test_input, test_target, \
     #         num_features
 
+
+
+def generate_test_flow_only_feature_vects(X):
+    """
+    Takes node features for the graph and divides them into multiple samples
+    along the time-axis by sliding a window of size (num_timesteps_input+
+    num_timesteps_output) across it in steps of 1.
+    :param X: Node features of shape (num_vertices, num_features,
+    num_timesteps)
+    :return:
+        - Node features divided into multiple samples. Shape is
+          (num_samples, num_vertices, num_features, num_timesteps_input).
+        - Node targets for the samples. Shape is
+          (num_samples, num_vertices, num_features, num_timesteps_output).
+    """
+    # Generate the beginning index and the ending index of a sample, which
+    # contains (num_points_for_training + num_points_for_predicting) points
+    # indices = [(i, i + (num_timesteps_input + num_timesteps_output)) for i
+    #            in range(X.shape[2] - (
+    #             num_timesteps_input + num_timesteps_output) + 1)]
+
+    distance_back = int(7*24*60/3) # 480*7
+    distance_forward = 5
+    spread_indices = [define_prev_timesteps(i) for i
+               in range(distance_back, X.shape[2] - distance_forward - 1)]
+
+
+    num_features = len(spread_indices[0]) - 1
+
+    # Save samples
+    features, target = [], []
+
+    for index_array in spread_indices:
+        features.append(
+            X[:, :, index_array[:-1]].transpose(
+                (0, 2, 1)))
+        #target.append(np.expand_dims(X[:, 0, index_array[-1]], axis=2))
+        target_to_append = X[:, 0, index_array[-1]]
+        target.append(np.expand_dims(target_to_append, axis=1))
+        #target.append(X[:, 0, index_array[-1]])
+
+    total_input = torch.from_numpy(np.array(features))
+    total_target = torch.from_numpy(np.array(target))
+
+    total_input = total_input[:, :, :, 0:1]
+    total_target = total_target[:, :, :]
+    # test_indx = np.arange((480*36), (480*45)) # day 36 mon to 44 tues inclusive
+
+    # before_indx = np.arange((480*36))
+    # after_indx = np.arange((480*45), total_input.shape[0])
+
+    # print(before_indx)
+    # print(after_indx)
+
+    # other_indx = np.concatenate((before_indx, after_indx))
+    # print(other_indx)
+    # np.random.shuffle(other_indx)
+    # split_line = int(other_indx.shape[0] * (5/9))
+    # training_indx = other_indx[:split_line]
+    # val_indx = other_indx[split_line:]
+
+    # training_input = total_input[training_indx, :, :, 0:1]
+    # training_target = total_target[training_indx, :, :]
+
+    # val_input = total_input[val_indx, :, :, 0:1]
+    # val_target = total_target[val_indx, :, :]
+
+    # test_input = total_input[test_indx, :, :, 0:1]
+    # test_target = total_target[test_indx, :, :]
+
+    # return torch.from_numpy(np.array(features)), \
+    #        torch.from_numpy(np.array(target)), \
+    #        num_features
+
+    return total_input, total_target, num_features
+
+
+
 def generate_flow_only_feature_vects(X):
     """
     Takes node features for the graph and divides them into multiple samples

@@ -40,7 +40,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 9
+    model_int = 8
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -159,12 +159,12 @@ if __name__ == '__main__':
             plot_time = np.array(range(test_target_UN[:, stop_num, 0].shape[0]))/480
             print(plot_time)
             
-            plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
+            plt.scatter(plot_time, test_target_UN[:, stop_num, 0], alpha=0.5, marker='.', label="Target")
             
             svr_preds = np.load("svr/" + str(junction_set) + "_station_" + str(stop_num) + ".npy")
-            plt.plot(plot_time, svr_preds, label="SVR Predictions")
+            plt.plot(plot_time, svr_preds, color='g', label="SVR Predictions")
             # plt.plot(plot_time, test_target_UN[:, stop_num, 0])
-            plt.plot(plot_time, out_UN[:, stop_num, 0], label="STGCN Predictions")
+            plt.plot(plot_time, out_UN[:, stop_num, 0], color='m', label="STGCN Predictions")
             np.save(folder_string + "/stop" + str(stop_num) + "_preds", out_UN[:, stop_num, 0])
             
 
@@ -174,15 +174,15 @@ if __name__ == '__main__':
             plt.title(f"Sensor {stop_num} Flow prediction for 15 minutes ahead")
             # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
             plt.legend()
-            # plt.show()
+            plt.show()
             
             abs_svr_error = np.abs(test_target_UN[:, stop_num, 0] - svr_preds)
             abs_stgcn_error = np.abs(test_target_UN[:, stop_num, 0] - out_UN[:, stop_num, 0])
-            plt.plot(plot_time, abs_svr_error)
-            plt.plot(plot_time, abs_stgcn_error)
-            # plt.show()
+            # plt.plot(plot_time, abs_svr_error)
+            # plt.plot(plot_time, abs_stgcn_error)
+            # # plt.show()
             
-            plt.plot(plot_time, abs_svr_error - abs_stgcn_error)
+            # plt.plot(plot_time, abs_svr_error - abs_stgcn_error)
             # plt.show()
 
             

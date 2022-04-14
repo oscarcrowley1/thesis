@@ -21,7 +21,7 @@ import sys
 sys.path.insert(1, 'DC_STGCN')
 
 from stgcn import STGCN
-from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results, generate_test_feature_vects, load_test_scats_data
+from utils import generate_dataset, load_scats_data, get_normalized_adj, print_save, generate_feature_vects, get_results, generate_test_feature_vects, generate_test_flow_only_feature_vects, load_test_scats_data
 
 def count_parameters(model):
     table = PrettyTable(["Modules", "Parameters"])
@@ -40,7 +40,7 @@ def count_parameters(model):
 if __name__ == '__main__':
 
 
-    model_int = 0
+    model_int = 1
     
     if model_int == 0:
         """Alpha Junctions. Dropout 0.3. Adjacency values epsilon=0.6, delta squared=10. 1000 iterations. 2 channel input. No distribution"""
@@ -86,6 +86,10 @@ if __name__ == '__main__':
         """Bravo Plus Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 2700 iterations. 2 channel input. No distribution"""
         model_string = "final_models/bravoplus_d03_nodist_2503_e15d10_PRUNING/model_0408_1153_e2699_out1"
         junction_set = "bravoplus"
+    elif model_int == 11:
+        """Bravo Junctions. Dropout 0.3. Adjacency values epsilon=1.5, delta squared=10. WITH PRUNING. 1000 iterations. 1 channel input. No distribution"""
+        model_string = "final_models/bravo_d03_FLOW_nodist_2503_e15d10_PRUNING/model_0406_1729_e999_out1"
+        junction_set = "bravo"
     else:
         print("ERROR NO MODEL CHOSEN")
         
@@ -111,7 +115,7 @@ if __name__ == '__main__':
         X, means, stds, info_string = load_test_scats_data(test_string)
         
         # total_input, total_target, num_timesteps_input = generate_feature_vects(X)
-        test_input, test_target, num_timesteps_input = generate_test_feature_vects(X)
+        test_input, test_target, num_timesteps_input = generate_test_flow_only_feature_vects(X)
 
         # test_input = total_input[ex_split_line1:, :, :]
         # test_target = total_target[ex_split_line1:, :, :]
@@ -126,6 +130,7 @@ if __name__ == '__main__':
                     num_timesteps_input,
                     num_timesteps_output)#.to(device=args.device)
         
+        print(f"{A_wave.shape[0]},{test_input.shape[3]},{num_timesteps_input},{num_timesteps_output}")
         total_params = count_parameters(ex_net)
         
         # if False:#if torch.cuda.is_available():
@@ -161,22 +166,25 @@ if __name__ == '__main__':
                 plot_time = np.array(range(test_target_UN[:, stop_num, 0].shape[0]))/480
                 print(plot_time)
                 
-                plt.plot(plot_time, test_target_UN[:, stop_num, 0], label="Target")
+                plt.scatter(plot_time, test_target_UN[:, stop_num, 0], alpha=0.5, marker='.', label="Target")
                 
                 # svr_preds = np.load("svr/" + str(junction_set) + "_station_" + str(stop_num) + ".npy")
                 # plt.plot(plot_time, svr_preds, label="SVR Predictions")
                 # plt.plot(plot_time, test_target_UN[:, stop_num, 0])
-                plt.plot(plot_time, out_UN[:, stop_num, 0], label="STGCN Predictions")
+                svr_preds = np.load("svr/" + str(junction_set) + "_station_" + str(stop_num) + "_" + date_string + ".npy")
+                plt.plot(plot_time, svr_preds, color='g', label="SVR Predictions")
+                plt.plot(plot_time, out_UN[:, stop_num, 0],  color='m', label="STGCN Predictions")
                 np.save(folder_string + "/stop" + str(stop_num) + "_preds_test" + test_string, out_UN[:, stop_num, 0])
-                
-
+            
+                zero_indexes = np.where(test_target_UN[:, stop_num, 0]==0)
+                plt.scatter(plot_time[zero_indexes], (test_target_UN[:, stop_num, 0])[zero_indexes], marker='x', color='r', label="Zero Flow")
                 # plt.title(f"Flow for Sensor {stop_num} in Set Bravo Plus")
                 plt.xlabel("Time (days)")
                 plt.ylabel("Flow (vehicles/hour)")
                 plt.title(f"Sensor {stop_num} Flow prediction for 15 minutes ahead")
                 # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN[:, stop_num, time_step])
                 plt.legend()
-                # plt.show()
+                plt.show()
                 
                 # abs_svr_error = np.abs(test_target_UN[:, stop_num, 0] - svr_preds)
                 # abs_stgcn_error = np.abs(test_target_UN[:, stop_num, 0] - out_UN[:, stop_num, 0])
@@ -188,7 +196,7 @@ if __name__ == '__main__':
                 # plt.show()
 
                 
-                print(f"\nStop number:\t{stop_num}")
+                print(f"\nStop number:\t{stop_num}\tTest Set\t{date_string}")
                 mse, mae, mape, rmse, ev = get_results(test_target_UN[:, stop_num, 0], out_UN[:, stop_num, 0])
                 
                 mses.append(mse)

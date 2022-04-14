@@ -95,11 +95,17 @@ sh = [160.48222,
     215.58286]
 
 fig, ax = plt.subplots()
-ax.plot(orig, label="Original")
-ax.plot(ny, label="NY")
-ax.plot(jf, label="JF")
-ax.plot(mt, label="MT")
-ax.plot(sh, label="SH")
+plot_range = range(12)
+ax.plot(orig, alpha=0.25)
+ax.scatter(plot_range, orig, marker='_', label="OG", s=150)
+ax.plot(ny, alpha=0.25)
+ax.scatter(plot_range, ny, marker='_', label="NY", s=150)
+ax.plot(jf, alpha=0.25)
+ax.scatter(plot_range, jf, marker='_', label="JF", s=150)
+ax.plot(mt, alpha=0.25)
+ax.scatter(plot_range, mt, marker='_', label="MT", s=150)
+ax.plot(sh, alpha=0.25)
+ax.scatter(plot_range, sh, marker='_', label="SH", s=150)
 
 # ax.xaxis.set_major_locator(MaxNLocator(11)) 
 
@@ -109,7 +115,7 @@ print(labels)
 ax.xaxis.set_ticks([0,1,2,3,4,5,6,7,8,9,10, 11])
 labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', "Average"]
 ax.set_xticklabels(labels)
-plt.title("MAE at Bravo Nodes")
+plt.title("MAE at Set 1 Nodes")
 plt.xlabel("Node")
 plt.ylabel("MAE (vehicles/hour)")
 plt.legend()
