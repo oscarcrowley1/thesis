@@ -116,7 +116,9 @@ if __name__ == '__main__':
         evs = []
         avgs = []
         stddevs = []
-        frac_ins = []
+        frac_ins1 = []
+        frac_ins2 = []
+        frac_ins3 = []
         
         
         start_datetime = datetime.datetime.fromisoformat('2018-05-14')
@@ -145,13 +147,20 @@ if __name__ == '__main__':
             # plot_date = [datetime.datetime.fromordinal(time) for time in plot_time]
             # print(plot_date)
             
-            greater = np.greater_equal(test_target_UN_stopnum, out_UN_mean_stopnum-out_UN_std_stopnum)
-            # print(f"target:\t{test_target_UN_stopnum}")
-            # print(f"GREATER:\t{greater}")
-            lesser = np.less_equal(test_target_UN_stopnum, out_UN_mean_stopnum+out_UN_std_stopnum)
-            inside = greater & lesser
-            # print(f"INSIDE:\t{inside}")
-            frac_in = np.count_nonzero(inside)/len(inside)
+            greater1 = np.greater_equal(test_target_UN_stopnum, out_UN_mean_stopnum-out_UN_std_stopnum)
+            lesser1 = np.less_equal(test_target_UN_stopnum, out_UN_mean_stopnum+out_UN_std_stopnum)
+            inside1 = greater1 & lesser1
+            frac_in1 = np.count_nonzero(inside1)/len(inside1)
+            
+            greater2 = np.greater_equal(test_target_UN_stopnum, out_UN_mean_stopnum-2*out_UN_std_stopnum)
+            lesser2 = np.less_equal(test_target_UN_stopnum, out_UN_mean_stopnum+2*out_UN_std_stopnum)
+            inside2 = greater2 & lesser2
+            frac_in2 = np.count_nonzero(inside2)/len(inside2)
+            
+            greater3 = np.greater_equal(test_target_UN_stopnum, out_UN_mean_stopnum-3*out_UN_std_stopnum)
+            lesser3 = np.less_equal(test_target_UN_stopnum, out_UN_mean_stopnum+3*out_UN_std_stopnum)
+            inside3 = greater3 & lesser3
+            frac_in3 = np.count_nonzero(inside3)/len(inside3)
             # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
             plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M %d/%m/%Y'))
 
@@ -178,7 +187,7 @@ if __name__ == '__main__':
             plt.title(f"Sensor {stop_num} Flow Prediction Distribution")
             # plt.fill_between(range(ex_test_target_UN.shape[0]), ex_test_target_UN[:, stop_num, time_step], out_UN_mean[:, stop_num, time_step])
             plt.legend()
-            plt.show()
+            # plt.show()
             
             plt.subplots_adjust(bottom=0.17)
             plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M %d/%m/%Y'))
@@ -190,7 +199,7 @@ if __name__ == '__main__':
             # plt.ylabel("Standard Deviation (vehicles/hour)")
             # plt.ylabel("Relative Standard Deviation (no unit)")
             plt.plot(plot_date, out_UN_std_stopnum)
-            plt.show()
+            # plt.show()
             
             # num_in = np.where(test_target_UN_stopnum > out_UN_mean_stopnum+out_UN_std_stopnum)
             
@@ -212,7 +221,9 @@ if __name__ == '__main__':
             mapes.append(mape)
             rmses.append(rmse)
             evs.append(ev)
-            frac_ins.append(frac_in)
+            frac_ins1.append(frac_in1)
+            frac_ins2.append(frac_in2)
+            frac_ins3.append(frac_in3)
             
             print('Average Number of Vehicles: ', np.mean(np.array(test_target_UN_stopnum)))
             print('STDDEV of Vehicles: ', np.std(np.array(test_target_UN_stopnum)))
@@ -226,7 +237,9 @@ if __name__ == '__main__':
         ev_avg = np.mean(np.array(evs))
         avg_avg = np.mean(np.array(avgs))
         stddev_avg = np.mean(np.array(stddevs))
-        frac_in_avg = np.mean(np.array(frac_ins))
+        frac_in_avg1 = np.mean(np.array(frac_ins1))
+        frac_in_avg2 = np.mean(np.array(frac_ins2))
+        frac_in_avg3 = np.mean(np.array(frac_ins3))
         
         mse_std = np.std(np.array(mses))
         mae_std = np.std(np.array(maes))
@@ -235,7 +248,9 @@ if __name__ == '__main__':
         ev_std = np.std(np.array(evs))
         avg_std = np.std(np.array(avgs))
         stddev_std = np.std(np.array(stddevs))
-        frac_in_std = np.mean(np.array(frac_ins))
+        frac_in_std1 = np.mean(np.array(frac_ins1))
+        frac_in_std2 = np.mean(np.array(frac_ins2))
+        frac_in_std3 = np.mean(np.array(frac_ins3))
 
         
         mses.append(mse_avg)
@@ -245,7 +260,9 @@ if __name__ == '__main__':
         evs.append(ev_avg)
         avgs.append(avg_avg)
         stddevs.append(stddev_avg)
-        frac_ins.append(frac_in_avg)
+        frac_ins1.append(frac_in_avg1)
+        frac_ins2.append(frac_in_avg2)
+        frac_ins3.append(frac_in_avg3)
         
         mses.append(mse_std)
         maes.append(mae_std)
@@ -254,7 +271,9 @@ if __name__ == '__main__':
         evs.append(ev_std)
         avgs.append(avg_std)
         stddevs.append(stddev_std)
-        frac_ins.append(frac_in_std)
+        frac_ins1.append(frac_in_std1)
+        frac_ins2.append(frac_in_std2)
+        frac_ins3.append(frac_in_std3)
         
         df = pd.DataFrame()
         
@@ -271,7 +290,9 @@ if __name__ == '__main__':
         df["MAPE"] = mapes
         df["RMSE"] = rmses
         df["EV"] = evs
-        df["FRAC_IN"] = frac_ins
+        df["FRAC_IN_1"] = frac_ins1
+        df["FRAC_IN_2"] = frac_ins2
+        df["FRAC_IN_3"] = frac_ins3
         
         
         df.to_csv(folder_string + "/results.csv")
